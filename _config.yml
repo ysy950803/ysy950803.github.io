@@ -1,9 +1,9 @@
 # Site settings TODO
-title: YSY
-SEOTitle: Welcome To My Home | YSY
-header-img: img/post-bg-desk.jpg
+title: Pig Cat
+SEOTitle: Pig Cat | YSY
+header-img: img/home-bg.jpg
 email: admin@ysy950803.cn
-description: "The blog of YSY."
+description: "Full-Stack, Android, AI"
 keyword: "Full-Stack, Android, AI"
 url: "http://ysy950803.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
@@ -12,7 +12,7 @@ github_repo: "https://github.com/ysy950803/ysy950803.github.io.git" # you code r
 # Sidebar settings TODO
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "Stay simple, stay young."
-sidebar-avatar: /img/avatar_m.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: /img/avatar.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
@@ -64,9 +64,9 @@ kramdown:
 #   enable: true    #是否开启Gitalk评论
 #   clientID: f2c84e7629bb1446c1a4                            #生成的clientID
 #   clientSecret: ca6d6139d1e1b8c43f8b2e19492ddcac8b322d0d    #生成的clientSecret
-#   repo: qiubaiying.github.io    #仓库名称
-#   owner: qiubaiying    #github用户名
-#   admin: qiubaiying
+#   repo: ysy950803.github.io    #仓库名称
+#   owner: ysy950803    #github用户名
+#   admin: ysy950803
 #   distractionFreeMode: true #是否启用类似FB的阴影遮罩
 
 
