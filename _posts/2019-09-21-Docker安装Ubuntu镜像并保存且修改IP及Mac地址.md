@@ -12,7 +12,7 @@ tags:
     - Ubuntu
 ---
 
-> 本文仅作为一个Docker入坑手札。
+> 本文仅作为一个Docker入坑笔记。
 > 主要介绍：
 > 1、Docker在Linux上的安装配置；
 > 2、在Docker容器中安装一个Ubuntu镜像并保存更改；
