@@ -4,7 +4,7 @@ title:      Docker安装Ubuntu镜像并保存且修改IP及Mac地址
 subtitle:   入坑易，出坑难。
 date:       2019-09-21
 author:     YSY
-header-img: img/post-bg-cook.jpg
+header-img: img/home-bg.jpg
 catalog: true
 tags:
     - Docker
