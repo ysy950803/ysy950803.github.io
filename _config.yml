@@ -1,4 +1,4 @@
-# Site settings TODO
+# Site settings
 title: Pig Cat
 SEOTitle: Pig Cat | YSY
 header-img: img/home-bg.jpg
@@ -9,7 +9,7 @@ url: "http://ysy950803.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/ysy950803/ysy950803.github.io.git" # you code repository
 
-# Sidebar settings TODO
+# Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "Stay simple, stay young."
 sidebar-avatar: /img/avatar.png      # use absolute URL, seeing it's used in both `/` and `/about/`
@@ -70,15 +70,15 @@ kramdown:
 #   distractionFreeMode: true #是否启用类似FB的阴影遮罩
 
 
-# 统计 TODO
+# 统计
 
 # Analytics settings
 # Baidu Analytics
-# ba_track_id: b50bf2b12b5338a1845e33832976fd68
+ba_track_id: f9518d7baab0142c2bd87f1e37cee446
 
 # Google Analytics
-# ga_track_id: 'UA-90855596-1'            # Format: UA-xxxxxx-xx
-# ga_domain: auto               # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
+ga_track_id: 'UA-149830607-1'            # Format: UA-xxxxxx-xx
+ga_domain: auto               # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
 
 
 
