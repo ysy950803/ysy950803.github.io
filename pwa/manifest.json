@@ -3,11 +3,11 @@
   "short_name": "Pig Cat",
   "description": "Full-Stack, Android, AI",
   "icons": [{
-    "src": "icons/web-app-icon.png",
+    "src": "../img/web-app-icon.png",
     "sizes": "144x144",
     "type": "image/png"
   }, {
-    "src": "icons/avatar.png",
+    "src": "../img/avatar.png",
     "sizes": "256x256",
     "type": "image/png"
   }],
