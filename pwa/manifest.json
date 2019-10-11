@@ -1,14 +1,14 @@
 {
-  "name": "BY Blog",
-  "short_name": "BY Blog",
-  "description": "A personal blog by engineer",
+  "name": "Pig Cat | YSY",
+  "short_name": "Pig Cat",
+  "description": "Full-Stack, Android, AI",
   "icons": [{
-    "src": "icons/pwa_icon_128.png",
-    "sizes": "128x128",
+    "src": "icons/web-app-icon.png",
+    "sizes": "144x144",
     "type": "image/png"
   }, {
-    "src": "icons/pwa_icon_512.png",
-    "sizes": "512x512",
+    "src": "icons/avatar.png",
+    "sizes": "256x256",
     "type": "image/png"
   }],
   "background_color": "#fff",
