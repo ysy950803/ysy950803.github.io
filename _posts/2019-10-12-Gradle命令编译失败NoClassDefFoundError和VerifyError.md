@@ -41,7 +41,7 @@ tags:
 顺手一个openjdk8给安排上：
 
 ```bash
-sudo apt-get install openjdk
+sudo apt-get install openjdk-8-jdk
 ```
 
 安装完成，解决了。再次使用gradle命令就不会出错了。
