@@ -150,4 +150,5 @@ OK，它也有给mSync加锁的操作， **所以tid=24线程的getExternalFiles
 2、尽量不要在Application的初始化时刻进行太多的方法调用，尤其是ApplicationContext的IO操作。
 3、在主Activity中延后初始化，用IntentService进行异步操作（因为实例化一个Service就是另一个Context对象了）等都是比较好的优化方案。
 4、所以为什么有大佬说不要滥用SharedPreference，它的性能并不是很好，从本文分析也可知它直接可能阻塞UI线程，试图寻找其它替代品吧。
-5、...想到再说
+5、广播onReceive里面可以用goAsync异步处理，见：[goAsync帮你在onReceive中简便地进行异步操作](https://blog.csdn.net/ysy950803/article/details/83216891)。
+6、…想到再说
