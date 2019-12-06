@@ -40,3 +40,30 @@ description: "Full-Stack, Android, AI"
     {% endif %}
 </ul>
 {% endif %}
+
+<script src="./cat/l2dwidget.min.js"></script>
+<script type="text/javascript">
+    const config = {
+        model: {
+            jsonPath: './cat/hijiki.model.json',
+        },
+        display: {
+            superSample: 1,
+            width: 245,
+            height: 245,
+            position: 'right',
+            hOffset: 0,
+            vOffset: 0,
+        },
+        mobile: {
+            show: false,
+            scale: 1,
+            motion: false,
+        },
+        react: {
+            opacityDefault: 1,
+            opacityOnHover: 0.75
+        }
+    };
+    L2Dwidget.init(config);
+</script>
