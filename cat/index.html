@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>blackcat</title>
+</head>
+
+<body>
+    <!-- https://yaw.ee/2246.html -->
+    <!-- 在你的网站底部</body>之前添加以下代码,注意引用资源路径 -->
+    <script src="./l2dwidget.min.js"></script>
+    <script type="text/javascript">
+        var config = {
+            model: {
+                jsonPath: './hijiki.model.json',
+            },
+            display: {
+                superSample: 1,
+                width: 245,
+                height: 245,
+                position: 'right',
+                hOffset: 0,
+                vOffset: 0,
+            },
+            mobile: {
+                show: false,
+                scale: 1,
+                motion: false,
+            },
+            react: {
+                opacityDefault: 1,
+                opacityOnHover: 0.75
+            }
+        };
+        L2Dwidget.init(config);
+    </script>
+</body>
+
+</html>
