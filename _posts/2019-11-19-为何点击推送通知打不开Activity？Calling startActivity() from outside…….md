@@ -12,7 +12,6 @@ tags:
 ---
 
 小米推送Android SDK有这么一个耳熟能详的方法：
-
 ```java
 /**
  * 接收服务器向客户端发送的通知消息，在用户手动点击通知后触发
@@ -22,20 +21,16 @@ public void onNotificationMessageClicked(Context context, MiPushMessage message)
 	context.startActivity(intent);
 }
 ```
-
 如果在其中手动增加启动Activity的逻辑，会发现，点了没反应。把 `startActivity` 方法try-catch后，发现这么一个异常：
 
 > Calling startActivity() from outside of an Activity context requires the 
 > FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
 
-解读一下就是，说我要是从外面启动本应用的Activity需要传 `FLAG_ACTIVITY_NEW_TASK` 标识，还特别嘲讽地反问我一句：这真是你想要的？
+解读一下就是，说我要是从外面启动本应用的Activity需要传 `FLAG_ACTIVITY_NEW_TASK` 标识，还特别嘲讽地反问我一句：Is this really what you want? 这真是你想要的？
 ![img1](https://img-blog.csdnimg.cn/20190702011449586.png)
 我不想要我调你方法干嘛。
-
 ## 解决
-
 解决就不说了，报错提示摆明了，要我传NEW_TASK，是的，就这么简单。
-
 ```java
 public void onNotificationMessageClicked(Context context, MiPushMessage message) {
 	...
@@ -43,12 +38,9 @@ public void onNotificationMessageClicked(Context context, MiPushMessage message)
 	context.startActivity(intent);
 }
 ```
-
 ## 为什么
-
 这异常到底是什么意思？找找系统源码（基于Android P源码）：
 `frameworks/base/core/java/android/app/ContextImpl.java` 在此类中，大概900多行的位置：
-
 ```java
 ...
     @Override
@@ -77,12 +69,13 @@ public void onNotificationMessageClicked(Context context, MiPushMessage message)
     }
 ...
 ```
-
 从这段长注释可以看出：
-1、并不是一定要带NEW_TASK，如果指定了任务栈，也没问题，这一点从判断逻辑中的 `ActivityOptions.fromBundle(options).getLaunchTaskId() == -1` 即可看出；
-2、竟然这个异常在Android N到O上不会抛出，且谷歌指明这是一个Bug，只是为了兼容，保留了这个判断：`targetSdkVersion < Build.VERSION_CODES.N
-                        || targetSdkVersion >= Build.VERSION_CODES.P` ，因此对于targetSDK小于N或大于等于P的应用，就会正常地抛出此异常。
 
-回到最开始的推送click回调中，其中传入的**context**本身不属于**Activity**，而是**ApplicationContext**，所以没法启动另一个Activity，系统不知道它应该属于哪个任务栈，所以需要你指定，不管是通过NEW_TASK的方式还是Activity的 `android:taskAffinity` 属性。
-再看，小米推送发通知的操作是系统推送服务框架执行的，服务框架本身不具有Activity组件，也没有任务栈，所以启动另一个Activity不指定task的话那按理来说就是不能。
-那为什么在targetSDK在N到O之间就可以呢？谷歌说的Bug现象是什么呢？可以推理，不指定任务栈还强制启动一个Activity，那么该游离Activity虽然可以启动，但在最近任务列表里看不见；或者说系统为其指定了默认的task，当再从桌面正常启动应用时，最近任务就会出现两个MainActivity这种类似现象。
+1. 并不是一定要带NEW_TASK，如果指定了任务栈，也没问题，这一点从判断逻辑中的 `ActivityOptions.fromBundle(options).getLaunchTaskId() == -1` 即可看出；
+2. 竟然这个异常在Android N到O上不会抛出，且谷歌指明这是一个Bug，只是为了兼容，保留了这个判断：`targetSdkVersion < Build.VERSION_CODES.N || targetSdkVersion >= Build.VERSION_CODES.P` ，因此对于targetSDK小于N或大于等于P的应用，就会正常地抛出此异常。
+
+回到最开始的推送click回调中，其中传入的**context**本身不属于**Activity**，而是**ApplicationContext**（可以用instanceof来验证），不能启动另一个Activity，因为系统也不知道它应该属于哪个任务栈，所以需要你指定，不管是通过NEW_TASK的方式还是设置Activity的 `android:taskAffinity` 属性。
+
+再看，小米推送发通知的操作是系统推送服务框架执行的，服务框架表面上本身不具有Activity组件，也没有任务栈，所以不指定task的话就无法启动另一个Activity。
+
+那为什么在targetSDK在N到O之间就可以呢？谷歌说的Bug现象是什么呢？可以推理，不指定任务栈还要强制启动一个Activity，那么该“游离”Activity虽然可以启动，但在最近任务列表里看不见；或者说系统为其指定了默认的task，当再从桌面正常启动应用时，最近任务就会出现两个MainActivity这种类似现象。
