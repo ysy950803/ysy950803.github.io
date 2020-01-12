@@ -104,8 +104,9 @@ DiffUtil的使用也很简单：
 	@Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MyItemViewHolder h = (MyItemViewHolder) holder;
+        User user = getData().get(position);
         h.mNameTextView.setOnClickListener(v -> {
-            User user = getData().get(position);
+            // 第2种写法：User user = getData().get(position);
             // 假设这里是点击item跳转到该User对应的个人主页界面
             startWebView(user.getHomePageUrl());
         });
@@ -118,7 +119,7 @@ DiffUtil的使用也很简单：
 
 有同学说无所谓呀，反正点击事件依然有效。那如果我说网络数据刷新下来小红的 **homePageUrl** 变了呢？是不是还得把这个属性加入DiffUtil的对比方法中？这样最终会导致小红的 `onBindViewHolder` 方法也执行，跟 `notifyDataSetChanged` 岂不是没什么两样了？
 
-此外，如果第0个位置的item被删了呢？小红顶上去变成了第0个，此时由于小红的UI内容没变，只是位置变了，所以 `onBindViewHolder` 依然不会执行。以上面的示例代码来看，当再次点击小红时，就会直接出现数组越界的异常。因为position还是之前的1，而此时小红的position已经为0。
+此外，若get对象写成注释中的第2种写法，且列表第0个位置的item被删了呢？小红顶上去变成了第0个，此时由于小红的UI内容没变，只是位置变了，所以 `onBindViewHolder` 依然不会执行。以上面的示例代码来看，当再次点击小红时，就会直接出现数组越界的异常。因为position还是之前的1，而此时小红的position已经为0。
 
 显然上述出现的这些问题不符合谷歌的设计初衷，也不符合我们使用DiffUtil的初衷。其实**解决办法**很简单，就是要对 `onBindViewHolder` 方法有一个正确的认知，其原则就是：
 
@@ -192,5 +193,3 @@ public class XXXAdapter extends BaseXXXAdapter<User> {
     }
 }
 ```
-
-
