@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      MTK设备上Service无法启动的问题
+title:      MTK设备上DuraSpeed导致Service无法启动的问题
 subtitle:   知其所以然。
 date:       2020-01-05
 author:     YSY
