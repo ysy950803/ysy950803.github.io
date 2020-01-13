@@ -29,7 +29,7 @@ DiffUtil的运用逻辑非常简单，大致如下：
 
 DiffUtil的使用也很简单：
 
-1. 先实现比较新旧数据的回调，可以是一个独立的类，也可以写成Adapter的内部类：
+1、先实现比较新旧数据的回调，可以是一个独立的类，也可以写成Adapter的内部类：
 
 ```java
    public class BaseXXXAdapter<T> extends RecyclerView.Adapter {
@@ -72,7 +72,7 @@ DiffUtil的使用也很简单：
    }
 ```
 
-2. 然后在Adapter内部实现一个update数据的方法：
+2、然后在Adapter内部实现一个update数据的方法：
 
 ```java
        @Override
@@ -85,9 +85,9 @@ DiffUtil的使用也很简单：
        }
 ```
 
-   注意这里的 `dispatchUpdatesTo` 可以在clear之前，也可以在addAll之后，实际效果暂未发现什么区别，之前查阅资料包括官方示例也都是最后执行dispatch，姑且认为这样算标准吧。
+注意这里的 `dispatchUpdatesTo` 可以在clear之前，也可以在addAll之后，实际效果暂未发现什么区别，之前查阅资料包括官方示例也都是最后执行dispatch，姑且认为这样算标准吧。
 
-3. ……咦，怎么才两步，确实就这么简单。重点还是 `areItemsTheSame` 和 `areContentsTheSame` 方法，后者大部分时候只需要对比每个item上UI展示出来的数据即可，因为用户只关心眼见的内容。
+3、……咦，怎么才两步，确实就这么简单。重点还是 `areItemsTheSame` 和 `areContentsTheSame` 方法，后者大部分时候只需要对比每个item上UI展示出来的数据即可，因为用户只关心眼见的内容。
 
 ### 解决使用后产生的问题
 
