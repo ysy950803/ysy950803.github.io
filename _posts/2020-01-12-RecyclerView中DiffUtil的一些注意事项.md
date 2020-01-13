@@ -31,8 +31,8 @@ DiffUtil的使用也很简单：
 
 1. 先实现比较新旧数据的回调，可以是一个独立的类，也可以写成Adapter的内部类：
 
-   ```java
-   public class XXXAdapter<T> extends RecyclerView.Adapter {
+```java
+   public class BaseXXXAdapter<T> extends RecyclerView.Adapter {
        // ...
        
    	private class DiffCallback extends DiffUtil.Callback {
@@ -70,11 +70,11 @@ DiffUtil的使用也很简单：
            }
        }
    }
-   ```
+```
 
 2. 然后在Adapter内部实现一个update数据的方法：
 
-   ```java
+```java
        @Override
        public void updateData(List<T> newData) {
            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffCallback(getItems(), newData));
@@ -83,7 +83,7 @@ DiffUtil的使用也很简单：
            getData().addAll(newData);
            result.dispatchUpdatesTo(this);
        }
-   ```
+```
 
    注意这里的 `dispatchUpdatesTo` 可以在clear之前，也可以在addAll之后，实际效果暂未发现什么区别，之前查阅资料包括官方示例也都是最后执行dispatch，姑且认为这样算标准吧。
 
@@ -175,9 +175,10 @@ public class BaseXXXAdapter<T> extends RecyclerView.Adapter {
     }
 }
 
+// 继承实现的实际业务Adapter
 public class XXXAdapter extends BaseXXXAdapter<User> {
     public XXXAdapter(Context context) {
-        setOnItemClickListener(new OnItemClickListener2() {
+        setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 MyItemViewHolder h = (MyItemViewHolder) holder;
