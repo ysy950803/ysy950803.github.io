@@ -32,57 +32,57 @@ DiffUtil的使用也很简单：
 1、先实现比较新旧数据的回调，可以是一个独立的类，也可以写成Adapter的内部类：
 
 ```java
-   public class BaseXXXAdapter<T> extends RecyclerView.Adapter {
-       // ...
-       
-   	private class DiffCallback extends DiffUtil.Callback {
-           private List<T> oldData, newData;
-   
-           DiffCallback(List<T> oldData, List<T> newData) {
-               this.oldData = oldData;
-               this.newData = newData;
-           }
-   
-           @Override
-           public int getOldListSize() {
-               return oldData.size();
-           }
-   
-           @Override
-           public int getNewListSize() {
-               return newData.size();
-           }
-   
-           @Override
-           public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-               T oldT = oldData.get(oldItemPosition);
-               T newT = newData.get(newItemPosition);
-               // 实际情况最好是在此处对比新旧数据的id（比如用户uid），这里为了方便示例直接equals对象了
-               // 若此处返回true，则DiffUtil不会再调用下面的areContentsTheSame方法
-               // 若此处返回false，才会继续去调下面的方法校验更多内容
-               return Objects.equals(oldT, newT);
-           }
-   
-           @Override
-           public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-               // TODO 比较新旧数据是否相同，这里为了方便示例直接返回true
-               return true;
-           }
-       }
-   }
+public class BaseXXXAdapter<T> extends RecyclerView.Adapter {
+    // ...
+
+    private class DiffCallback extends DiffUtil.Callback {
+        private List<T> oldData, newData;
+
+        DiffCallback(List<T> oldData, List<T> newData) {
+            this.oldData = oldData;
+            this.newData = newData;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldData.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newData.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            T oldT = oldData.get(oldItemPosition);
+            T newT = newData.get(newItemPosition);
+            // 实际情况最好是在此处对比新旧数据的id（比如用户uid），这里为了方便示例直接equals对象了
+            // 若此处返回true，则DiffUtil不会再调用下面的areContentsTheSame方法
+            // 若此处返回false，才会继续去调下面的方法校验更多内容
+            return Objects.equals(oldT, newT);
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            // TODO 比较新旧数据是否相同，这里为了方便示例直接返回true
+            return true;
+        }
+    }
+}
 ```
 
 2、然后在Adapter内部实现一个update数据的方法：
 
 ```java
-       @Override
-       public void updateData(List<T> newData) {
-           DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffCallback(getData(), newData));
-           // 这里的getData即表示获取整个列表的数据，自行实现即可
-           getData().clear();
-           getData().addAll(newData);
-           result.dispatchUpdatesTo(this);
-       }
+    @Override
+    public void updateData(List<T> newData) {
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffCallback(getData(), newData));
+        // 这里的getData即表示获取整个列表的数据，自行实现即可
+        getData().clear();
+        getData().addAll(newData);
+        result.dispatchUpdatesTo(this);
+    }
 ```
 
 注意这里的 `dispatchUpdatesTo` 可以在clear之前，也可以在addAll之后，实际效果暂未发现什么区别，之前查阅资料包括官方示例也都是最后执行dispatch，姑且认为这样算标准吧。
@@ -100,8 +100,8 @@ DiffUtil的使用也很简单：
 这里的“不恰当”，绝大部分情况下，总结出来：其实指的就是在 `onBindViewHolder` 方法中持有了某个位置（position）对应数据的不可变对象。最常见的误用示例就是在 `onBindViewHolder` 中设置某些控件的点击事件并引用数据对象：
 
 ```java
-	// 此处假设item的数据类为User
-	@Override
+    // 此处假设item的数据类为User
+    @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MyItemViewHolder h = (MyItemViewHolder) holder;
         User user = getData().get(position);
