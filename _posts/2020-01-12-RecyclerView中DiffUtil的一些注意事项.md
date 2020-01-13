@@ -77,7 +77,7 @@ DiffUtil的使用也很简单：
 ```java
        @Override
        public void updateData(List<T> newData) {
-           DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffCallback(getItems(), newData));
+           DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffCallback(getData(), newData));
            // 这里的getData即表示获取整个列表的数据，自行实现即可
            getData().clear();
            getData().addAll(newData);
@@ -123,7 +123,7 @@ DiffUtil的使用也很简单：
 
 显然上述出现的这些问题不符合谷歌的设计初衷，也不符合我们使用DiffUtil的初衷。其实**解决办法**很简单，就是要对 `onBindViewHolder` 方法有一个正确的认知，其原则就是：
 
-- `onBindViewHolder` 只做UI内容的更新，如 `setText`，`setImageXXX` 等方法。做到数据类一次性使用。
+- `onBindViewHolder` 只做UI内容的更新，如 `setText`，`setImageXXX` 等方法。做到数据对象一次性使用。
 - 不要跨作用域持有与位置（position）相关的数据，比如每个item的数据对象。尤其就是避免在 `onBindViewHolder` 中设置点击事件监听。
 
 正确的点击事件监听还是参照如下形式比较好：
