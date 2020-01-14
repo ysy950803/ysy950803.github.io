@@ -19,7 +19,7 @@ tags:
 ### DiffUtil用起来
 
 谷歌确实也考虑到了这个问题，所以不知道在什么时候（暂时没有去查阅）推出了DiffUtil这个解决方案。在RecyclerView的依赖包下面，可以看到，除了DiffUtil，还有异步处理数据等一系列有趣的工具。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200113015406917.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://user-gold-cdn.xitu.io/2020/1/13/16f9d99db1ea4f2c?w=734&h=514&f=png&s=191383)
 DiffUtil的运用逻辑非常简单，大致如下：
 
 - 实现对比新旧数据的方法（类似比较器），这样DiffUtil便知道当新数据来临时，该不该更新某个item。
@@ -58,14 +58,14 @@ public class BaseXXXAdapter<T> extends RecyclerView.Adapter {
             T oldT = oldData.get(oldItemPosition);
             T newT = newData.get(newItemPosition);
             // 实际情况最好是在此处对比新旧数据的id（比如用户uid），这里为了方便示例直接equals对象了
-            // 若此处返回true，则DiffUtil不会再调用下面的areContentsTheSame方法
-            // 若此处返回false，才会继续去调下面的方法校验更多内容
+            // 若此处返回true，则DiffUtil会再调用下面的areContentsTheSame方法，进一步对比UI是否有变化
+            // 若此处返回false，则说明id都不同，肯定不是一个item
             return Objects.equals(oldT, newT);
         }
 
         @Override
         public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            // TODO 比较新旧数据是否相同，这里为了方便示例直接返回true
+            // TODO 比较新旧数据（主要是UI展示内容）是否相同，这里为了方便示例直接返回true
             return true;
         }
     }
