@@ -42,7 +42,7 @@ at com.xxx.receiver.xxx.onReceive(xxx.java:36)
 这里简单解释一下，ANR无非就是UI线程Block了，所以我们找到形如 "main" prio=5 tid=1 Blocked 这样的片段，main表示主线程，prio即priority，线程优先级（这里不是重点），tid就是thread的id，即线程id，最后标记了Blocked，表示线程阻塞了。
 接着的信息就是告诉你线程被哪个鬼lock了，关注这行：
 **waiting to lock <0x0cfeaaf2> (a java.lang.Object) held by thread 24**
-说明主线程的getPreferencesDir方法等着要去锁一个id为**0x0cfeaaf2**的Object类型的对象，但是被该死的tid=24的线程抢占了！让我来看看是谁，于是我们可以直接在trances文件里全局搜索0x0cfeaaf2或者tid=24这些字符串，锁定到如下日志：
+说明主线程的getPreferencesDir方法等着要去锁一个id为**0x0cfeaaf2**的Object类型的对象，但是被该死的tid=24的线程抢占了！让我来看看是谁，于是我们可以直接在traces文件里全局搜索0x0cfeaaf2或者tid=24这些字符串，锁定到如下日志：
 
 ```
 "PackageProcessor" daemon prio=5 tid=24 Native
@@ -62,7 +62,7 @@ at com.xxx.push.log.xxx.writeLog2File(xxx.java:100)
 ```
 
 这里很明显就看到了 **locked <0x0cfeaaf2> (a java.lang.Object)** ，某个和推送服务相关的writeLog2File方法调用了getExternalFilesDirs，然后此方法进一步锁住了 **0x0cfeaaf2** 对象，没错，**这个对象和刚才主线程等待要锁的对象是同一个。**
-所以主线程被tid=24的线程阻塞了，因为两个线程要需要同一把对象锁，tid=24线程一直占着茅坑不拉屎，ANR就这么爆出来了。
+所以主线程被tid=24的线程阻塞了，因为两个线程要需要同一把对象锁，tid=24线程一直占着茅坑，导致死锁，ANR就这么爆出来了。
 
 ## 了解Context
 
@@ -82,7 +82,7 @@ Context是一个抽象类，ContextImpl是Context的实现类（具体一些继�
     }
 ```
 
-哟西，这里涉及到shared_prefs文件的IO操作，系统考虑到线程安全，搞了个同步锁，synchronized给mSync对象加锁了。这个mSync就是我们刚才反复提到的id为0x0cfeaaf2的Object对象，去看看它的声明就知晓了：
+可见，这里涉及到shared_prefs文件的IO操作，系统考虑到线程安全，搞了个同步锁，mSync对象被锁住。这个mSync就是我们刚才反复提到的id为0x0cfeaaf2的Object对象，去看看它的实例化就知晓了：
 
 ```java
     private final Object mSync = new Object();
@@ -145,9 +145,9 @@ OK，它也有给mSync加锁的操作， **所以tid=24线程的getExternalFiles
 
 ## 结论与建议
 
-1、调用Context相关的IO操作，不是启个子线程就高枕无忧了，由上面分析，mSync就这么一把，该阻塞还是阻塞，和是不是主线程无关。
-2、尽量不要在Application的初始化时刻进行太多的方法调用，尤其是ApplicationContext的IO操作。
-3、在主Activity中延后初始化，用IntentService进行异步操作（因为实例化一个Service就是另一个Context对象了）等都是比较好的优化方案。
-4、所以为什么有大佬说不要滥用SharedPreference，它的性能并不是很好，从本文分析也可知它直接可能阻塞UI线程，试图寻找其它替代品吧。
-5、广播onReceive里面可以用goAsync异步处理，见：[goAsync帮你在onReceive中简便地进行异步操作](https://blog.csdn.net/ysy950803/article/details/83216891)。
-6、…想到再说
+- 调用Context相关的IO操作，不是启个子线程就高枕无忧了，由上面分析，mSync就这么一把，该阻塞还是阻塞，和是不是主线程无关。
+- 尽量不要在Application的初始化时刻进行太多的方法调用，尤其是针对ApplicationContext的IO操作。
+- 在主Activity中延后初始化，用IntentService进行异步操作（因为实例化一个Service就是另一个Context对象了）等都是比较好的优化方案。
+- 所以为什么有大佬说不要滥用SharedPreference，它的性能并不是很好，从本文分析也可知它直接可能阻塞UI线程，试图寻找其它替代品吧。
+- 广播接收onReceive里面可以用goAsync异步处理，见：[goAsync帮你在onReceive中简便地进行异步操作](https://blog.csdn.net/ysy950803/article/details/83216891)。
+- ...想到再说，也欢迎大家补充。
