@@ -62,7 +62,7 @@ at com.xxx.push.log.xxx.writeLog2File(xxx.java:100)
 ```
 
 这里很明显就看到了 **locked <0x0cfeaaf2> (a java.lang.Object)** ，某个和推送服务相关的writeLog2File方法调用了getExternalFilesDirs，然后此方法进一步锁住了 **0x0cfeaaf2** 对象，没错，**这个对象和刚才主线程等待要锁的对象是同一个。**
-所以主线程被tid=24的线程阻塞了，因为两个线程要需要同一把对象锁，tid=24线程一直占着茅坑，导致死锁，ANR就这么爆出来了。
+所以主线程被tid=24的线程阻塞了，因为两个线程需要同一把对象锁，tid=24线程一直占着茅坑，导致死锁，ANR就这么爆出来了。
 
 ## 了解Context
 
@@ -139,13 +139,16 @@ OK，它也有给mSync加锁的操作， **所以tid=24线程的getExternalFiles
 ```
 
 我的天鸭，你看看，这操作多重啊，又是循环又是创建文件的，还有getSystemService这些系统服务对端调用，加在一起就是灰常耗时的操作，尤其是在文件目录极其散乱繁杂而且磁盘读写性能还不好的时候，此方法将进一步延长阻塞时间。
+
 我又一想，什么SP啊，DB啊，外部存储啊这些我们平时经常访问啊，也并不是那么容易就ANR的。也就是说虽然上面的系统方法操作很繁杂，但应该不是导致最终问题的核心因素。
+
 经过我反复分析traces文件，发现除了main线程在wait to lock这把锁，还有几个其它的子线程也在等待锁（有一些是访问App本地数据库的，最终调用也在ContextImpl中，和上面分析的两个方法类似）。说明当前这短暂的时间内，需要通过某个Context进行的IO操作太多了，各个线程都排着队要锁mSync，所以耗时操作不可怕，可怕的是一窝蜂全上来。自然就增大了ANR的风险。如果你反复遇到这种ANR，就应该考虑优化了。
-最终，追溯到方法调用的源头，是在Application初始化时，各种SDK加载，以及一些业务逻辑触发。很显然，它们都是通过getApplicationContext来拿到的同一个Context引用，请求锁的也是同一个mSync。
+
+最终，追溯到方法调用的源头，是在Application初始化时，各种SDK加载，以及一些业务逻辑触发。很显然，它们都是通过getApplicationContext来拿到的同一个Context引用，请求锁的也是同一个mSync对象。
 
 ## 结论与建议
 
-- 调用Context相关的IO操作，不是启个子线程就高枕无忧了，由上面分析，mSync就这么一把，该阻塞还是阻塞，和是不是主线程无关。
+- 调用Context相关的IO操作，不是启个子线程就高枕无忧了，由上面分析，mSync对象锁就这么一把，该阻塞还是阻塞，和是不是主线程无关。
 - 尽量不要在Application的初始化时刻进行太多的方法调用，尤其是针对ApplicationContext的IO操作。
 - 在主Activity中延后初始化，用IntentService进行异步操作（因为实例化一个Service就是另一个Context对象了）等都是比较好的优化方案。
 - 所以为什么有大佬说不要滥用SharedPreference，它的性能并不是很好，从本文分析也可知它直接可能阻塞UI线程，试图寻找其它替代品吧。
