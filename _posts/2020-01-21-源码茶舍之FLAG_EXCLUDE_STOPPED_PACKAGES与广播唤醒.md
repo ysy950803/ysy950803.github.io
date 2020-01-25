@@ -63,7 +63,7 @@ frameworks/base/services/core/java/com/android/server/pm/ComponentResolver.java
 frameworks/base/services/core/java/com/android/server/IntentResolver.java
 ```
 
-关于广播发送的细节，可以参考此文：https://www.jianshu.com/p/c5323a22f3f3，虽然源码版本不是最新，但基本逻辑差异不大，时序图也画得非常清晰。下面我们只针对文题简单地分析关键路径即可。
+关于广播发送的细节，可以参考此文：[https://www.jianshu.com/p/c5323a22f3f3](https://www.jianshu.com/p/c5323a22f3f3)，虽然源码版本不是最新，但基本逻辑差异不大，时序图也画得非常清晰。下面我们只针对文题简单地分析关键路径即可。
 
 当我们乐呵呵地调用了 `sendBroadcast` 方法之后，会调用到AMS（ActivityManagerService）的 `broadcastIntent` 方法，进而调用内部的 `broadcastIntentLocked` 方法（此处插入一个题外话：很多同学可能经常见到源码里 `xxxLocked` 这种方法，这个locked是什么意思呢？顾名思义就是加锁咯，即你要调用这些locked后缀的方法时，必须保证是线程安全的，所以一般就会看到synchronize关键字，这也算是AOSP的编码规范吧）。
 
