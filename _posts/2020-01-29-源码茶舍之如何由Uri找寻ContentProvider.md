@@ -109,7 +109,7 @@ frameworks/base/core/java/android/app/ActivityThread.java
             // 这里硬核匹配字符串，凡是scheme不是content://的直接再见，所以它是固定的
             return null;
         }
-        String auth = uri.getAuthority(); // 按例，此处获取到的便是"com.xxx.yyy.provider"
+        String auth = uri.getAuthority(); // 按例，此处获取到的字符串便包含"com.xxx.yyy.provider"
         if (auth != null) {
             // 此为ContentResolver中的抽象方法，由子Resolver各自具体实现
             return acquireUnstableProvider(mContext, uri.getAuthority());
@@ -172,7 +172,7 @@ frameworks/base/core/java/android/app/ActivityThread.java
                 handleUnstableProviderDiedLocked(jBinder, true);
                 return null;
             }
-			// ...
+            // ...
             return provider;
         }
     }
@@ -204,7 +204,7 @@ frameworks/base/core/java/android/app/ActivityThread.java
 ```
 
 可见， **ProviderKey** 是ActivityThread当中的一个内部POJO，非常普通，没有对入参做任何特殊处理。那么ContentProvider也就是根据 **authority** 和 **userId** 来唯一确定的，对应了文章开头的介绍。
-此外，由于Android目前是多用户操作系统（国产ROM淡化了此概念，但用其实现了应用双开、系统分身等功能），所以这里用户id是必要的。
+此外，由于Android目前是多用户操作系统（国产ROM淡化了此概念，但应用双开、系统分身等功能实现均与多用户有关），所以这里用户id是必要的。
 
 接下来看后一个问题， **mProviderMap** 从哪儿来？什么时候添加的Provider记录？很简单了，还是在ActivityThread当中，实例化如下：
 
@@ -311,7 +311,7 @@ frameworks/base/core/java/android/app/ActivityThread.java
       ... />
   ```
 
-  如此可以写成多种不同host的URI，映射的却是同一个ContentProvider。具体的好处我能想到的有几点：
+  如此可以写成多种不同host的URI，映射的却还是同一个ContentProvider。具体的好处我能想到的有几点：
 
-  - 和同IP多域名的网站一样，域名多样化，提前抢占一些host，避免三方假冒。
+  - 与同IP多域名的网站一样，域名多样化，提前抢占一些host，避免三方假冒。
   - 提供不同的URI分别给内部和外部开发者使用，便于区分和数据统计。
