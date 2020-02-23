@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      OkHttp自定义重试拦截器出现IllegalStateException异常
+title:      OkHttp自定义重试拦截器出现IllegalStateException: cannot make a new request……异常
 subtitle:   拦截器玩出花。
 date:       2019-09-20
 author:     YSY
