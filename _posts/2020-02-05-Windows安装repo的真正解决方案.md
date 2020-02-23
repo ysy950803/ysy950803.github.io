@@ -42,7 +42,7 @@ cd ..
 repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-10.0.0_r25 --worktree
 ```
 这里的 `--worktree` 参数非常重要，不加的话会出现 **error.GitError: Cannot initialize work tree for manifests** 错误。这个功能也是谷歌在这个月底才更新的。
-![在这里插入图片描述](https://user-gold-cdn.xitu.io/2020/2/22/1706d37e0cdbf737?w=1003&h=274&f=png&s=67833)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200222214938843.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 最终我也试了下repo sync，repo upload等命令均无问题。
 
 ---
@@ -76,7 +76,7 @@ C:\Python27\Scripts\
 C:\Users\你的用户名\bin
 ```
 路径和你安装时的选择相关，切勿直接照抄。还是给大家整个图吧。
-![在这里插入图片描述](https://user-gold-cdn.xitu.io/2020/2/22/1706d37e0d8cb23a?w=1595&h=827&f=png&s=421328)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200205214724901.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 #### 四、安装repo
 repo原本是谷歌搞的一个方便下载AOSP的工具，基于git，但由于种种原因，不能直接在Windows上使用。但**好心的基佬Hub网友开发了一套改良版的repo**，适用于Windows，解决各种Error问题。
 
@@ -100,14 +100,13 @@ repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-10.0
  - 上述命令关键就在 `--repo-url=https://github.com/esrlabs/git-repo.git` ，替换掉原生的repo工具链，就能成功初始化了。
  - 这里用的是清华镜像源AOSP作示例，一般做ROM开发的公司会有自己的仓库地址，请自行修改init链接。
  - 不要忘了生成ssh的public key，在Windows下也一样：在Git Bash中执行 `ssh-keygen` 然后复制 `~/.ssh/id_rsa.pub` 文件中的内容添加到Gerrit等源码平台上即可。
-![在这里插入图片描述](https://user-gold-cdn.xitu.io/2020/2/22/1706d37e0d0189ff?w=525&h=278&f=png&s=53959)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200205222055923.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
  - 如果发现上面下载速度太慢，可以把 [https://github.com/esrlabs/git-repo](https://github.com/esrlabs/git-repo) 项目直接下载下来并解压，复制解压后文件夹中的所有文件到源码目录的的 `.repo/repo` 子目录下面，然后再重新执行repo init命令，当然这次就不要带 **repo-url** 参数了。
-![在这里插入图片描述](https://user-gold-cdn.xitu.io/2020/2/22/1706d37e0e867059?w=649&h=828&f=png&s=146096)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200205221541817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 大功告成！
-![在这里插入图片描述](https://user-gold-cdn.xitu.io/2020/2/22/1706d37e0eee702f?w=606&h=307&f=png&s=65927)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200205222000447.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 ### 参考
  - [git-repo](https://github.com/esrlabs/git-repo)
  - [Microsoft Windows Details](https://gerrit.googlesource.com/git-repo/+/HEAD/docs/windows.md)
  - [windows环境下repo下载Android源代码](https://ressrc.com/2018/09/22/windows环境下repo下载android源代码/)
  - [window7下配置下载android源码环境,安装Repo](https://blog.csdn.net/nicolelili1/article/details/52527475)
- 
