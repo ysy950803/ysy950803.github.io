@@ -127,7 +127,8 @@ private Service parseService(Package owner, Resources res,
     }
 
     if (!setExported) {
-        // 这儿有个小发现，正好验证了我们上述的官方文档复习，intent-filter标签数量大于0时，exported自动就赋值为true了
+        // 这儿有个小发现，正好验证了我们上述的官方文档复习
+        // 若开发者没有显式地设置exported属性，且intent-filter标签数量大于0时，exported自动就赋值为true了
         s.info.exported = s.intents.size() > 0;
     }
 
