@@ -98,11 +98,20 @@ service-worker: true
 
 # Friends TODO
 friends: [
-    {
-        title: "Goggle",
-        href: "https://www.google.com"
-    },{
-        title: "Android Developers",
-        href: "https://developer.android.com"
-    }
+{
+  title: "Goggle",
+  href: "https://www.google.com"
+},
+{
+  title: "Android Developers",
+  href: "https://developer.android.com"
+},
+{
+  title: "GitHub",
+  href: "https://github.com"
+}
+{
+  title: "Android Code Search",
+  href: "https://cs.android.com"
+}
 ]
