@@ -61,16 +61,14 @@ repo sync -j4
 sudo open -e /usr/local/bin/repo
 ```
 
-在import sys那一行下面加入一段内容后如下：
+在import sys那一行下面加入2行代码后如下：
 
 ```python
 import sys
 
-# For macOS START
 import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
-# For macOS END
 ```
 
 保存后再去repo init就没问题了。这个主要原因是Python 2.7.9后在打开HTTPS链接时加入了SSL验证导致的，然鹅我们并不需要这些，所以上面的代码就是关闭这个。
