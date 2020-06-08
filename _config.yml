@@ -113,5 +113,8 @@ friends: [
 {
   title: "Android Code Search",
   href: "https://cs.android.com"
+},
+{
+  title: "温馨提示：Safari无法查看WebP图片，故背景置灰"
 }
 ]
