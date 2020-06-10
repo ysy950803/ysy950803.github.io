@@ -7,10 +7,10 @@ author:     YSY
 header-img: img/home-bg.jpg
 catalog: true
 tags:
+    - 问题不大
     - Gradle
     - Android
     - Java
-    - 异常与错误
 ---
 
 ### 问题
