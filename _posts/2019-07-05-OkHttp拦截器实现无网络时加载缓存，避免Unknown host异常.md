@@ -8,7 +8,6 @@ header-img: img/home-bg.jpg
 catalog: true
 tags:
     - Android
-    - OkHttp
 ---
 
 我们在创建OkHttp客户端时，可以添加接口数据缓存，真的很香：

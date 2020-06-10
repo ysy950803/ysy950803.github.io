@@ -8,7 +8,6 @@ header-img: img/home-bg.jpg
 catalog: true
 tags:
     - Android
-    - OkHttp
 ---
 
 ### 问题

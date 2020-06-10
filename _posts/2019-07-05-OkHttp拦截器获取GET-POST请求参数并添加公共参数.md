@@ -8,7 +8,6 @@ header-img: img/home-bg.jpg
 catalog: true
 tags:
     - Android
-    - OkHttp
 ---
 
 我们在创建OkHttp客户端时，可以添加各种拦截器，真的很香：

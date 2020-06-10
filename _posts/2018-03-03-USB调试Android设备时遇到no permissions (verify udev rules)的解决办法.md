@@ -7,8 +7,8 @@ author:     YSY
 header-img: img/home-bg.jpg
 catalog: true
 tags:
+    - 问题不大
     - Android
-    - 异常与错误
 ---
 
 最近在Ubuntu上调试一些Android O系统的手机，出现adb root失败的情况，明明手机已经root了。

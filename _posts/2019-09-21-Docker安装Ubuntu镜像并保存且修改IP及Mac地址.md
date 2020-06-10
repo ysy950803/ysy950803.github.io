@@ -7,9 +7,9 @@ author:     YSY
 header-img: img/home-bg.jpg
 catalog: true
 tags:
-    - Docker
+    - 鼓捣折腾
     - Linux
-    - Ubuntu
+    - 后端
 ---
 
 > 本文仅作为一个Docker入坑笔记。

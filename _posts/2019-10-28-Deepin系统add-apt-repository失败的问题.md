@@ -7,7 +7,7 @@ author:     YSY
 header-img: img/home-bg.jpg
 catalog: true
 tags:
-    - Deepin
+    - 问题不大
     - Linux
 ---
 

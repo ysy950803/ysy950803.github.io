@@ -7,11 +7,10 @@ author:     YSY
 header-img: img/home-bg.jpg
 catalog: true
 tags:
-    - Deepin
-    - Ubuntu
-    - Linux
+    - 鼓捣折腾
     - Android
     - AOSP
+    - Linux
 ---
 
 ### 预览

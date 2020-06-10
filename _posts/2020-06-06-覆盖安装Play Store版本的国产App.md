@@ -7,9 +7,8 @@ author:     YSY
 header-img: img/home-bg.jpg
 catalog: true
 tags:
+    - 鼓捣折腾
     - Android
-    - WeChat
-    - 小程序
 ---
 
 ## 前言
