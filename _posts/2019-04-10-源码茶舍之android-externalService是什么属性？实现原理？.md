@@ -171,7 +171,7 @@ public static final int BIND_EXTERNAL_SERVICE = 0x80000000;
 1、声明externalService为true就是让该Service可以绑定并运行在调用方的App中，而不是在声明这个Service的App中，这和我们最开始猜测的外置服务之意相符；
 2、注释还进一步说明，此Service还同时须要设置isolatedProcess为true；
 3、此Service的业务代码会在调用方App的包名环境下执行，因为它已经是独立进程（isolated process）了，从声明它的App那儿离家出走，改名换姓；
-4、当然，此Service不能直接访问调用方App的数据。
+4、当然，此Service不能直接访问调用方App的数据；
 5、目的是想从概念上分离Service提供方和使用方这二者（这是我个人理解）。
 
 ## 再挖

@@ -5,89 +5,88 @@ header-img: img/home-bg.jpg
 email: admin@ysy950803.cn
 description: "Full-Stack, Android, AI"
 keyword: "Full-Stack, Android, AI"
-url: "http://ysy950803.github.io"          # your host, for absolute URL
-baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
-github_repo: "https://github.com/ysy950803/ysy950803.github.io.git" # you code repository
+url: "https://ysy950803.github.io"  # your host, for absolute URL
+baseurl: ""  # for example, '/blog' if your blog hosted on 'host/blog'
+github_repo: "https://github.com/ysy950803/ysy950803.github.io.git"  # your code repository
+# Publish posts or collection documents with a future date.
+future: true
+
 
 # Sidebar settings
-sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "Stay simple, stay young."
-sidebar-avatar: /img/avatar.png      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar: true  # whether or not using Sidebar.
+sidebar-about-description: "如若喜欢，随缘支持"
+sidebar-avatar: /img/love_support.png  # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
-
-# SNS settings TODO
+# SNS settings
 RSS: false
+github_username: ysy950803
+# jianshu_username:   jianshu_id
 # weibo_username:     username
 # zhihu_username:     username
-github_username:    ysy950803
 # facebook_username:  username
-# jianshu_username:   jianshu_id
 # twitter_username:   username
-
-
 
 
 # Build settings
 # from 2016, 'pygments' is unsupported on GitHub Pages. Use 'rouge' for highlighting instead.
+highlighter: rouge
 permalink: pretty
 paginate: 20
-exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
-anchorjs: true                          # if you want to customize anchor. check out line:181 of `post.html`
-
+exclude: [ "less","node_modules","Gruntfile.js","package.json","README.md" ]
+anchorjs: true  # if you want to customize anchor. check out line:181 of `post.html`
+# If you have timezone issue (e.g. #68) in China, uncomment to use this:
+#timezone: CN
 
 
 # Gems
 # from PR#40, to support local preview for Jekyll 3.0
-plugins: [jekyll-paginate]
-
-
+# make sure you have this gem installed
+# `$ gem install jekyll-paginate`
+plugins: [ jekyll-paginate ]
 
 
 # Markdown settings
 # replace redcarpet to kramdown,
 # although redcarpet can auto highlight code, the lack of header-id make the catalog impossible, so I switch to kramdown
 # document: http://jekyllrb.com/docs/configuration/#kramdown
-markdown: kramdown
-highlighter: rouge
+markdown: GFM
 kramdown:
-  input: GFM                            # use Github Flavored Markdown !important
+#  input: GFM  # use Github Flavored Markdown !important
+#  syntax_highlighter_opts:
+#    span:
+#      line_numbers: false
+#    block:
+#      line_numbers: true
+#      start_line: 1
 
 
-
-# 评论系统 TODO
 # Disqus（https://disqus.com/）
-# disqus_username: username
+#disqus_username: username
 
 # Gitalk
 gitalk:
-  enable: true    #是否开启Gitalk评论
-  clientID: a2660cd0497b67ee33e5                            #生成的clientID
-  clientSecret: 3f970ce5c5ee2b57bed7c20e44809ba6bda487ac    #生成的clientSecret
-  repo: ysy950803.github.io    #仓库名称
-  owner: ysy950803    #github用户名
+  enable: true  # 是否开启Gitalk评论
+  clientID: a2660cd0497b67ee33e5  # 生成的clientID
+  clientSecret: 3f970ce5c5ee2b57bed7c20e44809ba6bda487ac  # 生成的clientSecret
+  repo: ysy950803.github.io  # 仓库名称
+  owner: ysy950803  # github用户名
   admin: ysy950803
-  distractionFreeMode: false #是否启用类似FB的阴影遮罩
+  distractionFreeMode: false  # 是否启用类似FB的阴影遮罩
 
-
-# 统计
 
 # Analytics settings
 # Baidu Analytics
-ba_track_id: f9518d7baab0142c2bd87f1e37cee446
+#ba_track_id: f9518d7baab0142c2bd87f1e37cee446
 
 # Google Analytics
-ga_track_id: 'UA-149830607-1'            # Format: UA-xxxxxx-xx
-ga_domain: auto               # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
-
-
-
+ga_track_id: 'UA-149830607-1'  # Format: UA-xxxxxx-xx
+ga_domain: auto  # 默认auto，可改为自定义域名
 
 
 # Featured Tags
-featured-tags: true                     # 是否使用首页标签
-featured-condition-size: 0              # 相同标签数量大于这个数，才会出现在首页
-
+featured-tags: true  # 是否使用首页标签
+featured-condition-size: 0  # 相同标签数量大于这个数，才会出现在首页
 
 
 # Progressive Web Apps
@@ -95,27 +94,34 @@ chrome-tab-theme-color: "#000000"
 service-worker: true
 
 
+# MathJax rendering for layout:page (e.g. post preview)
+page-mathjax: false
 
-# Friends TODO
+
+# Friends
 friends: [
-{
-  title: "Goggle",
-  href: "https://www.google.com"
-},
-{
-  title: "Android Developers",
-  href: "https://developer.android.com"
-},
-{
-  title: "GitHub",
-  href: "https://github.com"
-},
-{
-  title: "Android Code Search",
-  href: "https://cs.android.com"
-},
-{
-  title: "温馨提示：Safari无法查看WebP图片，故背景置灰",
-  href: "https://discussions.apple.com/thread/250073758"
-}
+  {
+    title: "Goggle",
+    href: "https://www.google.com"
+  },
+  {
+    title: "Android Developers",
+    href: "https://developer.android.com"
+  },
+  {
+    title: "GitHub",
+    href: "https://github.com"
+  },
+  {
+    title: "Android Code Search",
+    href: "https://cs.android.com"
+  },
+#  {
+#    title: "温馨提示：Safari可能无法查看WebP图片导致背景置灰",
+#    href: "https://discussions.apple.com/thread/250073758"
+#  },
+  {
+    title: "Paypal.me if you like",
+    href: "https://paypal.me/yaoshengyu"
+  }
 ]
