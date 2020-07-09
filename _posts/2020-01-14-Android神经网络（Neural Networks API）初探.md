@@ -8,6 +8,7 @@ header-img: img/home-bg.jpg
 catalog: true
 tags:
     - Android
+    - AI
 ---
 
 > 谷歌早在Android 8.0就推出了神经网络API，不过现在网上资料仍旧不多，随着TensorFlow Lite的成熟，底层API更是无人问津。
