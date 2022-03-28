@@ -52,4 +52,17 @@
 
     <!-- ga & ba script hoook -->
     <script></script>
+
+    <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"
+crossorigin="anonymous"></script>-->
+    <script type="text/javascript">
+        function downloadJSAtOnload() {
+            let element = document.createElement("script");
+            element.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669";
+            document.body.appendChild(element);
+        }
+        if (window.addEventListener) window.addEventListener("load", downloadJSAtOnload, false);
+        else if (window.attachEvent) window.attachEvent("onload", downloadJSAtOnload);
+        else window.onload = downloadJSAtOnload;
+    </script>
 </head>

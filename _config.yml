@@ -101,6 +101,14 @@ page-mathjax: false
 # Friends
 friends: [
   {
+    title: "【Paypal.me if you like】",
+    href: "https://paypal.me/yaoshengyu"
+  },
+  {
+    title: "【Follow me on Play Store】",
+    href: "https://play.google.com/store/apps/dev?id=7220530116384657977"
+  },
+  {
     title: "Goggle",
     href: "https://www.google.com"
   },
@@ -119,9 +127,5 @@ friends: [
 #  {
 #    title: "温馨提示：Safari可能无法查看WebP图片导致背景置灰",
 #    href: "https://discussions.apple.com/thread/250073758"
-#  },
-  {
-    title: "【Paypal.me if you like】",
-    href: "https://paypal.me/yaoshengyu"
-  }
+#  }
 ]
