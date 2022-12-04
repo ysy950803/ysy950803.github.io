@@ -4,7 +4,7 @@ title:      Rust为Android应用编译so库
 subtitle:   新东西来啦！
 date:       2022-02-11
 author:     YSY
-header-img: img/home-bg.jpg
+header-style: text
 catalog: true
 tags:
     - Android

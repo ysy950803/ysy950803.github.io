@@ -4,7 +4,7 @@ title:      Magisk与EdXposed框架安装实践（Android P及以上）
 subtitle:   鼓捣鼓捣。
 date:       2020-07-04
 author:     YSY
-header-img: img/tags-bg.jpg
+header-img: img/archive-bg.jpg
 catalog: true
 tags:
     - 鼓捣折腾
