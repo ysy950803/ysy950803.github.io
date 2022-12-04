@@ -4,7 +4,7 @@ title:      macOS下载AOSP的小坑
 subtitle:   坑也太多了吧。
 date:       2020-06-07
 author:     YSY
-header-img: img/tags-bg.jpg
+header-img: img/archive-bg.jpg
 catalog: true
 tags:
     - Android
