@@ -12,7 +12,7 @@ Man is mortal, being lighter than a feather its lightness could not be measured 
 
 If my articles are helpful to you, you can turn off the ad blocking plug-in and tap some advertisements, which is also a kind of support for me.
 
-#### Personal other blogs
+#### Other personal blogs
 
 - [Personal](https://ysy950803.top)
 - [CSDN](https://blog.csdn.net/ysy950803)
