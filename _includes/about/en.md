@@ -10,7 +10,7 @@ Do tiny jobs and share some **life lessons**. Write by heart as a developer.
 
 Man is mortal, being lighter than a feather its lightness could not be measured thousands of years ago, but can be measured in modern times.
 
-If my articles are helpful to you, you can turn off the ad blocking plug-in and tap some advertisements, which is also a kind of support for me.
+If my articles are helpful to you, you can turn off the ad blocking plug-in (or turn on incognito mode) and tap some advertisements, which is also a kind of support for me.
 
 #### Other personal blogs
 
