@@ -37,6 +37,6 @@ tags:
   ```
 
 - 可视化效果
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/f9da2e08158f41b490b2393506673a8f.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA6ZKI5Y-2,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/159ddabc0a0541b88dfa3734e68f8d3c.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA6ZKI5Y-2,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+  ![在这里插入图片描述](https://imgconvert.csdnimg.cn/f9da2e08158f41b490b2393506673a8f.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA6ZKI5Y-2,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+  ![在这里插入图片描述](https://imgconvert.csdnimg.cn/159ddabc0a0541b88dfa3734e68f8d3c.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA6ZKI5Y-2,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
   虽然是比较老的工具了，但还是相当实用的，对分析FC、ANR和一些事件流程很有帮助。

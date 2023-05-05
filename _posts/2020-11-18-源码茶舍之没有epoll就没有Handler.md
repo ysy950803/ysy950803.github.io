@@ -287,7 +287,7 @@ epoll_wait这里也是**整个Android消息机制阻塞的真正位置，阻塞�
 
 可见，在Linux中，FD就是一种宝贵的系统资源，就像工业时代的石油一样，没有它，我们的文件系统就无法运转。本质上，一个Linux进程启动后，会在内核空间生成文件描述符表（FD Table），记录当前进程所有可用的FD，也即映射着该进程所有打开的文件，这里引用一张其他大佬的[图](http://c.biancheng.net/view/3066.html)，就更形象了：
 
-![](https://img-blog.csdnimg.cn/img_convert/9419696c40b1897d7d7d7f46ba2ffd63.gif)
+![](https://imgconvert.csdnimg.cn/img_convert/9419696c40b1897d7d7d7f46ba2ffd63.gif)
 
 **FD实际上就是文件描述符表的数组下标（所以是非负整数）**。通俗地总结就是系统操作I/O资源的钥匙。更多细节大家可自行查阅或参考文末链接，此处点到为止。
 
@@ -323,7 +323,7 @@ int pipe(int pipefd[2]);
 
 所以在实践中，我们通常让一个进程关闭读端，另一个进程关闭写端，以实现单工通信，引用一张其他大佬的[图](https://zhuanlan.zhihu.com/p/58489873)：
 
-![](https://img-blog.csdnimg.cn/img_convert/ed02bb53a696f14c3e854c2573a164b8.png)
+![](https://imgconvert.csdnimg.cn/img_convert/ed02bb53a696f14c3e854c2573a164b8.png)
 
 类似这样的代码，了解其形式即可（更多细节可以参考文末链接）：
 
@@ -503,7 +503,7 @@ static void android_os_MessageQueue_nativeWake(JNIEnv* env, jclass clazz, jlong 
 
 所以要么是timeout到了自动唤醒，要么是由于新消息插入导致主动唤醒。用不太严谨的流程图来描述一下主动唤醒的过程：
 
-![](https://img-blog.csdnimg.cn/20201119000301533.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![](https://imgconvert.csdnimg.cn/20201119000301533.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 
 ## 后话
 

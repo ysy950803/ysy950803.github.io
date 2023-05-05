@@ -12,7 +12,7 @@ tags:
 
 ### 问题
 可能看到标题的同学一头雾水，这是什么东西，其实类似于你长按文本时出现的复制粘贴pop弹窗。在一些定制ROM中，厂商为了某些方便用户的特殊功能会增加文本输入检测和自定义弹窗，举例：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20191207163617238.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20191207163617238.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 比如在你输入一些邮箱时，会自动弹出这种pop（并不需要你长按），且这个并非系统应用才有的，而是直接影响了所有EditText。
 对于一些高度定制化UI的应用来说，这个可能影响用户体验。下面给出两种解决办法（都不算特别完美，毕竟卑微的应用层开发者改不了底层实现），大家酌情参考。
 ### 解决

@@ -39,7 +39,7 @@ tags:
 
 1、各机型对应的Recovery很可能是不同的，先找自己设备对应的下载：[https://twrp.me/Devices/](https://twrp.me/Devices/) ，比如我这里的机型打开后是这样：
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200703235449500.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200703235449500.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 
 我们点Download Links中的链接，2选1即可，反正不管美洲还是欧洲速度都很慢。进去后选最新版本的img文件，再点进去进行下载。我这里最后下载下来是：[twrp-3.3.0-0-beryllium.img](https://dl.twrp.me/beryllium/twrp-3.3.0-0-beryllium.img) ，下载完后我们把它重命名成 `recovery.img` ，后面有用。
 
@@ -65,18 +65,18 @@ fastboot boot recovery.img
 
 6、再次进入Rec，还是点Install，然后选刚才下载的Magisk-xxx.zip，进行安装（操作图文可见官方：[https://www.download-magisk.com](https://www.download-magisk.com)）。完事直接点Reboot System重启进入系统即可。
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200704004046689.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200704004046689.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 
 7、不出意外，进入系统后，桌面上就会出现 **Magisk Manager** 的图标（这里请忽略EdXposed，那是后续手动装的），说明安装成功（所以刚才下载的Apk并没有太大用哈哈，当然可以覆盖安装一下保证版本最新）。打开Manager应该可以看到两项都安装成功了。
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200704004304427.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200704004304427.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 
 8、后面就简单了，参考EdXposed官方文档（[https://github.com/ElderDrivers/EdXposed](https://github.com/ElderDrivers/EdXposed)）的Install步骤即可：
 
 - 在Magisk Manager的“下载”中安装 Riru（Riru - Core）和 Riru - EdXposed 后重启手机。
 - 去 [https://github.com/ElderDrivers/EdXposedManager/releases](https://github.com/ElderDrivers/EdXposedManager/releases) 下载EdXposed Manager的Apk来安装。大功告成！
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200704012136271.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200704012136271.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 
 ## 其他
 
