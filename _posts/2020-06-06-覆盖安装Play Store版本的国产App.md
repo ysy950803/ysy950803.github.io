@@ -25,7 +25,7 @@ tags:
 
 第二种方法，拒绝等待。我们可以将Play Store上的微信下载下来，手动安装。但是，Play Store是没有提供Apk官方下载途径的，所以我们要去 [https://apkpure.com](https://apkpure.com) （专门提取官方Apk的网站）搜索WeChat即可，注意要下载Apk文件，不要下XAPK格式：
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2020060612375117.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/2020060612375117.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 
 由于Play Store上目前最新版本低于我手机上的微信版本，直接copy到手机上手动安装会失败的，低版本不能覆盖高版本。所以，接下来我们需要通过adb命令来安装Apk了（在这之前请保证手机的开发者选项是打开状态且开启了其中的USB调试和USB安装）：
 

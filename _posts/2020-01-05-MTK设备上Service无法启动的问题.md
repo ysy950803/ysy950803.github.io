@@ -28,7 +28,7 @@ tags:
 
 既然日志内容如此明显，问题也比较好查了，我们去看看这行log是在Android源码的哪一行出现的。正好最近谷歌推出了官方的源码检索平台：[Android Code Search](https://cs.android.com/)，可以在线搜索AOSP和AndroidX的代码，简直方便。
 ActivityManager这个TAG的log有很多地方，我们直接查找 `bringUpServiceLocked` 方法所在的代码即可。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200105180914692.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200105180914692.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 对应的文件路径为：**frameworks/base/services/core/java/com/android/server/am/ActiveServices.java**，然而呢，我根本没有找到“suppress to start service”这个内容。
 
 很容易想到，这是MTK夹带的私货，当我把源码切到该机型对应分支之后，果然找到了这段代码。由于保密原因这里不方便公开源码哈，但其实逻辑非常简单，就是MTK修改了代码，在 ``bringUpServiceLocked`` 方法内插入了自己的判断：**如果应用包名不在某个特定的白名单里，就会被禁止启动其他应用的Service组件**。其目的是为了防止不同应用之间的相互唤醒，初衷还是好的。但这样一刀切的方式，未免有点不妥。

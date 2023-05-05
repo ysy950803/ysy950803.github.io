@@ -290,7 +290,7 @@ Change-Id: I3c3a5f0ef58738316c5efeab9044e43e09220d01
 ```
 
 改动也不多，就这么几个文件：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190410235236156.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20190410235236156.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
 其中最重要的逻辑就在ActiveServices当中，很长的方法，此处只保留关键新增部分：
 
 ```java

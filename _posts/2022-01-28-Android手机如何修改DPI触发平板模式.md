@@ -52,7 +52,7 @@ adb push build.prop /system/
 
 重启就成功了。看看效果：
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/667b993406aa418996a27f2422f7df37.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA6ZKI5Y-2,size_20,color_FFFFFF,t_70,g_se,x_16)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/667b993406aa418996a27f2422f7df37.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA6ZKI5Y-2,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 当然，上述所说的改dpi的方式有利有弊，好处是比较通用，不需要改机型（因为不通过三方工具的话，手动改机型需要具体的机型代号，如下所示，改错了或许开不了机），缺点呢当然就是dpi会影响所有应用（不适合主力机），如果不想其他应用受影响还是改机型比较方便。
 
