@@ -1,25 +1,29 @@
 {
-    "name": "ysy-blog",
-    "title": "Pig Cat",
-    "author": "YSY <admin@ysy950803.cn>",
-    "version": "1.8.2",
-    "homepage": "https://ysy950803.github.io",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/ysy950803/ysy950803.github.io"
-    },
-    "bugs": "https://github.com/ysy950803/ysy950803.github.io/issues",
-    "devDependencies": {
-        "grunt": ">=1.5.3",
-        "grunt-banner": "~0.2.3",
-        "grunt-contrib-less": "^2.0.0",
-        "grunt-contrib-uglify": "^4.0.1",
-        "grunt-contrib-watch": "^1.1.0"
-    },
-    "scripts": {
-        "start": "bundle exec jekyll serve",
-        "dev": "grunt watch & npm run start",
-        "boil": "git push boilerplate boilerplate:master",
-        "push": "git push origin master --tag"
-    }
+  "name": "hexo-site",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "hexo generate",
+    "clean": "hexo clean",
+    "deploy": "hexo deploy",
+    "server": "hexo server"
+  },
+  "hexo": {
+    "version": "6.3.0"
+  },
+  "dependencies": {
+    "hexo": "^6.3.0",
+    "hexo-deployer-git": "^4.0.0",
+    "hexo-generator-archive": "^2.0.0",
+    "hexo-generator-category": "^2.0.0",
+    "hexo-generator-index": "^3.0.0",
+    "hexo-generator-search": "^2.4.3",
+    "hexo-generator-tag": "^2.0.0",
+    "hexo-renderer-ejs": "^2.0.0",
+    "hexo-renderer-marked": "^6.0.0",
+    "hexo-renderer-pug": "^3.0.0",
+    "hexo-renderer-stylus": "^3.0.0",
+    "hexo-server": "^3.0.0",
+    "hexo-theme-landscape": "^1.0.0"
+  }
 }

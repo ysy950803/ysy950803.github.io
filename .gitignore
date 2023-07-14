@@ -2,12 +2,15 @@ _site
 _posts/_draft
 _posts/_archive
 _archive
+.idea
 node_modules
+public
+.deploy_git
 .vscode
 *.log
 *.lock
 *.sh
 .DS_Store
 .jekyll-cache
-*/.DS_Store
+*/.DS_Storeg
 */*/.DS_Store

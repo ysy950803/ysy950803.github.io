@@ -1,131 +1,118 @@
-# Site settings
+# Hexo Configuration
+## Docs: https://hexo.io/docs/configuration.html
+## Source: https://github.com/hexojs/hexo/
+
+# Site
 title: Pig Cat
-SEOTitle: Pig Cat | YSY
-header-img: img/home-bg.jpg
-email: admin@ysy950803.cn
-description: "Full-Stack, Android, AI"
-keyword: "Full-Stack, Android, AI"
-url: "https://ysy950803.github.io" # your host, for absolute URL
-baseurl: "" # for example, '/blog' if your blog hosted on 'host/blog'
+subtitle: 'Full-Stack, Android, AI'
+description: 'Full-Stack, Android, AI'
+keywords: Full-Stack, Android, AI
+author: YSY
+language: zh-CN
+timezone: 'Asia/Shanghai'
 
-# Publish posts or collection documents with a future date.
+# URL
+## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
+url: https://blog.ysy950803.top
+permalink: :year/:month/:day/:title/
+permalink_defaults:
+pretty_urls:
+  trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
+  trailing_html: true # Set to false to remove trailing '.html' from permalinks
+
+# Directory
+source_dir: source
+public_dir: public
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+code_dir: downloads/code
+i18n_dir: :lang
+skip_render:
+
+# Writing
+new_post_name: :year-:month-:day-:title.md # File name of new posts
+default_layout: post
+titlecase: false # Transform title into titlecase
+external_link:
+  enable: true # Open external links in new tab
+  field: site # Apply to the whole site
+  exclude: ''
+filename_case: 0
+render_drafts: false
+
+post_asset_folder: true
+marked:
+  prependRoot: true
+  postAsset: true
+
+relative_link: false
 future: true
+highlight:
+  enable: true
+  line_number: true
+  auto_detect: false
+  tab_replace: ''
+  wrap: true
+  hljs: false
+prismjs:
+  enable: false
+  preprocess: true
+  line_number: true
+  tab_replace: ''
 
-# SNS settings
-RSS: false
-#weibo_username: username
-#zhihu_username: username
-github_username: ysy950803
-#twitter_username: username
-#facebook_username:  username
-#linkedin_username:  firstname-lastname-idxxxx
+# Home page setting
+# path: Root path for your blogs index page. (default = '')
+# per_page: Posts displayed per page. (0 = disable pagination)
+# order_by: Posts order. (Order by date descending by default)
+index_generator:
+  path: ''
+  per_page: 10
+  order_by: -date
 
-# Build settings
-# from 2016, 'pygments' is unsupported on GitHub Pages. Use 'rouge' for highlighting instead.
-highlighter: rouge
-permalink: pretty
-paginate: 20
+# Category & Tag
+default_category: uncategorized
+category_map:
+tag_map:
+
+# Metadata elements
+## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
+meta_generator: true
+
+# Date / Time format
+## Hexo uses Moment.js to parse and display date
+## You can customize the date format as defined in
+## http://momentjs.com/docs/#/displaying/format/
+date_format: YYYY-MM-DD
+time_format: HH:mm:ss
+## updated_option supports 'mtime', 'date', 'empty'
+updated_option: 'mtime'
+
+# Pagination
+## Set per_page to 0 to disable pagination
+per_page: 10
+pagination_dir: page
+
+# Include / Exclude file(s)
+## include:/exclude: options only apply to the 'source/' folder
+include:
 exclude:
-  [
-    "less",
-    "node_modules",
-    "Gruntfile.js",
-    "package.json",
-    "README.md",
-    "README.zh.md",
-  ]
-anchorjs: true # if you want to customize anchor. check out line:181 of `post.html`
-# If you have timezone issue (e.g. #68) in China, uncomment to use this:
-#timezone: CN
+ignore:
 
-# Gems
-# from PR#40, to support local preview for Jekyll 3.0
-# make sure you have this gem installed
-# `$ gem install jekyll-paginate`
-plugins: [jekyll-paginate]
+# Extensions
+## Plugins: https://hexo.io/plugins/
+## Themes: https://hexo.io/themes/
+theme: butterfly
 
-# Markdown settings
-# replace redcarpet to kramdown,
-# although redcarpet can auto highlight code, the lack of header-id make the catalog impossible, so I switch to kramdown
-# document: http://jekyllrb.com/docs/configuration/#kramdown
-markdown: GFM
-#kramdown:
-#  input: GFM # use Github Flavored Markdown !important
-#  syntax_highlighter_opts:
-#    span:
-#      line_numbers: false
-#    block:
-#      line_numbers: true
-#      start_line: 1
+# Deployment
+## Docs: https://hexo.io/docs/one-command-deployment
+deploy:
+  type: git
+  repo: https://github.com/ysy950803/ysy950803.github.io
+  branch: master
 
-# Disqus settings
-#disqus_username: username
-
-# Gitalk
-gitalk:
-  enable: true  # 是否开启Gitalk评论
-  clientID: a2660cd0497b67ee33e5  # 生成的clientID
-  clientSecret: 3f970ce5c5ee2b57bed7c20e44809ba6bda487ac  # 生成的clientSecret
-  repo: ysy950803.github.io  # 仓库名称
-  owner: ysy950803  # github用户名
-  admin: ysy950803
-  distractionFreeMode: false  # 是否启用类似FB的阴影遮罩
-
-# Netease settings
-#netease_comment: false
-
-# Analytics settings
-# Baidu Analytics
-# ba_track_id: [your track id]
-
-# Google Analytics
-ga_track_id: "UA-149830607-1" # Format: UA-xxxxxx-xx
-ga_domain: auto
-
-# Sidebar settings
-sidebar: true # whether or not using Sidebar.
-sidebar-about-description: "如若喜欢，随缘支持"
-sidebar-avatar: /img/love-support.png # use absolute URL, seeing it's used in both `/` and `/about/`
-
-# Featured Tags
-featured-tags: true # whether or not using Feature-Tags
-featured-condition-size: 0 # A tag will be featured if the size of it is more than this condition value
-
-# Progressive Web Apps
-chrome-tab-theme-color: "#000000"
-service-worker: true
-
-# MathJax rendering for layout:page (e.g. post preview)
-page-mathjax: false
-
-# Friends
-friends: [
-  {
-    title: "【Paypal.me if you like】",
-    href: "https://paypal.me/yaoshengyu"
-  },
-  {
-    title: "【Follow me on Play Store】",
-    href: "https://play.google.com/store/apps/dev?id=7220530116384657977"
-  },
-  {
-    title: "Goggle",
-    href: "https://www.google.com"
-  },
-  {
-    title: "Android Developers",
-    href: "https://developer.android.com"
-  },
-  {
-    title: "GitHub",
-    href: "https://github.com"
-  },
-  {
-    title: "Android Code Search",
-    href: "https://cs.android.com"
-  },
-  #  {
-  #    title: "温馨提示：Safari可能无法查看WebP图片导致背景置灰",
-  #    href: "https://discussions.apple.com/thread/250073758"
-  #  }
-]
+# Search
+search:
+  path: search.xml
+  field: post
+  content: true
