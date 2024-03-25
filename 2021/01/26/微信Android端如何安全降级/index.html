@@ -1,0 +1,353 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>微信Android端如何安全降级 | Pig Cat</title><meta name="author" content="YSY"><meta name="copyright" content="YSY"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言最近微信8.0开始灰度更新，小龙给大家整的新功能我就不赘述了。有不少小伙伴等不及灰度，也开始自行下载安装。  微信Android端内测下载链接（复制后通过微信打开即可）：https:&#x2F;&#x2F;szsupport.weixin.qq.com&#x2F;cgi-bin&#x2F;mmsupport-bin&#x2F;readtemplate?t&#x3D;page&#x2F;android_exp__index  然而，“后悔药”无论何时都是有市场的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信Android端如何安全降级">
+<meta property="og:url" content="https://blog.ysy950803.top/2021/01/26/%E5%BE%AE%E4%BF%A1Android%E7%AB%AF%E5%A6%82%E4%BD%95%E5%AE%89%E5%85%A8%E9%99%8D%E7%BA%A7/index.html">
+<meta property="og:site_name" content="Pig Cat">
+<meta property="og:description" content="前言最近微信8.0开始灰度更新，小龙给大家整的新功能我就不赘述了。有不少小伙伴等不及灰度，也开始自行下载安装。  微信Android端内测下载链接（复制后通过微信打开即可）：https:&#x2F;&#x2F;szsupport.weixin.qq.com&#x2F;cgi-bin&#x2F;mmsupport-bin&#x2F;readtemplate?t&#x3D;page&#x2F;android_exp__index  然而，“后悔药”无论何时都是有市场的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.ysy950803.top/img/avatar-ysy.png">
+<meta property="article:published_time" content="2021-01-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-25T07:31:25.865Z">
+<meta property="article:author" content="YSY">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="鼓捣折腾">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ysy950803.top/img/avatar-ysy.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.ysy950803.top/2021/01/26/%E5%BE%AE%E4%BF%A1Android%E7%AB%AF%E5%A6%82%E4%BD%95%E5%AE%89%E5%85%A8%E9%99%8D%E7%BA%A7/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="MK2u6SdXmNALFQhaVElzr03W62cBQbIjtHK-7rvSIjw"/><meta name="baidu-site-verification" content="codeva-o8m8oS84V9"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8999136091629669',
+  enable_page_level_ads: 'true'
+});</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-149830607-1"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-149830607-1');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":10,"languages":{"author":"作者: YSY","link":"链接: ","source":"来源: Pig Cat","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#A58A5D","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '微信Android端如何安全降级',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-25 15:31:25'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><script>document.oncontextmenu=function(){return!1}</script><script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("busuanzi_value_site_uv"),t=document.getElementById("busuanzi_value_site_pv"),n=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){n.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+1e5;break}}),i=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){i.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+3e5;break}}),r={childList:!0};n.observe(e,r),i.observe(t,r)});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar-ysy.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">84</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/home-bg.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Pig Cat"><span class="site-name">Pig Cat</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">微信Android端如何安全降级</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-01-25T16:00:00.000Z" title="发表于 2021-01-26 00:00:00">2021-01-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-25T07:31:25.865Z" title="更新于 2024-03-25 15:31:25">2024-03-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="微信Android端如何安全降级"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近微信8.0开始灰度更新，小龙给大家整的新功能我就不赘述了。有不少小伙伴等不及灰度，也开始自行下载安装。</p>
+<blockquote>
+<p>微信Android端内测下载链接（复制后通过微信打开即可）：<a target="_blank" rel="noopener" href="https://szsupport.weixin.qq.com/cgi-bin/mmsupport-bin/readtemplate?t=page/android_exp__index">https://szsupport.weixin.qq.com/cgi-bin/mmsupport-bin/readtemplate?t=page/android_exp__index</a></p>
+</blockquote>
+<p>然而，“后悔药”无论何时都是有市场的。不喜欢or不习惯新版本？想回退旧版本？这让我想到MIUI刷机党回退旧版ROM的麻烦，当然，微信要回退旧版并非难事。</p>
+<h3 id="降级"><a href="#降级" class="headerlink" title="降级"></a>降级</h3><p>对普通用户来说，Android系统是不允许旧版本App安装覆盖掉新版本的，但并不是说就一定不可能。其实任何其他操作系统类似，应用程序安装的产物都是一些文件而已，本质上覆盖它们即可实现降级，只不过在Android中对非ROOT用户来说不能随意改动这些文件，有权限限制。</p>
+<h4 id="获取历史版本"><a href="#获取历史版本" class="headerlink" title="获取历史版本"></a>获取历史版本</h4><p>既然要降级，我们是不是应该先找到历史版本的Apk？这里直接给大家介绍两个途径吧。</p>
+<ul>
+<li>Apkpure：<a target="_blank" rel="noopener" href="https://apkpure.com/cn/wechat/com.tencent.mm/versions">微信历史版本下载通道1</a></li>
+<li>豌豆荚：<a target="_blank" rel="noopener" href="https://www.wandoujia.com/apps/596157/history">微信历史版本下载通道2</a></li>
+</ul>
+<p>第一个不要选择XAPK+OBB的形式，而选Apk。如果第一个打不开，就看第二个吧，记得选择普通下载，直接获取到Apk文件。</p>
+<p><img src="https://imgconvert.csdnimg.cn/2021012613214266.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<h4 id="无痛安全降级（无需备份）"><a href="#无痛安全降级（无需备份）" class="headerlink" title="无痛安全降级（无需备份）"></a>无痛安全降级（无需备份）</h4><p>直接在手机中打开刚才下载的Apk是无法进行安装的，系统安装器会提示不能降低版本安装之类的话语。这在Android系统源码中有所对应，感兴趣的同学可以查阅AOSP：<a target="_blank" rel="noopener" href="https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/com/android/internal/content/PackageHelper.java">frameworks&#x2F;base&#x2F;core&#x2F;java&#x2F;com&#x2F;android&#x2F;internal&#x2F;content&#x2F;PackageHelper.java</a> ，其中定义了此情况的错误码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">RECOMMEND_FAILED_VERSION_DOWNGRADE</span> <span class="operator">=</span> -<span class="number">7</span>;</span><br></pre></td></tr></table></figure>
+
+<p>所以，接下来我们需要通过adb命令来安装了（在这之前请保证手机的<strong>开发者选项</strong>是打开状态且开启了其中的<strong>USB调试</strong>和<strong>USB安装</strong>），终端执行即可：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb install -r -d WeChat_v7.0.0_apkpure.com.apk</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-r</code> 参数表示覆盖安装且保留数据，这对我们非常重要，微信无数个GB的聊天数据不是说清就能清的，要命。</li>
+<li><code>-d</code> 参数表示强制将低版本覆盖安装到现有版本上，无论现有高低。</li>
+</ul>
+<blockquote>
+<p>ADB（Android Debug Bridge）是Android平台的官方调试工具，如果各位同学有不是开发人员的，可以自行搜索关键词“adb工具”，不管Windows还是macOS，安装都非常简单。</p>
+</blockquote>
+<h4 id="简单粗暴降级（需备份）"><a href="#简单粗暴降级（需备份）" class="headerlink" title="简单粗暴降级（需备份）"></a>简单粗暴降级（需备份）</h4><p>这个方法不用细说，先备份数据，再卸载新版微信，最后安装旧版微信并恢复数据。</p>
+<h3 id="备份"><a href="#备份" class="headerlink" title="备份"></a>备份</h3><p>微信聊天数据的备份方案市面上已经非常多了，大家其实也了解一二。我也简单介绍一下：</p>
+<h4 id="网盘云盘"><a href="#网盘云盘" class="headerlink" title="网盘云盘"></a>网盘云盘</h4><p>不少知名网盘工具都推出了微信数据备份的功能——把数据备份到三方服务器中。小龙不做的事情，总有人做。</p>
+<h4 id="本地备份"><a href="#本地备份" class="headerlink" title="本地备份"></a>本地备份</h4><p>很多国产厂商ROM（据我个人使用经验：MIUI、Color OS等，）都实现了本地备份应用数据的功能，不仅仅是微信聊天数据，整个应用数据都给你备份下来。当然，这种系统备份更多是还是备份在本地而非云端，需要注意刷机丢失数据等风险。</p>
+<p>争做世界第一产品经理，厂商们也在努力：</p>
+<p><img src="https://imgconvert.csdnimg.cn/20210126132206954.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<h4 id="电脑备份"><a href="#电脑备份" class="headerlink" title="电脑备份"></a>电脑备份</h4><p>使用类似xx手机助手或者微信电脑端的备份功能，把聊天等数据备份到电脑上。在我的实际体验中，用微信电脑端的备份功能，速度特别特别特别慢，几个GB的数据感觉要我几年。</p>
+<h4 id="ROOT用户手动备份"><a href="#ROOT用户手动备份" class="headerlink" title="ROOT用户手动备份"></a>ROOT用户手动备份</h4><p>直接备份 <code>/data/data/com.tencent.mm</code> 文件夹即可，微信的各种缓存、聊天数据都在此。其中聊天数据库文件是这个：</p>
+<p><code>/data/data/com.tencent.mm/MicroMsg/xxxx.../EnMicroMsg.db</code></p>
+<p>拿到这个db文件其实就可以获取手机中的微信聊天记录了，不过这肯定是加密的，此路径的 <code>xxxx...</code> 目录名称实际上是一个遵循一定规则的MD5值，跟设备IMEI和微信帐号相关。具体解密过程可参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/loocanp/article/details/103475998">获取Android微信聊天记录</a></p>
+<p>我估计这些加密方式应该也是有人逆向微信客户端找出来的。</p>
+<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>虽然每次微信大版本更新都能引起大家的激烈讨kai论pen，但有些许功能或者优化还是值得肯定的。其实据我观察，大家喷点更多的还是微信客户端占用空间过大，仅凭聊天数据肯定不会占用这么多存储空间，所以具体是存了些什么我们用户就不得而知了。微信作为国民级应用早已不是简单的IM工具，变成如今这般航母型App是迟早的事情，自有国情在嘛是不是。</p>
+<p>我个人建议部分特别依赖微信，且对聊天数据特别看重的同学，还是在降级之前稳稳当当地备份一次。因为降级这个操作本质上是旧版本程序+新版本数据的组合，难免出现兼容性问题（即便大部分情况下没什么问题），所以版本跨度也不要过大。</p>
+<p>最后，整个图乐一乐，大家不要当真：</p>
+<p><img src="https://imgconvert.csdnimg.cn/20210126132229100.jpeg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top">YSY</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top/2021/01/26/%E5%BE%AE%E4%BF%A1Android%E7%AB%AF%E5%A6%82%E4%BD%95%E5%AE%89%E5%85%A8%E9%99%8D%E7%BA%A7/">https://blog.ysy950803.top/2021/01/26/%E5%BE%AE%E4%BF%A1Android%E7%AB%AF%E5%A6%82%E4%BD%95%E5%AE%89%E5%85%A8%E9%99%8D%E7%BA%A7/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.ysy950803.top" target="_blank">Pig Cat</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Android/">Android</a><a class="post-meta__tags" href="/tags/%E9%BC%93%E6%8D%A3%E6%8A%98%E8%85%BE/">鼓捣折腾</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar-ysy.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://qr.alipay.com/fkx12362diu95oh2aweaac5" target="_blank"><img class="post-qr-code-img" src="/img/love-support.png" alt="支付宝（移动端点击二维码亦可）"/></a><div class="post-qr-code-desc">支付宝（移动端点击二维码亦可）</div></li></ul></div></div><div class="ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=fluid data-ad-layout=in-article data-ad-slot=2789809398 style=display:block;text-align:center></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/01/28/%E6%BA%90%E7%A0%81%E8%8C%B6%E8%88%8D%EF%BC%9AApp%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E4%B8%AD%E7%9A%84poll%E6%9C%BA%E5%88%B6/" title="源码茶舍：App进程创建中的poll机制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">源码茶舍：App进程创建中的poll机制</div></div></a></div><div class="next-post pull-right"><a href="/2020/11/27/InputMethodManager%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%B7%B2%E6%88%90%E4%B8%BA%E5%8E%86%E5%8F%B2/" title="InputMethodManager内存泄漏已成为历史"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">InputMethodManager内存泄漏已成为历史</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2019/08/16/Ubuntu%E5%AE%89%E8%A3%85Source%20Insight%E5%AF%BC%E5%85%A5Android%E6%BA%90%E7%A0%81%E5%B9%B6%E8%AE%BE%E7%BD%AE%E4%BB%BFIDEA%E4%B8%BB%E9%A2%98Darcula/" title="Ubuntu安装Source Insight导入Android源码并设置仿IDEA主题Darcula"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-08-16</div><div class="title">Ubuntu安装Source Insight导入Android源码并设置仿IDEA主题Darcula</div></div></a></div><div><a href="/2020/05/17/Win10%E7%94%A8WSL%E4%B8%8B%E8%BD%BDAOSP/" title="Win10用WSL下载AOSP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-05-17</div><div class="title">Win10用WSL下载AOSP</div></div></a></div><div><a href="/2020/06/06/%E8%A6%86%E7%9B%96%E5%AE%89%E8%A3%85Play%20Store%E7%89%88%E6%9C%AC%E7%9A%84%E5%9B%BD%E4%BA%A7App/" title="覆盖安装Play Store版本的国产App"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-06</div><div class="title">覆盖安装Play Store版本的国产App</div></div></a></div><div><a href="/2020/07/04/Magisk%E4%B8%8EEdXposed%E6%A1%86%E6%9E%B6%E5%AE%89%E8%A3%85%E5%AE%9E%E8%B7%B5%EF%BC%88Android%20P%E5%8F%8A%E4%BB%A5%E4%B8%8A%EF%BC%89%20/" title="Magisk与EdXposed框架安装实践（Android P及以上）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-04</div><div class="title">Magisk与EdXposed框架安装实践（Android P及以上）</div></div></a></div><div><a href="/2020/10/25/Mace-micro%E5%BC%95%E6%93%8E%E7%BC%96%E8%AF%91%E4%B8%8E%E6%B5%8B%E8%AF%95/" title="Mace-micro引擎编译与测试"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-25</div><div class="title">Mace-micro引擎编译与测试</div></div></a></div><div><a href="/2022/01/28/Android%E6%89%8B%E6%9C%BA%E5%A6%82%E4%BD%95%E4%BF%AE%E6%94%B9DPI%E8%A7%A6%E5%8F%91%E5%B9%B3%E6%9D%BF%E6%A8%A1%E5%BC%8F/" title="Android手机如何修改DPI触发平板模式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-28</div><div class="title">Android手机如何修改DPI触发平板模式</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar-ysy.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">YSY</div><div class="author-info__description">Full-Stack, Android, AI</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">84</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ysy950803"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget donate" id="donate"><div class="item-headline"><i class="fas fa-heartbeat"></i><span>随缘支持</span></div><div class="item-content"><p style="text-align:center;padding:0;margin:0;"><a target="_blank" rel="noopener" href="https://qr.alipay.com/fkx12362diu95oh2aweaac5"><img src="https://blog.ysy950803.top/img/love-support.png" width="200" height="200"/></a></p> <p style="text-align:center;padding:0;margin:0;">移动端点击二维码亦可</p> <p style="text-align:center;padding:0;margin:0;"><u><a target="_blank" rel="noopener" href="https://paypal.me/yaoshengyu">Paypal.me if you like</a></u></p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%8D%E7%BA%A7"><span class="toc-number">2.</span> <span class="toc-text">降级</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC"><span class="toc-number">2.1.</span> <span class="toc-text">获取历史版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%97%9B%E5%AE%89%E5%85%A8%E9%99%8D%E7%BA%A7%EF%BC%88%E6%97%A0%E9%9C%80%E5%A4%87%E4%BB%BD%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">无痛安全降级（无需备份）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%B2%97%E6%9A%B4%E9%99%8D%E7%BA%A7%EF%BC%88%E9%9C%80%E5%A4%87%E4%BB%BD%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">简单粗暴降级（需备份）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD"><span class="toc-number">3.</span> <span class="toc-text">备份</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BD%91%E7%9B%98%E4%BA%91%E7%9B%98"><span class="toc-number">3.1.</span> <span class="toc-text">网盘云盘</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E5%A4%87%E4%BB%BD"><span class="toc-number">3.2.</span> <span class="toc-text">本地备份</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%B5%E8%84%91%E5%A4%87%E4%BB%BD"><span class="toc-number">3.3.</span> <span class="toc-text">电脑备份</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ROOT%E7%94%A8%E6%88%B7%E6%89%8B%E5%8A%A8%E5%A4%87%E4%BB%BD"><span class="toc-number">3.4.</span> <span class="toc-text">ROOT用户手动备份</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E8%AF%9D"><span class="toc-number">4.</span> <span class="toc-text">后话</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/25/%E5%9C%A8assembleRelease%E4%B9%8B%E5%89%8D%E6%89%A7%E8%A1%8C%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BB%BB%E5%8A%A1/" title="在assembleRelease之前执行自定义任务">在assembleRelease之前执行自定义任务</a><time datetime="2024-03-25T06:19:04.000Z" title="发表于 2024-03-25 14:19:04">2024-03-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/11/%E8%A7%A3%E5%86%B3macOS%E6%89%A7%E8%A1%8Cfastboot%E6%89%BE%E4%B8%8D%E5%88%B0%E8%AE%BE%E5%A4%87%E7%9A%84%E9%97%AE%E9%A2%98/" title="解决macOS执行fastboot找不到设备的问题">解决macOS执行fastboot找不到设备的问题</a><time datetime="2023-08-11T07:49:01.000Z" title="发表于 2023-08-11 15:49:01">2023-08-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/31/%E7%BB%99%E4%B8%8D%E8%92%9C%E5%AD%90%EF%BC%88busuanzi%EF%BC%89%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%8A%A0%E5%88%9D%E5%A7%8B%E5%80%BC/" title="给不蒜子（busuanzi）统计数据增加初始值">给不蒜子（busuanzi）统计数据增加初始值</a><time datetime="2023-07-31T08:54:00.000Z" title="发表于 2023-07-31 16:54:00">2023-07-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/21/Android%E7%B3%BB%E7%BB%9F%E5%85%BC%E5%AE%B9%E9%80%82%E9%85%8D%E8%B8%A9%E5%9D%91%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/" title="Android系统兼容适配踩坑（持续更新）">Android系统兼容适配踩坑（持续更新）</a><time datetime="2023-07-21T08:32:31.000Z" title="发表于 2023-07-21 16:32:31">2023-07-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/05/%E5%9C%A8Android%E5%BA%94%E7%94%A8%E4%B8%AD%E9%9B%86%E6%88%90%E4%BD%BF%E7%94%A8traceroute%E5%B7%A5%E5%85%B7/" title="在Android应用中集成使用traceroute工具">在Android应用中集成使用traceroute工具</a><time datetime="2023-05-04T16:00:00.000Z" title="发表于 2023-05-05 00:00:00">2023-05-05</time></div></div></div></div><div class="card-widget ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=auto data-ad-slot=7049722255 data-full-width-responsive=true style=display:block></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('/img/home-bg.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2024 By YSY</div><div class="footer_custom_text">Welcome To My Blog!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'a2660cd0497b67ee33e5',
+      clientSecret: '3f970ce5c5ee2b57bed7c20e44809ba6bda487ac',
+      repo: 'ysy950803.github.io',
+      owner: 'ysy950803',
+      admin: ['ysy950803'],
+      id: '549540c288fedf7fd2b9a92790181154',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.textContent= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><div class="aplayer no-destroy" data-id="2829816518" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false" data-lrctype="0"> </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: true,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', 'UA-149830607-1', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
