@@ -110,6 +110,8 @@ deploy:
   type: git
   repo: https://github.com/ysy950803/ysy950803.github.io
   branch: master
+  name: Sylvester Yao
+  email: admin@ysy950803.cn
 
 # Search
 search:
