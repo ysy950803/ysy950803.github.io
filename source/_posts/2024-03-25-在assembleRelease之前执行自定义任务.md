@@ -98,7 +98,7 @@ tasks {
     val removeLogs by registering {
         group = "你可以随意定义分组名字，方便在Gradle任务列表中快速查找"
         doLast {
-            val srcDir = File("src/main/java")
+            val srcDir = File(project.rootDir, "app/src/main/java")
             srcDir.walkTopDown().filter {
                 it.isFile && it.extension == "kt"
             }.forEach {
