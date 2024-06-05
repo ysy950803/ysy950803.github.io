@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.ysy950803.top/img/avatar-ysy.png">
 <meta property="article:published_time" content="2021-08-22T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-03-25T07:31:25.985Z">
+<meta property="article:modified_time" content="2024-06-05T06:22:15.237Z">
 <meta property="article:author" content="YSY">
 <meta property="article:tag" content="Android">
 <meta property="article:tag" content="AOSP">
@@ -66,7 +66,7 @@ gtag('config', 'UA-149830607-1');
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2024-03-25 15:31:25'
+  postUpdate: '2024-06-05 14:22:15'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -189,7 +189,7 @@ gtag('config', 'UA-149830607-1');
       }
     }
     detectApple()
-    })(window)</script><script>document.oncontextmenu=function(){return!1}</script><script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("busuanzi_value_site_uv"),t=document.getElementById("busuanzi_value_site_pv"),n=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){n.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+1e5;break}}),i=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){i.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+3e5;break}}),r={childList:!0};n.observe(e,r),i.observe(t,r)});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar-ysy.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/home-bg.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Pig Cat"><span class="site-name">Pig Cat</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">聊一聊MIUI最近更新的原子内存</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-22T16:00:00.000Z" title="发表于 2021-08-23 00:00:00">2021-08-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-25T07:31:25.985Z" title="更新于 2024-03-25 15:31:25">2024-03-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="聊一聊MIUI最近更新的原子内存"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>比起最近雷布斯的个人演讲，其实我更好奇MIUI 12.5增强版（超级Bug-list修复版）推出的那四个性能优化项目：</p>
+    })(window)</script><script>document.oncontextmenu=function(){return!1}</script><script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("busuanzi_value_site_uv"),t=document.getElementById("busuanzi_value_site_pv"),n=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){n.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+1e5;break}}),i=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){i.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+3e5;break}}),r={childList:!0};n.observe(e,r),i.observe(t,r)});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar-ysy.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/home-bg.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Pig Cat"><span class="site-name">Pig Cat</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">聊一聊MIUI最近更新的原子内存</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-22T16:00:00.000Z" title="发表于 2021-08-23 00:00:00">2021-08-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-06-05T06:22:15.237Z" title="更新于 2024-06-05 14:22:15">2024-06-05</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="聊一聊MIUI最近更新的原子内存"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>比起最近雷布斯的个人演讲，其实我更好奇MIUI 12.5增强版（超级Bug-list修复版）推出的那四个性能优化项目：</p>
 <ul>
 <li><p>焦点计算 - 处理器智能调度机制</p>
 </li>
@@ -203,11 +203,11 @@ gtag('config', 'UA-149830607-1');
 <p>作为技术爱好者，这个“原子内存”还真是提起了我的兴趣，因为其他三项还算比较好理解。毕竟内存管理这件事，是操作系统领域几乎永恒的课题。</p>
 <h2 id="官方解释"><a href="#官方解释" class="headerlink" title="官方解释"></a>官方解释</h2><p>我们先来了解下<a target="_blank" rel="noopener" href="https://home.miui.com/">MIUI官方网站</a>是如何介绍原子内存的。官网的海报动效还是阐释得比较清晰明了（辛苦设计师小姐姐，不知道又加了多少班）。</p>
 <p>最开始是几个独立的应用各自占有一定的内存，看看这绿，这不就是微信绿。看看这蓝，支付宝？看看这橙，这啥，淘宝吧估计是，肯定不是小米自己。设计姐姐在疯狂暗示。</p>
-<p><img src="https://cdn.sspai.com/2021/08/15/9589aa58ccd69abe73eebd4d9803a07d.png"></p>
+<p><img src="https://cdnfile.sspai.com/2021/08/15/9589aa58ccd69abe73eebd4d9803a07d.png"></p>
 <p>然后，第二步是<strong>拆分应用内存，结束不重要的任务</strong>，刚才还是整块的内存占用现在在逻辑上被划分为了大小不等（即不同功能占用内存大小不同）的几块。这一步其实就是核心了，如何来划分呢？按什么维度划分呢？有没有可能划分失误反而影响用户体验呢？我们后面来聊。</p>
-<p><img src="https://cdn.sspai.com/2021/08/15/ae6c6945876364518dbc8eec036e2d2b.png"></p>
+<p><img src="https://cdnfile.sspai.com/2021/08/15/ae6c6945876364518dbc8eec036e2d2b.png"></p>
 <p>第三步，<strong>根据场景，进一步精细压缩</strong>。这一步也很关键，不仅能结束优先级较低的任务，还能对剩余的任务进行内存占用的压缩。听起来有点玄乎，其实问题还是和第二步类似，如何对内存进行压缩？系统如何知道要压缩哪些内容呢？</p>
-<p><img src="https://cdn.sspai.com/2021/08/15/b3de9b85cae94e7848d445c5fd23b69e.png"></p>
+<p><img src="https://cdnfile.sspai.com/2021/08/15/b3de9b85cae94e7848d445c5fd23b69e.png"></p>
 <p>带着上面这些问题，我们来简单聊一聊MIUI可能会如何实现这个原子内存，也即是说，以下内容均是基于个人经验提出的一些猜想，描述尽可能不那么硬核。</p>
 <h2 id="原理猜想"><a href="#原理猜想" class="headerlink" title="原理猜想"></a>原理猜想</h2><p>我们知道，现代操作系统基本都有进程（process）和线程（thread）的概念，用书本上的话说就是：</p>
 <blockquote>
@@ -217,7 +217,7 @@ gtag('config', 'UA-149830607-1');
 <p><em>拿微信举例来说，主功能聊天是一个进程，内置浏览器又是另一个进程，进程之间可以进行通信，但又可以互不影响，比如浏览器崩溃了，不影响你聊天，这也是多进程的好处之一。然后，在聊天进程内部，你下载表情包时会开启另一个线程来完成任务，而不会影响你的UI渲染线程，保证了交互的流畅性，这就是多线程的好处。</em></p>
 <p>大致了解这些基本概念后，我们就可以继续思考MIUI的原子内存了。</p>
 <p>Android系统基于Linux，当然也有进程的概念。我们平时俗称的“杀进程”，一般就是指在最近任务中划掉相应的应用来终止其运行，在你划掉的那一瞬间，系统会杀掉此应用相关联的所有进程。而我们俗称的“被杀后台”，就是应用在置于后台且不可见的时候，被系统为了节约内存等资源而杀掉，这对用户而言是一种被动的杀进程，某种程度上比较影响使用体验。</p>
-<p><img src="https://cdn.sspai.com/2021/08/15/a32183b73145700eb82299cfd47ef07a.png"></p>
+<p><img src="https://cdnfile.sspai.com/2021/08/15/a32183b73145700eb82299cfd47ef07a.png"></p>
 <p>在Android的<a target="_blank" rel="noopener" href="https://developer.android.com/topic/performance/memory-management?hl=zh-cn">官方文档</a>中关于内存分配有这么一段话：</p>
 <blockquote>
 <p>Android 平台在运行时不会浪费可用的内存。它会一直尝试利用所有可用内存。例如，系统会在应用关闭后将其保留在内存中，以便用户快速切回到这些应用。因此，通常情况下，Android 设备在运行时几乎没有可用的内存。要在重要系统进程和许多用户应用之间正确分配内存，内存管理至关重要。</p>
@@ -238,7 +238,7 @@ gtag('config', 'UA-149830607-1');
 </ul>
 <p>感兴趣的同学可以去安装一个叫<strong>LibChecker</strong>的应用，可以查看已安装应用都有哪些以上组件，往往一个应用会包含很多个各种各样的组件，并常以功能的维度来划分。</p>
 <p>这些组件是Android开发的基础，对于任意一个组件，它都可以独占一个进程（比如我们上面提到的内置浏览器WebView），也可以和其他组件共享同一个进程，大多数情况都是后者。组件的本质也就是系统创建的一个内存对象，同时，每个组件都有自己的生命周期，在应用进程不被杀掉之前，可以提前结束（比如你打开登录页面完成登录，这个Activity的使命就完成了，可以被系统回收资源）。</p>
-<p><img src="https://cdn.sspai.com/2021/08/15/35dab82b6279a0d7c3175e2c2b77aaa1.png"></p>
+<p><img src="https://cdnfile.sspai.com/2021/08/15/35dab82b6279a0d7c3175e2c2b77aaa1.png"></p>
 <p>所以在我第一时间看到MIUI原子内存的宣传时，就想到了对四大组件的精细化查杀。拆分内存这一行为可能实质上就是<strong>把应用内的各个组件进行分类并按优先级排序</strong>，销毁低优先级的组件，保证用户可见和正在使用的组件活着就行了，如此就能节省很多内存。当用户需要再次使用某组件时，重新创建启动便是。</p>
 <p><em>又拿微信来举例，当你扫码支付后，又回到聊天界面，聊了几句再把微信置于后台，这时候你去干别的事情了，系统是不是可以把刚才支付相关的资源都回收掉呢？</em></p>
 <p>当然，如果销毁和创建的行为过于频繁，也会消耗不少的系统资源，所以我猜测除了设计组件优先级等基本策略，还会有一些机器学习的玩法在里面，<strong>更精准地识别哪些可以被销毁</strong>。在用户使用过程中体验会越来越好，这是一个双向正反馈的过程。</p>
@@ -251,7 +251,7 @@ gtag('config', 'UA-149830607-1');
 <p>在MIUI的海报中，有个非常关键的前提就是：<strong>根据场景</strong>。也就是说，并不是无脑地对所有内存占用进行压缩，而是根据用户使用的场景，<strong>来判断哪些进程或者组件所占用的内存可以压缩，哪些最好不要压缩</strong>，一切以用户体验为前提。这个压缩的策略，和上述的拆分内存类似，可能也会有机器学习的施展空间，当然，用黑白名单来进行简单粗暴的实现也不是不可以。</p>
 <p>精细压缩这一步，从Android系统的体系结构来讲，总体可以分为两方面，一是<strong>交换压缩</strong>，二是<strong>垃圾回收</strong>。</p>
 <h4 id="交换压缩"><a href="#交换压缩" class="headerlink" title="交换压缩"></a>交换压缩</h4><p>先看看官方介绍：</p>
-<p><img src="https://cdn.sspai.com/2021/08/15/7e080624c9036d6ece5b4c439ee02809.png"></p>
+<p><img src="https://cdnfile.sspai.com/2021/08/15/7e080624c9036d6ece5b4c439ee02809.png"></p>
 <blockquote>
 <p>Android 设备包含三种不同类型的内存：RAM、zRAM 和存储器。</p>
 <ul>
