@@ -19,13 +19,11 @@ mixin postUI(posts)
             else
               div.post-bg(style=`background: ${post_cover}`)
       .recent-post-info(class=no_cover)
-        a.article-title(href=url_for(link) title=title)= title
-        .article-meta-wrap
+        a.article-title(href=url_for(link) title=title)
           if (is_home() && (article.top || article.sticky > 0))
-            span.article-meta
-              i.fas.fa-thumbtack.sticky
-              span.sticky= _p('sticky')
-              span.article-meta-separator |
+            i.fas.fa-thumbtack.sticky
+          = title
+        .article-meta-wrap
           if (theme.post_meta.page.date_type)
             span.post-meta-date
               if (theme.post_meta.page.date_type === 'both')
@@ -47,16 +45,16 @@ mixin postUI(posts)
           if (theme.post_meta.page.categories && article.categories.data.length > 0)
             span.article-meta
               span.article-meta-separator |
-              i.fas.fa-inbox
               each item, index in article.categories.data
+                i.fas.fa-inbox
                 a(href=url_for(item.path)).article-meta__categories #[=item.name]
                 if (index < article.categories.data.length - 1)
                   i.fas.fa-angle-right.article-meta-link
           if (theme.post_meta.page.tags && article.tags.data.length > 0)
             span.article-meta.tags
               span.article-meta-separator |
-              i.fas.fa-tag
               each item, index in article.tags.data
+                i.fas.fa-tag
                 a(href=url_for(item.path)).article-meta__tags #[=item.name]
                 if (index < article.tags.data.length - 1)
                   span.article-meta-link #[='•']
@@ -73,14 +71,10 @@ mixin postUI(posts)
           if theme.comments.card_post_count && theme.comments.use
             case theme.comments.use[0]
               when 'Disqus'
-                +countBlockInIndex
-                  a(href=full_url_for(link) + '#disqus_thread')
-                    i.fa-solid.fa-spinner.fa-spin
               when 'Disqusjs'
                 +countBlockInIndex
-                  a(href=full_url_for(link) + '#disqusjs')
-                    span.disqus-comment-count(data-disqus-url=full_url_for(link))
-                      i.fa-solid.fa-spinner.fa-spin
+                  a.disqus-count(href=full_url_for(link) + '#post-comment')
+                    i.fa-solid.fa-spinner.fa-spin
               when 'Valine'
                 +countBlockInIndex
                   a(href=url_for(link) + '#post-comment')

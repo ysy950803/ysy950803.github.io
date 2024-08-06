@@ -19,7 +19,7 @@ tags:
 ### DiffUtil用起来
 
 谷歌确实也考虑到了这个问题，所以不知道在什么时候（暂时没有去查阅）推出了DiffUtil这个解决方案。在RecyclerView的依赖包下面，可以看到，除了DiffUtil，还有异步处理数据等一系列有趣的工具。
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200113015406917.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200113015406917.png)
 DiffUtil的运用逻辑非常简单，大致如下：
 
 - 实现对比新旧数据的方法（类似比较器），这样DiffUtil便知道当新数据来临时，该不该更新某个item。

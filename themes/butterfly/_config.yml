@@ -9,15 +9,15 @@ nav:
 
 # Menu 目錄
 menu:
-# Home: / || fas fa-home
-# Archives: /archives/ || fas fa-archive
-# Tags: /tags/ || fas fa-tags
-# Categories: /categories/ || fas fa-folder-open
-# List||fas fa-list:
-#   Music: /music/ || fas fa-music
-#   Movie: /movies/ || fas fa-video
-# Link: /link/ || fas fa-link
-# About: /about/ || fas fa-heart
+  # Home: / || fas fa-home
+  # Archives: /archives/ || fas fa-archive
+  # Tags: /tags/ || fas fa-tags
+  # Categories: /categories/ || fas fa-folder-open
+  # List||fas fa-list:
+  #   Music: /music/ || fas fa-music
+  #   Movie: /movies/ || fas fa-video
+  # Link: /link/ || fas fa-link
+  # About: /about/ || fas fa-heart
 
 # Code Blocks (代碼相關)
 # --------------------------------------
@@ -33,8 +33,8 @@ code_word_wrap: false
 # formal:
 #   icon: link || the description || color
 social:
-# fab fa-github: https://github.com/xxxxx || Github || '#24292e'
-# fas fa-envelope: mailto:xxxxxx@gmail.com || Email || '#4a7dbe'
+  # fab fa-github: https://github.com/xxxxx || Github || '#24292e'
+  # fas fa-envelope: mailto:xxxxxx@gmail.com || Email || '#4a7dbe'
 
 # Image (圖片設置)
 # --------------------------------------
@@ -87,7 +87,7 @@ cover:
   position: both
   # When cover is not set, the default cover is displayed (當沒有設置cover時，默認的封面顯示)
   default_cover:
-  # - https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg
+    # - https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg
 
 # Replace Broken Images (替換無法顯示的圖片)
 error_img:
@@ -125,11 +125,10 @@ index_post_content:
 
 # anchor
 anchor:
-  button:
-    enable: false
-    always_show: false
-    icon: # the unicode value of Font Awesome icon, such as '\3423'
-  auto_update: false # when you scroll in post, the URL will update according to header id.
+  # when you scroll, the URL will update according to header id.
+  auto_update: false
+  # Click the headline to scroll and update the anchor
+  click_to_scroll: false
 
 # figcaption (圖片描述文字)
 photofigcaption: false
@@ -164,13 +163,14 @@ post_copyright:
 # Sponsor/reward
 reward:
   enable: false
+  text:
   QR_code:
-  # - img: /img/wechat.jpg
-  #   link:
-  #   text: wechat
-  # - img: /img/alipay.jpg
-  #   link:
-  #   text: alipay
+    # - img: /img/wechat.jpg
+    #   link:
+    #   text: wechat
+    # - img: /img/alipay.jpg
+    #   link:
+    #   text: alipay
 
 # Post edit
 # Easily browse and edit blog source code online.
@@ -264,6 +264,11 @@ aside:
     post_count: true
     last_push_date: true
     sort_order: # Don't modify the setting unless you know how it works
+  card_post_series:
+    enable: true
+    series_title: false # The title shows the series name
+    orderBy: 'date' # Order by title or date
+    order: -1 # Sort of order. 1, asc for ascending; -1, desc for descending
 
 # busuanzi count for PV / UV in site
 # 訪問人數
@@ -380,12 +385,6 @@ docsearch:
 
 # Share System (分享)
 # --------------------------------------
-
-# AddThis
-# https://www.addthis.com/
-addThis:
-  enable: false
-  pubid:
 
 # Share.js
 # https://github.com/overtrue/share.js
@@ -595,10 +594,10 @@ google_adsense:
 # --------------------------------------
 
 site_verification:
-# - name: google-site-verification
-#   content: xxxxxx
-# - name: baidu-site-verification
-#   content: xxxxxxx
+  # - name: google-site-verification
+  #   content: xxxxxx
+  # - name: baidu-site-verification
+  #   content: xxxxxxx
 
 # Beautify/Effect (美化/效果)
 # --------------------------------------
@@ -637,6 +636,9 @@ index_top_img_height:
 category_ui: # 留空或 index
 tag_ui: # 留空或 index
 
+# Stretches the lines so that each line has equal width（文字向兩側對齊，對最後一行無效）
+text_align_justify: false
+
 # Website Background (設置網站背景)
 # can set it to color or image (可設置圖片 或者 顔色)
 # The formal of image: url(http://xxxxxx.com/xxx.jpg)
@@ -651,7 +653,7 @@ mask:
   footer: true
 
 # the position of bottom right button/default unit: px (右下角按鈕距離底部的距離/默認單位為px)
-rightside-bottom:
+rightside_bottom:
 
 # Enter transitions (開啓網頁進入效果)
 enter_transitions: true
@@ -704,12 +706,12 @@ click_heart:
   mobile: false
 
 # Mouse click effects: words (鼠標點擊效果: 文字)
-ClickShowText:
+clickShowText:
   enable: false
   text:
-  # - I
-  # - LOVE
-  # - YOU
+    # - I
+    # - LOVE
+    # - YOU
   fontSize: 15px
   random: false
   mobile: false
@@ -796,6 +798,13 @@ fancybox: true
 # Tag Plugins settings (標籤外掛)
 # --------------------------------------
 
+# series (系列文章)
+series:
+  enable: true
+  orderBy: 'title' # Order by title or date
+  order: 1 # Sort of order. 1, asc for ascending; -1, desc for descending
+  number: true
+
 # abcjs (樂譜渲染)
 # See https://github.com/paulrosen/abcjs
 abcjs:
@@ -834,8 +843,8 @@ note:
 pjax:
   enable: false
   exclude:
-  # - xxxx
-  # - xxxx
+    # - xxxx
+    # - xxxx
 
 # Inject the css and script (aplayer/meting)
 aplayerInject:
@@ -886,13 +895,13 @@ lazyload:
 Open_Graph_meta:
   enable: true
   option:
-  # twitter_card:
-  # twitter_image:
-  # twitter_id:
-  # twitter_site:
-  # google_plus:
-  # fb_admins:
-  # fb_app_id:
+    # twitter_card:
+    # twitter_image:
+    # twitter_id:
+    # twitter_site:
+    # google_plus:
+    # fb_admins:
+    # fb_app_id:
 
 # Add the vendor prefixes to ensure compatibility
 css_prefix: true
@@ -902,9 +911,9 @@ css_prefix: true
 # 插入代码到头部 </head> 之前 和 底部 </body> 之前
 inject:
   head:
-  # - <link rel="stylesheet" href="/xxx.css">
+    # - <link rel="stylesheet" href="/xxx.css">
   bottom:
-  # - <script src="xxxx"></script>
+    # - <script src="xxxx"></script>
 
 # CDN
 # Don't modify the following settings unless you know how they work
@@ -921,66 +930,65 @@ CDN:
   third_party_provider: jsdelivr
 
   # Add version number to url, true or false
-  version: false
+  version: true
 
   # Custom format
   # For example: https://cdn.staticfile.org/${cdnjs_name}/${version}/${min_cdnjs_file}
   custom_format:
 
   option:
-  # main_css:
-  # main:
-  # utils:
-  # translate:
-  # local_search:
-  # algolia_js:
-  # algolia_search:
-  # instantsearch:
-  # docsearch_js:
-  # docsearch_css:
-  # pjax:
-  # gitalk:
-  # gitalk_css:
-  # blueimp_md5:
-  # valine:
-  # disqusjs:
-  # disqusjs_css:
-  # twikoo:
-  # waline_js:
-  # waline_css:
-  # giscus:
-  # sharejs:
-  # sharejs_css:
-  # mathjax:
-  # katex:
-  # katex_copytex:
-  # mermaid:
-  # canvas_ribbon:
-  # canvas_fluttering_ribbon:
-  # canvas_nest:
-  # lazyload:
-  # instantpage:
-  # typed:
-  # pangu:
-  # fancybox_css:
-  # fancybox:
-  # medium_zoom:
-  # snackbar_css:
-  # snackbar:
-  # activate_power_mode:
-  # fireworks:
-  # click_heart:
-  # ClickShowText:
-  # fontawesome:
-  # flickr_justified_gallery_js:
-  # flickr_justified_gallery_css:
-  # aplayer_css:
-  # aplayer_js:
-  # meting_js:
-  # prismjs_js:
-  # prismjs_lineNumber_js:
-  # prismjs_autoloader:
-  # artalk_js:
-  # artalk_css:
-  # busuanzi:
-  # abcjs_basic_js:
+    # abcjs_basic_js:
+    # activate_power_mode:
+    # algolia_js:
+    # algolia_search:
+    # aplayer_css:
+    # aplayer_js:
+    # artalk_css:
+    # artalk_js:
+    # blueimp_md5:
+    # busuanzi:
+    # canvas_fluttering_ribbon:
+    # canvas_nest:
+    # canvas_ribbon:
+    # click_heart:
+    # clickShowText:
+    # disqusjs:
+    # disqusjs_css:
+    # docsearch_css:
+    # docsearch_js:
+    # egjs_infinitegrid:
+    # fancybox:
+    # fancybox_css:
+    # fireworks:
+    # fontawesome:
+    # gitalk:
+    # gitalk_css:
+    # giscus:
+    # instantpage:
+    # instantsearch:
+    # katex:
+    # katex_copytex:
+    # lazyload:
+    # local_search:
+    # main:
+    # main_css:
+    # mathjax:
+    # medium_zoom:
+    # mermaid:
+    # meting_js:
+    # pangu:
+    # prismjs_autoloader:
+    # prismjs_js:
+    # prismjs_lineNumber_js:
+    # pjax:
+    # sharejs:
+    # sharejs_css:
+    # snackbar:
+    # snackbar_css:
+    # translate:
+    # twikoo:
+    # typed:
+    # utils:
+    # valine:
+    # waline_css:
+    # waline_js:

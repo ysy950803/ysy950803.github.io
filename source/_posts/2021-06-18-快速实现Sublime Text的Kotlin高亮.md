@@ -17,7 +17,7 @@ Sublime Text是一款非常实用的编辑器软件，偶尔不想开大型IDE�
 
 不过发现在用它来查看Kotlin代码时，默认是一片白，没有语言对应的高亮，点击右下角选择语言时也没有Kotlin这个选项（下图是解决问题之后的）。
 
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20210619185555397.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70#pic_center)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20210619185555397.png)
 
 ### 解决
 
@@ -39,10 +39,10 @@ Sublime Text是一款非常实用的编辑器软件，偶尔不想开大型IDE�
 
 [GitHub - vkostyukov/kotlin-sublime-package: Sublime Text 2 Package for Kotlin Programming Language](https://github.com/vkostyukov/kotlin-sublime-package) ，我们查看项目的README，直接下载第一个 `Kotlin.sublime-package` 。
 
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20210619185623671.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70#pic_center)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20210619185623671.png)
 
 下载下来发现文件名字是Kotlin.zip，没关系，直接改成Kotlin.sublime-package就行了。然后我们将此文件放到应用安装目录下面的**Packages**文件夹中，Windows可能是Data/Packages之类的目录，层级不多，稍微找一下就行，这个目录下面都是统一后缀的文件。
 
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20210619185613400.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70#pic_center)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20210619185613400.png)
 
 macOS在应用程序中找到Sublime Text然后右键**显示包内容**就能找到了。最后再重启Sublime Text，右下角就可以选择Kotlin语言高亮了。
