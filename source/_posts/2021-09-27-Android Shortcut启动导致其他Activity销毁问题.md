@@ -14,7 +14,7 @@ tags:
 
 我们都知道，从API 25开始，Android加入了类似3D Touch一样的功能，即长按桌面图标可以弹出快捷方式菜单（最多4个）。早期国产系统的桌面Launcher并没有积极适这一功能，所以各大应用也懒得做，后来才逐渐完善。目前包括微信、支付宝等都可以长按弹出快捷方式，支付宝更是支持动态配置。
 
-![image-20210927162251836](https://imgconvert.csdnimg.cn/d7aa4036340c49a2a7915fda33299299.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA6ZKI5Y-2,size_18,color_FFFFFF,t_70,g_se,x_16)
+![image-20210927162251836](https://imgconvert.csdnimg.cn/d7aa4036340c49a2a7915fda33299299.png)
 
 开发文档直接看官方的就行：[https://developer.android.com/guide/topics/ui/shortcuts](https://developer.android.com/guide/topics/ui/shortcuts?hl=zh-cn) ，静态快捷方式适配很简单，加xml文件就完事，此处不赘述。
 

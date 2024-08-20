@@ -14,7 +14,7 @@ tags:
 ### 问题
 
 从Android Studio 4.1.3升级到最新的Arctic Fox之后，整个组件化工程会编译不过。
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/0f42f86e474e42b582277a3f314f1a1a.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA6ZKI5Y-2,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/0f42f86e474e42b582277a3f314f1a1a.png)
 编译错误显示：
 
 > **e: [kapt] 'com.sun.tools.javac.util.Context' class can't be found ('tools.jar' is absent in the plugin classpath). Kapt won't work.**
@@ -34,7 +34,7 @@ tags:
 1、我们先打开Studio的偏好设置（Preferences），然后**修改Gradle JDK为1.8**。
 
 一般来说它会检测你系统安装的JDK，如果没有，你就手动Add一下，Add到Home那一层，图中我的路径都是JDK的默认安装路径（我的JDK当初都是用brew直接install的openjdk）。
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/92366ae7745842daad7b841fc269f15c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA6ZKI5Y-2,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/92366ae7745842daad7b841fc269f15c.png)
 2、设置好之后，还要记得**配置你的终端环境变量**，这个是为了保证整个系统环境（包括脚本命令执行）都使用JDK 8，否则版本不一致也会出问题。
 
 如果是bash就修改.bashrc，我是用的zsh，所以编辑.zshrc：
@@ -55,7 +55,7 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/openjdk-8.jdk/Contents/Home
 3、**重启Studio，尝试Rebuild工程**，如果没有问题，那恭喜你，不用继续往下看了。
 
 当然，绝大多数情况，就会出现本文最开始那个错误提示：找不到tools.jar。我们知道，这个jar包是JDK lib目录下面的：
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/7ed58e8b016847d38c5a43f8c6dd5d01.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA6ZKI5Y-2,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/7ed58e8b016847d38c5a43f8c6dd5d01.png)
 既然环境变量也配置了，怎么就提示错误呢？
 
 4、后来在网上搜了一下，发现是默认JDK的目录命名符号有问题，其实上面看到的 **/Library/Java/JavaVirtualMachines/openjdk-8.jdk** 是个软链接，指向的真实路径是：

@@ -503,7 +503,7 @@ static void android_os_MessageQueue_nativeWake(JNIEnv* env, jclass clazz, jlong 
 
 所以要么是timeout到了自动唤醒，要么是由于新消息插入导致主动唤醒。用不太严谨的流程图来描述一下主动唤醒的过程：
 
-![](https://imgconvert.csdnimg.cn/20201119000301533.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![](https://imgconvert.csdnimg.cn/20201119000301533.png)
 
 ## 后话
 

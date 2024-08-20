@@ -31,7 +31,7 @@ tags:
 cp /Users/xxx/Library/Application\ Support/JetBrains/IntelliJIdea2021.2/eval/idea212.evaluation.key /Users/xxx/Library/Application\ Support/JetBrains/PyCharm2021.2/eval/PyCharm212.evaluation.key
 ```
 
-![](https://imgconvert.csdnimg.cn/3ea46506bfc742e7925e8489ebefb274.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA6ZKI5Y-2,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+![](https://imgconvert.csdnimg.cn/3ea46506bfc742e7925e8489ebefb274.png)
 
 注意key文件是否存在，版本一定要对应当前安装的版本，比如我这里212就是2021.2版本。复制后注意改名，比如idea212前缀要记得改成PyCharm212，如上述命令一行搞定。
 

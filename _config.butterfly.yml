@@ -907,6 +907,8 @@ inject:
   # - <link rel="stylesheet" href="/xxx.css">
     - <script>document.oncontextmenu=function(){return!1}</script>
     - <script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("busuanzi_value_site_uv"),t=document.getElementById("busuanzi_value_site_pv"),n=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){n.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+1e5;break}}),i=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){i.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+3e5;break}}),r={childList:!0};n.observe(e,r),i.observe(t,r)});</script>
+    - <script>document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll('img').forEach(img=>{if(new URL(img.src).hostname==="imgconvert.csdnimg.cn"){img.referrerPolicy='no-referrer';const o=img.src;img.src='',setTimeout(()=>{img.src=o},0)}})});</script>
+#    - <meta name="referrer" content="no-referrer" />
   bottom:
   # - <script src="xxxx"></script>
     - <div class="aplayer no-destroy" data-id="2829816518" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false" data-lrctype="0"> </div>

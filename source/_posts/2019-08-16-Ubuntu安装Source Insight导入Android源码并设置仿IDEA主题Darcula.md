@@ -15,7 +15,7 @@ tags:
 
 ### 预览
 先来张图给大家感受下效果，然后我再慢慢道来过程，保证你避免每一步的坑。
-![preview](https://imgconvert.csdnimg.cn/20190816214656427.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![preview](https://imgconvert.csdnimg.cn/20190816214656427.png)
 ### 我们要做什么
 1、由于Source Insight（以下简称SI）是Windows应用，所以不能直接安装在Linux上，于是我们要借助wine，所以第一步会介绍wine的安装过程和坑；
 2、介绍SI在Linux（以Ubuntu 16.04为例）上的安装，并介绍如何导入免费证书（个人建议大家有条件还是付费支持一下SI这个软件，真的是个好东西，比IDEA看源码实在快太多了，我已经买了最新版4.0，还是挺良心的，一次性付费，239美刀）；
@@ -56,7 +56,7 @@ wine sourceinsight4098-setup.exe
 ```
 这个时候会弹出Windows程序的安装过程，全部下一步即可，没有特殊配置，安装路径也最好不要改。
 安装完成后你在Ubuntu的应用程序里已经可以搜到SI了，桌面上也会自动创建快捷方式：
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20190816221426934.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20190816221426934.png)
 然后不要急着打开，把网盘里下载下来的另一个exe文件复制到SI安装目录中：
 ```shell
 cd ~/.wine/drive_c/Program\ Files\ \(x86\)/Source\ Insight\ 4.0/
@@ -75,7 +75,7 @@ copy覆盖后，再打开SI，此时会弹出授权弹窗，选第三个导入�
 ### 第四步：SI主题改为IDEA的Darcula暗黑风格
 1、默认字体太小了，我们先改改字体大小：
 按 **Alt + Y** 快捷键（或者菜单栏 **Options > File Type Options**），然后改你喜欢的字体和大小即可：
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20190816223801624.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20190816223801624.png)
 改后确定会弹出一个窗口让你输入 **yes** ，是否应用于所有文件类型，我一般都是yes。
 2、如何设置和IDEA一样的暗黑风格，如果不想自己一点一点手工DIY的同学，可以直接按我的来做：
 先把整体主题设为自带的Black：
@@ -83,4 +83,4 @@ copy覆盖后，再打开SI，此时会弹出授权弹窗，选第三个导入�
 然后点击菜单栏 **Options > Style Properties** ，在弹出的窗口中选择右边的 **Load** 按钮，选择网盘中下载的 **darcula-as.xml** 文件即可，Done。
 ### 附件
 链接: [https://pan.baidu.com/s/1wVI61SDojBvxffNHct6NHQ](https://pan.baidu.com/s/1wVI61SDojBvxffNHct6NHQ) 提取码: **ij4s** 复制这段内容后打开百度网盘手机App，操作更方便哦！
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20190816230010151.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lzeTk1MDgwMw==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/20190816230010151.jpg)
