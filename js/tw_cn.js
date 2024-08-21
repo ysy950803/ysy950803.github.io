@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return Traditionalized(txt)
     } else return txt
   }
-
   function translateBody (fobj) {
     let objs
     if (typeof fobj === 'object') objs = fobj.childNodes
@@ -108,15 +107,9 @@ document.addEventListener('DOMContentLoaded', function () {
         setLang()
         setTimeout(translateBody, translateDelay)
       }
+      translateButtonObject.addEventListener('click', translatePage, false)
     }
   }
-
-  window.translateFn = {
-    translatePage,
-    Traditionalized,
-    Simplized
-  }
-
   translateInitialization()
   document.addEventListener('pjax:complete', translateInitialization)
 })

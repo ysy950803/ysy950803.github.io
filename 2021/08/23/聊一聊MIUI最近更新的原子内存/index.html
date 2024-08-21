@@ -1,0 +1,403 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>聊一聊MIUI最近更新的原子内存 | Pig Cat</title><meta name="author" content="YSY"><meta name="copyright" content="YSY"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言比起最近雷布斯的个人演讲，其实我更好奇MIUI 12.5增强版（超级Bug-list修复版）推出的那四个性能优化项目：  焦点计算 - 处理器智能调度机制  原子内存 - 精细化内存管理机制  液态存储 - 文件存储管理机制  智能均衡 - 对旗舰硬件性能的智能调配   作为技术爱好者，这个“原子内存”还真是提起了我的兴趣，因为其他三项还算比较好理解。毕竟内存管理这件事，是操作系统领域几乎永恒">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊一聊MIUI最近更新的原子内存">
+<meta property="og:url" content="https://blog.ysy950803.top/2021/08/23/%E8%81%8A%E4%B8%80%E8%81%8AMIUI%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0%E7%9A%84%E5%8E%9F%E5%AD%90%E5%86%85%E5%AD%98/index.html">
+<meta property="og:site_name" content="Pig Cat">
+<meta property="og:description" content="前言比起最近雷布斯的个人演讲，其实我更好奇MIUI 12.5增强版（超级Bug-list修复版）推出的那四个性能优化项目：  焦点计算 - 处理器智能调度机制  原子内存 - 精细化内存管理机制  液态存储 - 文件存储管理机制  智能均衡 - 对旗舰硬件性能的智能调配   作为技术爱好者，这个“原子内存”还真是提起了我的兴趣，因为其他三项还算比较好理解。毕竟内存管理这件事，是操作系统领域几乎永恒">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.ysy950803.top/img/avatar-ysy.png">
+<meta property="article:published_time" content="2021-08-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-08-21T06:17:19.515Z">
+<meta property="article:author" content="YSY">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="AOSP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ysy950803.top/img/avatar-ysy.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.ysy950803.top/2021/08/23/%E8%81%8A%E4%B8%80%E8%81%8AMIUI%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0%E7%9A%84%E5%8E%9F%E5%AD%90%E5%86%85%E5%AD%98/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="MK2u6SdXmNALFQhaVElzr03W62cBQbIjtHK-7rvSIjw"/><meta name="baidu-site-verification" content="codeva-o8m8oS84V9"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8999136091629669',
+  enable_page_level_ads: 'true'
+});</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-149830607-1"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-149830607-1');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":10,"languages":{"author":"作者: YSY","link":"链接: ","source":"来源: Pig Cat","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#A58A5D","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '聊一聊MIUI最近更新的原子内存',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-08-21 14:17:19'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><script>document.oncontextmenu=function(){return!1}</script><script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("busuanzi_value_site_uv"),t=document.getElementById("busuanzi_value_site_pv"),n=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){n.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+1e5;break}}),i=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){i.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+3e5;break}}),r={childList:!0};n.observe(e,r),i.observe(t,r)});</script><meta name="referrer" content="no-referrer" /><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar-ysy.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/home-bg.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Pig Cat"><span class="site-name">Pig Cat</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">聊一聊MIUI最近更新的原子内存</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-22T16:00:00.000Z" title="发表于 2021-08-23 00:00:00">2021-08-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-21T06:17:19.515Z" title="更新于 2024-08-21 14:17:19">2024-08-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="聊一聊MIUI最近更新的原子内存"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>比起最近雷布斯的个人演讲，其实我更好奇MIUI 12.5增强版（超级Bug-list修复版）推出的那四个性能优化项目：</p>
+<ul>
+<li><p>焦点计算 - 处理器智能调度机制</p>
+</li>
+<li><p>原子内存 - 精细化内存管理机制</p>
+</li>
+<li><p>液态存储 - 文件存储管理机制</p>
+</li>
+<li><p>智能均衡 - 对旗舰硬件性能的智能调配</p>
+</li>
+</ul>
+<p>作为技术爱好者，这个“原子内存”还真是提起了我的兴趣，因为其他三项还算比较好理解。毕竟内存管理这件事，是操作系统领域几乎永恒的课题。</p>
+<h2 id="官方解释"><a href="#官方解释" class="headerlink" title="官方解释"></a>官方解释</h2><p>我们先来了解下<a target="_blank" rel="noopener" href="https://home.miui.com/">MIUI官方网站</a>是如何介绍原子内存的。官网的海报动效还是阐释得比较清晰明了（辛苦设计师小姐姐，不知道又加了多少班）。</p>
+<p>最开始是几个独立的应用各自占有一定的内存，看看这绿，这不就是微信绿。看看这蓝，支付宝？看看这橙，这啥，淘宝吧估计是，肯定不是小米自己。设计姐姐在疯狂暗示。</p>
+<p><img src="/2021/08/23/%E8%81%8A%E4%B8%80%E8%81%8AMIUI%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0%E7%9A%84%E5%8E%9F%E5%AD%90%E5%86%85%E5%AD%98/9589aa58ccd69abe73eebd4d9803a07d.webp"></p>
+<p>然后，第二步是<strong>拆分应用内存，结束不重要的任务</strong>，刚才还是整块的内存占用现在在逻辑上被划分为了大小不等（即不同功能占用内存大小不同）的几块。这一步其实就是核心了，如何来划分呢？按什么维度划分呢？有没有可能划分失误反而影响用户体验呢？我们后面来聊。</p>
+<p><img src="/2021/08/23/%E8%81%8A%E4%B8%80%E8%81%8AMIUI%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0%E7%9A%84%E5%8E%9F%E5%AD%90%E5%86%85%E5%AD%98/ae6c6945876364518dbc8eec036e2d2b.webp"></p>
+<p>第三步，<strong>根据场景，进一步精细压缩</strong>。这一步也很关键，不仅能结束优先级较低的任务，还能对剩余的任务进行内存占用的压缩。听起来有点玄乎，其实问题还是和第二步类似，如何对内存进行压缩？系统如何知道要压缩哪些内容呢？</p>
+<p><img src="/2021/08/23/%E8%81%8A%E4%B8%80%E8%81%8AMIUI%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0%E7%9A%84%E5%8E%9F%E5%AD%90%E5%86%85%E5%AD%98/b3de9b85cae94e7848d445c5fd23b69e.webp"></p>
+<p>带着上面这些问题，我们来简单聊一聊MIUI可能会如何实现这个原子内存，也即是说，以下内容均是基于个人经验提出的一些猜想，描述尽可能不那么硬核。</p>
+<h2 id="原理猜想"><a href="#原理猜想" class="headerlink" title="原理猜想"></a>原理猜想</h2><p>我们知道，现代操作系统基本都有进程（process）和线程（thread）的概念，用书本上的话说就是：</p>
+<blockquote>
+<p>进程是资源分配的最小单位，线程是CPU调度的最小单位。</p>
+</blockquote>
+<p>那么二者的关系，简单概括便是：一个运行中的应用程序就可以包含多个进程，一个进程又可以包含多个线程。</p>
+<p><em>拿微信举例来说，主功能聊天是一个进程，内置浏览器又是另一个进程，进程之间可以进行通信，但又可以互不影响，比如浏览器崩溃了，不影响你聊天，这也是多进程的好处之一。然后，在聊天进程内部，你下载表情包时会开启另一个线程来完成任务，而不会影响你的UI渲染线程，保证了交互的流畅性，这就是多线程的好处。</em></p>
+<p>大致了解这些基本概念后，我们就可以继续思考MIUI的原子内存了。</p>
+<p>Android系统基于Linux，当然也有进程的概念。我们平时俗称的“杀进程”，一般就是指在最近任务中划掉相应的应用来终止其运行，在你划掉的那一瞬间，系统会杀掉此应用相关联的所有进程。而我们俗称的“被杀后台”，就是应用在置于后台且不可见的时候，被系统为了节约内存等资源而杀掉，这对用户而言是一种被动的杀进程，某种程度上比较影响使用体验。</p>
+<p><img src="/2021/08/23/%E8%81%8A%E4%B8%80%E8%81%8AMIUI%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0%E7%9A%84%E5%8E%9F%E5%AD%90%E5%86%85%E5%AD%98/a32183b73145700eb82299cfd47ef07a.webp"></p>
+<p>在Android的<a target="_blank" rel="noopener" href="https://developer.android.com/topic/performance/memory-management?hl=zh-cn">官方文档</a>中关于内存分配有这么一段话：</p>
+<blockquote>
+<p>Android 平台在运行时不会浪费可用的内存。它会一直尝试利用所有可用内存。例如，系统会在应用关闭后将其保留在内存中，以便用户快速切回到这些应用。因此，通常情况下，Android 设备在运行时几乎没有可用的内存。要在重要系统进程和许多用户应用之间正确分配内存，内存管理至关重要。</p>
+</blockquote>
+<p>其实这个解释和Apple官方之前建议用户不要频繁地手动杀进程是一个道理。因为应用启动，<strong>进程重新创建的开销是很大的</strong>。此外，接触过Android开发的同学都知道，系统在内存不足的时候也会尽可能地通知各应用，给了你“体面”处理自己的机会。</p>
+<p>然而，很多时候国产手机厂商也是不得已而为之，因Android应用可以在后台运行的特性，不管是各类巨无霸应用，还是小而美应用，都在努力让自己在后台保活而不遵守开发规范，生怕用户离它们而去。但这样争奇斗艳的后果就是用户设备续航能力急剧下降，挨骂的往往就是手机系统厂商了。</p>
+<p>“原子内存”想解决的便是这个问题，既能让更多的应用不被系统<strong>完全</strong>杀掉，也能减少系统资源的占用，在功耗和功能之间取得一个相对平衡。</p>
+<h3 id="拆分内存"><a href="#拆分内存" class="headerlink" title="拆分内存"></a>拆分内存</h3><p>其实在Android应用层面的开发当中，中小型应用的开发者日常很少会接触到进程的概念，更多的是Android自己抽象的一套开发框架。在其设计架构中，谷歌给开发者和用户提供了“四大组件”：</p>
+<ul>
+<li><p>Activity - 可简单理解成我们打开的每一个活动页面，用于处理用户交互的逻辑</p>
+</li>
+<li><p>Service - 服务，和Activity的逻辑结构类似，只不过没有界面，比如用于播放音乐、下载文件等</p>
+</li>
+<li><p>BroadcastReceiver - 可理解为，Android系统就是一个巨大的世界频道，每个应用都可以用小喇叭广播消息，当然也需要接收消息</p>
+</li>
+<li><p>ContentProvider - 数据存储和提供的组件，内含标准接口，不同应用之间可通过此来共享内容</p>
+</li>
+</ul>
+<p>感兴趣的同学可以去安装一个叫<strong>LibChecker</strong>的应用，可以查看已安装应用都有哪些以上组件，往往一个应用会包含很多个各种各样的组件，并常以功能的维度来划分。</p>
+<p>这些组件是Android开发的基础，对于任意一个组件，它都可以独占一个进程（比如我们上面提到的内置浏览器WebView），也可以和其他组件共享同一个进程，大多数情况都是后者。组件的本质也就是系统创建的一个内存对象，同时，每个组件都有自己的生命周期，在应用进程不被杀掉之前，可以提前结束（比如你打开登录页面完成登录，这个Activity的使命就完成了，可以被系统回收资源）。</p>
+<p><img src="/2021/08/23/%E8%81%8A%E4%B8%80%E8%81%8AMIUI%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0%E7%9A%84%E5%8E%9F%E5%AD%90%E5%86%85%E5%AD%98/35dab82b6279a0d7c3175e2c2b77aaa1.webp"></p>
+<p>所以在我第一时间看到MIUI原子内存的宣传时，就想到了对四大组件的精细化查杀。拆分内存这一行为可能实质上就是<strong>把应用内的各个组件进行分类并按优先级排序</strong>，销毁低优先级的组件，保证用户可见和正在使用的组件活着就行了，如此就能节省很多内存。当用户需要再次使用某组件时，重新创建启动便是。</p>
+<p><em>又拿微信来举例，当你扫码支付后，又回到聊天界面，聊了几句再把微信置于后台，这时候你去干别的事情了，系统是不是可以把刚才支付相关的资源都回收掉呢？</em></p>
+<p>当然，如果销毁和创建的行为过于频繁，也会消耗不少的系统资源，所以我猜测除了设计组件优先级等基本策略，还会有一些机器学习的玩法在里面，<strong>更精准地识别哪些可以被销毁</strong>。在用户使用过程中体验会越来越好，这是一个双向正反馈的过程。</p>
+<p>最近在MIUI的官方论坛也看到一些解释提到“进程级”查杀，其实这个就更好理解了，因为本身很多业务相关性强的组件就在同一个进程内，一个大型应用往往有很多进程在同时运行，那么系统也可以杀掉某些暂时用不到的进程（相当于还能一次性销毁多个组件），而非粗暴地杀掉整个应用导致用户回来时一切都要重来。</p>
+<h3 id="精细压缩"><a href="#精细压缩" class="headerlink" title="精细压缩"></a>精细压缩</h3><p>说到压缩，我们可以从最基本的一些解释中了解原理：</p>
+<blockquote>
+<p>它就是移除多余的空白字符，插入单个的重复字符指出一个字符串中重复的字符，以及将小型的位串用频繁使用的字符替代。</p>
+</blockquote>
+<p>压缩其实是一个很朴素的概念，当你知道下一秒的画面跟这一秒一致时，是不是可以少存储几帧数据。在内存上，也是类似的方法，它是真正能够节约物理空间的。</p>
+<p>在MIUI的海报中，有个非常关键的前提就是：<strong>根据场景</strong>。也就是说，并不是无脑地对所有内存占用进行压缩，而是根据用户使用的场景，<strong>来判断哪些进程或者组件所占用的内存可以压缩，哪些最好不要压缩</strong>，一切以用户体验为前提。这个压缩的策略，和上述的拆分内存类似，可能也会有机器学习的施展空间，当然，用黑白名单来进行简单粗暴的实现也不是不可以。</p>
+<p>精细压缩这一步，从Android系统的体系结构来讲，总体可以分为两方面，一是<strong>交换压缩</strong>，二是<strong>垃圾回收</strong>。</p>
+<h4 id="交换压缩"><a href="#交换压缩" class="headerlink" title="交换压缩"></a>交换压缩</h4><p>先看看官方介绍：</p>
+<p><img src="/2021/08/23/%E8%81%8A%E4%B8%80%E8%81%8AMIUI%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0%E7%9A%84%E5%8E%9F%E5%AD%90%E5%86%85%E5%AD%98/7e080624c9036d6ece5b4c439ee02809.webp"></p>
+<blockquote>
+<p>Android 设备包含三种不同类型的内存：RAM、zRAM 和存储器。</p>
+<ul>
+<li><p>RAM 是最快的内存类型，但其大小通常有限。高端设备通常具有最大的 RAM 容量。</p>
+</li>
+<li><p>zRAM 是用于交换空间的 RAM 分区。所有数据在放入 zRAM 时都会进行压缩，然后在从 zRAM 向外复制时进行解压缩。这部分 RAM 会随着页面进出 zRAM 而增大或缩小。设备制造商可以设置 zRAM 大小上限。</p>
+</li>
+<li><p>存储器中包含所有持久性数据（例如文件系统等），以及为所有应用、库和平台添加的对象代码。存储器比另外两种内存的容量大得多。<strong>在 Android 上，存储器不像在其他 Linux 实现上那样用于交换空间（swap），因为频繁写入会导致这种内存出现损坏，并缩短存储媒介的使用寿命</strong>。</p>
+</li>
+</ul>
+</blockquote>
+<p>我们可以看出，zRAM是内存压缩的关键所在，相当于在内存上划分出一小块区域用于非活跃内存占用的压缩存储。这个“z”，大概就是zip的意思吧。所以，在内存压缩的底层实现上，原生Android已经搞定了，MIUI不需要自行实现这些内存管理机制，最多是<strong>在此基础上根据用户使用场景进行算法优化或者动态调整配置</strong>。</p>
+<p>这里特别要注意的是，官方文档提到：<strong>在 Android 上，存储器不像在其他 Linux 实现上那样用于交换空间</strong>。这一点也否认了最近网上关于MIUI原子内存的讨论中“就是Linux的swap机制而已”之类的看法。</p>
+<p>我个人认为，Linux的swap机制不会特别适用于移动设备，因为移动设备的存储器基本上都是类似SSD的闪存，用作交换空间来存取内存数据是非常减寿的，对手机来说，闪存寿命下降就意味着卡顿。即便是现在的电脑，也不会设置那么大的swap空间甚至不设置了，因为很多电脑内存本身就很大。</p>
+<h4 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h4><p>我们每一个应用都运行在一个独立的Android虚拟机之上，所以应用的每一个进程也可叫做虚拟机进程。Android虚拟机可以粗浅地看作Java虚拟机（JVM）的魔改版本，它不能运行原生Java程序。<strong>垃圾回收（GC）是JVM内存管理的核心机制之一</strong>。这里就不赘述了，简单来说就是系统对内存单元的整理和清除。</p>
+<p>垃圾回收和刚才的交换压缩一样，它们管理内存的粒度都是“内存页（page）”，而不是进程和Android组件了，对于上层的应用来说，是没有什么感知的，系统底层在默默地自我调节。</p>
+<p>MIUI原子内存在垃圾回收层面应该不会去做什么改动，因为GC机制比较底层，而且也相对成熟稳定，MIUI做的事情更多是用户层面的，业务层面的，属于GC的上层调用者。</p>
+<p><strong>精细压缩可能会在何时触发、如何更有效地触发垃圾回收上面下功夫</strong>。</p>
+<h2 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h2><p>做了这么多猜测，其实也没有特别深入的技术细节讨论，但我在查阅研究过程中，还是能感受到MIUI在系统层面的努力，而不仅仅限于做“UI”。毕竟这么花里胡哨的功能命名都唱出来了，怎么也得有点干货才行吧。</p>
+<p>此外，写完了我才想到忘了提及以前的Android玩机工具写轮眼，它的主要功能就是由用户自行决定销毁哪些组件，MIUI原子内存或许也从中借鉴了一些思路。</p>
+<p>还有一点收获就是，现在我们可以在很多移动设备用户场景遇到AI技术的落地或者是落地的可能性，借此机会，有空的话可以再跟大家聊聊<strong>端侧AI</strong>。</p>
+<p>13号当晚我也顺利升级到了这个MIUI 12.5增强版，感受了一下，同时开10个常用App，后台被杀的情况确实有所改善，而且剩余内存也比以前多了。对普通用户来说这就是简单真实的感受，有效果，说明有点东西。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://developer.android.com/guide/components/activities/process-lifecycle?hl=zh-cn">进程和应用生命周期 | Android Developers</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.android.com/topic/performance/memory-management?hl=zh-cn#low-memory_killer">进程间的内存分配 | Android Developers</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/478811156">如何评价 8 月 10 日小米正式推出的 MIUI 12.5 增强版？</a></li>
+<li><a target="_blank" rel="noopener" href="https://v2ex.com/t/795335">MIUI 最近那个原子内存是什么原理？ - V2EX</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top">YSY</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top/2021/08/23/%E8%81%8A%E4%B8%80%E8%81%8AMIUI%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0%E7%9A%84%E5%8E%9F%E5%AD%90%E5%86%85%E5%AD%98/">https://blog.ysy950803.top/2021/08/23/%E8%81%8A%E4%B8%80%E8%81%8AMIUI%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0%E7%9A%84%E5%8E%9F%E5%AD%90%E5%86%85%E5%AD%98/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.ysy950803.top" target="_blank">Pig Cat</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Android/">Android</a><a class="post-meta__tags" href="/tags/AOSP/">AOSP</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar-ysy.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://qr.alipay.com/fkx12362diu95oh2aweaac5" target="_blank"><img class="post-qr-code-img" src="/img/love-support.png" alt="支付宝（移动端点击二维码亦可）"/></a><div class="post-qr-code-desc">支付宝（移动端点击二维码亦可）</div></li></ul></div></div><div class="ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=fluid data-ad-layout=in-article data-ad-slot=2789809398 style=display:block;text-align:center></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/09/27/Android%20Shortcut%E5%90%AF%E5%8A%A8%E5%AF%BC%E8%87%B4%E5%85%B6%E4%BB%96Activity%E9%94%80%E6%AF%81%E9%97%AE%E9%A2%98/" title="Android Shortcut启动导致其他Activity销毁问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Android Shortcut启动导致其他Activity销毁问题</div></div></a></div><div class="next-post pull-right"><a href="/2021/08/22/%E6%9C%80%E7%AE%80%E5%8D%95%E6%94%B9%E5%8F%98%E7%8A%B6%E6%80%81%E6%A0%8F%E6%96%87%E5%AD%97%E5%8F%8A%E8%83%8C%E6%99%AF%E9%A2%9C%E8%89%B2%E7%9A%84%E6%96%B9%E6%B3%95/" title="最简单改变状态栏文字及背景颜色的方法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">最简单改变状态栏文字及背景颜色的方法</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2018/08/03/%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E5%BC%80%E5%8F%91%E8%80%85%E9%80%89%E9%A1%B9%E5%85%B3%E9%97%AD%E5%8A%A8%E7%94%BB%E5%90%8E%E4%BD%BF%E5%85%B6%E5%A4%B1%E6%95%88/" title="如何防止开发者选项关闭动画后使其失效"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-08-03</div><div class="title">如何防止开发者选项关闭动画后使其失效</div></div></a></div><div><a href="/2019/02/23/%E6%BA%90%E7%A0%81%E8%8C%B6%E8%88%8D%E4%B9%8B%E7%94%B1%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84ANR%E5%88%86%E6%9E%90%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3Context/" title="源码茶舍之由一次简单的ANR分析深入了解Context"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-02-23</div><div class="title">源码茶舍之由一次简单的ANR分析深入了解Context</div></div></a></div><div><a href="/2019/04/10/%E6%BA%90%E7%A0%81%E8%8C%B6%E8%88%8D%E4%B9%8Bandroid-externalService%E6%98%AF%E4%BB%80%E4%B9%88%E5%B1%9E%E6%80%A7%EF%BC%9F%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%EF%BC%9F/" title="源码茶舍之android:externalService是什么属性？实现原理？"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-04-10</div><div class="title">源码茶舍之android:externalService是什么属性？实现原理？</div></div></a></div><div><a href="/2019/08/16/Ubuntu%E5%AE%89%E8%A3%85Source%20Insight%E5%AF%BC%E5%85%A5Android%E6%BA%90%E7%A0%81%E5%B9%B6%E8%AE%BE%E7%BD%AE%E4%BB%BFIDEA%E4%B8%BB%E9%A2%98Darcula/" title="Ubuntu安装Source Insight导入Android源码并设置仿IDEA主题Darcula"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-08-16</div><div class="title">Ubuntu安装Source Insight导入Android源码并设置仿IDEA主题Darcula</div></div></a></div><div><a href="/2019/11/02/%E6%BA%90%E7%A0%81%E8%8C%B6%E8%88%8D%E4%B9%8BPackageManager%E8%8E%B7%E5%8F%96%E6%B3%A8%E5%86%8CService%E6%95%B0%E9%87%8F%E9%97%AE%E9%A2%98/" title="源码茶舍之PackageManager获取注册Service数量问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-11-02</div><div class="title">源码茶舍之PackageManager获取注册Service数量问题</div></div></a></div><div><a href="/2019/11/19/%E4%B8%BA%E4%BD%95%E7%82%B9%E5%87%BB%E6%8E%A8%E9%80%81%E9%80%9A%E7%9F%A5%E6%89%93%E4%B8%8D%E5%BC%80Activity%EF%BC%9FCalling%20startActivity()%20from%20outside%E2%80%A6%E2%80%A6/" title="为何点击推送通知打不开Activity？Calling startActivity() from outside……"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-11-19</div><div class="title">为何点击推送通知打不开Activity？Calling startActivity() from outside……</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar-ysy.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">YSY</div><div class="author-info__description">Full-Stack, Android, AI</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ysy950803"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget donate" id="donate"><div class="item-headline"><i class="fas fa-heartbeat"></i><span>随缘支持</span></div><div class="item-content"><p style="text-align:center;padding:0;margin:0;"><a target="_blank" rel="noopener" href="https://qr.alipay.com/fkx12362diu95oh2aweaac5"><img src="https://blog.ysy950803.top/img/love-support.png" width="200" height="200"/></a></p> <p style="text-align:center;padding:0;margin:0;">移动端点击二维码亦可</p> <p style="text-align:center;padding:0;margin:0;"><u><a target="_blank" rel="noopener" href="https://paypal.me/yaoshengyu">Paypal.me if you like</a></u></p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E8%A7%A3%E9%87%8A"><span class="toc-number">2.</span> <span class="toc-text">官方解释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E7%8C%9C%E6%83%B3"><span class="toc-number">3.</span> <span class="toc-text">原理猜想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%86%E5%88%86%E5%86%85%E5%AD%98"><span class="toc-number">3.1.</span> <span class="toc-text">拆分内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B2%BE%E7%BB%86%E5%8E%8B%E7%BC%A9"><span class="toc-number">3.2.</span> <span class="toc-text">精细压缩</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%8E%8B%E7%BC%A9"><span class="toc-number">3.2.1.</span> <span class="toc-text">交换压缩</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="toc-number">3.2.2.</span> <span class="toc-text">垃圾回收</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E8%AF%9D"><span class="toc-number">4.</span> <span class="toc-text">后话</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/28/%E8%AE%A9WCDB%E5%85%BC%E5%AE%B9%E6%9C%80%E6%96%B0%E7%89%88Room/" title="让WCDB兼容最新版Room">让WCDB兼容最新版Room</a><time datetime="2024-03-28T02:17:23.000Z" title="发表于 2024-03-28 10:17:23">2024-03-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/26/%E5%8F%8C%E8%BF%9B%E7%A8%8B%E4%BA%A4%E4%BA%92%E5%AE%9E%E7%8E%B0App%E8%87%AA%E5%8A%A8%E9%87%8D%E5%90%AF/" title="双进程交互实现App自动重启">双进程交互实现App自动重启</a><time datetime="2024-03-26T07:40:19.000Z" title="发表于 2024-03-26 15:40:19">2024-03-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/25/%E5%9C%A8assembleRelease%E4%B9%8B%E5%89%8D%E6%89%A7%E8%A1%8C%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BB%BB%E5%8A%A1/" title="在assembleRelease之前执行自定义任务">在assembleRelease之前执行自定义任务</a><time datetime="2024-03-25T06:19:04.000Z" title="发表于 2024-03-25 14:19:04">2024-03-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/11/%E8%A7%A3%E5%86%B3macOS%E6%89%A7%E8%A1%8Cfastboot%E6%89%BE%E4%B8%8D%E5%88%B0%E8%AE%BE%E5%A4%87%E7%9A%84%E9%97%AE%E9%A2%98/" title="解决macOS执行fastboot找不到设备的问题">解决macOS执行fastboot找不到设备的问题</a><time datetime="2023-08-11T07:49:01.000Z" title="发表于 2023-08-11 15:49:01">2023-08-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/31/%E7%BB%99%E4%B8%8D%E8%92%9C%E5%AD%90%EF%BC%88busuanzi%EF%BC%89%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%8A%A0%E5%88%9D%E5%A7%8B%E5%80%BC/" title="给不蒜子（busuanzi）统计数据增加初始值">给不蒜子（busuanzi）统计数据增加初始值</a><time datetime="2023-07-31T08:54:00.000Z" title="发表于 2023-07-31 16:54:00">2023-07-31</time></div></div></div></div><div class="card-widget ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=auto data-ad-slot=7049722255 data-full-width-responsive=true style=display:block></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('/img/home-bg.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2024 By YSY</div><div class="footer_custom_text">Welcome To My Blog!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'a2660cd0497b67ee33e5',
+      clientSecret: '3f970ce5c5ee2b57bed7c20e44809ba6bda487ac',
+      repo: 'ysy950803.github.io',
+      owner: 'ysy950803',
+      admin: ['ysy950803'],
+      id: '98827f133dd97275f2c238c4be377d3f',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.textContent= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><div class="aplayer no-destroy" data-id="2829816518" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false" data-lrctype="0"> </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: true,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', 'UA-149830607-1', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

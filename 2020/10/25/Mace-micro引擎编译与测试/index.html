@@ -1,0 +1,365 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Mace-micro引擎编译与测试 | Pig Cat</title><meta name="author" content="YSY"><meta name="copyright" content="YSY"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="官方简介Mobile AI Compute Engine (MACE) 是一个专为移动端异构计算平台(支持Android, iOS, Linux, Windows)优化的神经网络计算框架。主要从以下的角度做了专门的优化：  性能 代码经过NEON指令，OpenCL以及Hexagon HVX专门优化，并且采用Winograd算法来进行卷积操作的加速。此外，还对启动速度进行了专门的优化。   功耗">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mace-micro引擎编译与测试">
+<meta property="og:url" content="https://blog.ysy950803.top/2020/10/25/Mace-micro%E5%BC%95%E6%93%8E%E7%BC%96%E8%AF%91%E4%B8%8E%E6%B5%8B%E8%AF%95/index.html">
+<meta property="og:site_name" content="Pig Cat">
+<meta property="og:description" content="官方简介Mobile AI Compute Engine (MACE) 是一个专为移动端异构计算平台(支持Android, iOS, Linux, Windows)优化的神经网络计算框架。主要从以下的角度做了专门的优化：  性能 代码经过NEON指令，OpenCL以及Hexagon HVX专门优化，并且采用Winograd算法来进行卷积操作的加速。此外，还对启动速度进行了专门的优化。   功耗">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.ysy950803.top/img/avatar-ysy.png">
+<meta property="article:published_time" content="2020-10-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-08-21T06:11:31.899Z">
+<meta property="article:author" content="YSY">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="鼓捣折腾">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ysy950803.top/img/avatar-ysy.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.ysy950803.top/2020/10/25/Mace-micro%E5%BC%95%E6%93%8E%E7%BC%96%E8%AF%91%E4%B8%8E%E6%B5%8B%E8%AF%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="MK2u6SdXmNALFQhaVElzr03W62cBQbIjtHK-7rvSIjw"/><meta name="baidu-site-verification" content="codeva-o8m8oS84V9"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8999136091629669',
+  enable_page_level_ads: 'true'
+});</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-149830607-1"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-149830607-1');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":10,"languages":{"author":"作者: YSY","link":"链接: ","source":"来源: Pig Cat","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#A58A5D","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Mace-micro引擎编译与测试',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-08-21 14:11:31'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><script>document.oncontextmenu=function(){return!1}</script><script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("busuanzi_value_site_uv"),t=document.getElementById("busuanzi_value_site_pv"),n=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){n.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+1e5;break}}),i=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){i.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+3e5;break}}),r={childList:!0};n.observe(e,r),i.observe(t,r)});</script><meta name="referrer" content="no-referrer" /><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar-ysy.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/home-bg.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Pig Cat"><span class="site-name">Pig Cat</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Mace-micro引擎编译与测试</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-10-24T16:00:00.000Z" title="发表于 2020-10-25 00:00:00">2020-10-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-21T06:11:31.899Z" title="更新于 2024-08-21 14:11:31">2024-08-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Mace-micro引擎编译与测试"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src="https://github.com/XiaoMi/mace/raw/master/docs/mace-logo.png"></p>
+<h2 id="官方简介"><a href="#官方简介" class="headerlink" title="官方简介"></a>官方简介</h2><p><strong>Mobile AI Compute Engine (MACE)</strong> 是一个专为移动端异构计算平台(支持Android, iOS, Linux, Windows)优化的神经网络计算框架。<br>主要从以下的角度做了专门的优化：</p>
+<ul>
+<li>性能<ul>
+<li>代码经过NEON指令，OpenCL以及Hexagon HVX专门优化，并且采用<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1509.09308">Winograd算法</a>来进行卷积操作的加速。<br>此外，还对启动速度进行了专门的优化。</li>
+</ul>
+</li>
+<li>功耗<ul>
+<li>支持芯片的功耗管理，例如ARM的big.LITTLE调度，以及高通Adreno GPU功耗选项。</li>
+</ul>
+</li>
+<li>系统响应<ul>
+<li>支持自动拆解长时间的OpenCL计算任务，来保证UI渲染任务能够做到较好的抢占调度，从而保证系统UI的相应和用户体验。</li>
+</ul>
+</li>
+<li>内存占用<ul>
+<li>通过运用内存依赖分析技术，以及内存复用，减少内存的占用。另外，保持尽量少的外部依赖，保证代码尺寸精简。</li>
+</ul>
+</li>
+<li>模型加密与保护<ul>
+<li>模型保护是重要设计目标之一。支持将模型转换成C++代码，以及关键常量字符混淆，增加逆向的难度。</li>
+</ul>
+</li>
+<li>硬件支持范围<ul>
+<li>支持高通，联发科，以及松果等系列芯片的CPU，GPU与DSP(目前仅支持Hexagon)计算加速。CPU模式支持Android, iOS, Linux等系统。</li>
+</ul>
+</li>
+<li>模型格式支持<ul>
+<li>支持<a target="_blank" rel="noopener" href="https://github.com/tensorflow/tensorflow">TensorFlow</a>，<a target="_blank" rel="noopener" href="https://github.com/BVLC/caffe">Caffe</a>和<a target="_blank" rel="noopener" href="https://github.com/onnx/onnx">ONNX</a>等模型格式。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Micro-Controllers"><a href="#Micro-Controllers" class="headerlink" title="Micro Controllers"></a>Micro Controllers</h2><p>上面的简介摘自<a target="_blank" rel="noopener" href="https://github.com/XiaoMi/mace/blob/master/README_zh.md">官方GitHub介绍</a>，可以让大家基本了解什么是mace引擎，它是一个移动端的AI计算框架。随着谷歌Tensorflow Lite的推广，越来越多的移动应用都将部分AI计算能力迁移至端侧，这些机器学习的算法都是运行在应用层的。但大多数系统层面的计算，例如省电优化（根据应用使用习惯）、睡眠监测、运动行为识别、语音唤醒手机等，为了保证低功耗，必须放在底层，这样计算过程中就无需唤醒上层的一系列进程，只等有结果时才唤醒并上报数据。</p>
+<p>有多底层呢？通常来说就是BP侧，在HAL层以下，逻辑基本运行在类似DSP这样的处理器上，部分工作需要开发人员和硬件驱动打交道。mace框架支持将TF模型文件转换成C++代码并打包成micro组件，方便我们集成。</p>
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>官方文档（<a target="_blank" rel="noopener" href="https://mace.readthedocs.io/en/latest/micro-controllers/basic_usage.html">https://mace.readthedocs.io/en/latest/micro-controllers/basic_usage.html</a>）写得比较详尽，但一些细节和注意点还是只有实践过程中才会发现。我的系统是Ubuntu 20.04，部分依赖安装起来稍微麻烦一点（mace官方要求的依赖很多版本很旧）。</p>
+<p>先配置基础环境，要装的东西挺多的，按官方给的版本号安装即可（<a target="_blank" rel="noopener" href="https://mace.readthedocs.io/en/latest/installation/env_requirement.html">https://mace.readthedocs.io/en/latest/installation/env_requirement.html</a>）。下面只提一些注意点。</p>
+<p>1、安装Python 2.7：Ubuntu 18.04就不自带Python 2.x了，默认是3.x，所以一定要自己手动安装Python 2.7，注意配置python和pip命令默认对应的版本为2.x。虽然mace官方文档写的3.6也可以编，但是我试过，各种失败。</p>
+<p>2、安装Bazel 0.13.x（实测0.13.0和0.13.1都行）：由于Ubuntu直接用apt安装bazel的话版本会非常高，最后会导致编译失败。Ubuntu的话直接到bazel官方GitHub下载对应版本的deb文件来安装即可：<a target="_blank" rel="noopener" href="https://github.com/bazelbuild/bazel/releases?after=0.16.1">https://github.com/bazelbuild/bazel/releases?after=0.16.1</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i bazel_0.13.1-linux-x86_64.deb</span><br></pre></td></tr></table></figure>
+
+<p>3、由于我只在手机BP侧运行micro代码，且基于Tensorflow的模型文件转换，所以官方文档中提到的Android NDK、ADB和Docker这里都不需要安装，除此之外都最好安装完。</p>
+<p>配置好各种环境后，就可以根据basic_usage中的步骤拉取mace代码，并执行转换命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 直接执行，不需要改</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/XiaoMi/mace.git</span><br><span class="line"><span class="built_in">cd</span> mace/</span><br><span class="line">git fetch --all --tags --prune</span><br><span class="line">tag_name=`git describe --abbrev=0 --tags`</span><br><span class="line">git checkout tags/<span class="variable">$&#123;tag_name&#125;</span></span><br><span class="line"><span class="comment"># 转换脚本（保证是Python 2.x版本）</span></span><br><span class="line">python tools/python/convert.py --config=xxx.yml --enable_micro</span><br></pre></td></tr></table></figure>
+
+<p>这里的xxx.yml是模型转换的配置文件，可以参考官方示例：<a target="_blank" rel="noopener" href="https://github.com/XiaoMi/mace-models">https://github.com/XiaoMi/mace-models</a></p>
+<p>转换成功后，在mace&#x2F;build&#x2F;xxx&#x2F;model目录下面会有转换成功的产物，解压xxx.tar.gz压缩包即可得到micro代码。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>如果每次都将micro代码集成到底层打包再进行模型测试，那太麻烦了，效率低下。因此，我们可以将其直接运行在PC上来进行输入数据mock，这个是官方文档没有提到的，需要我们自己修改CMake配置文件并添加测试代码。</p>
+<p>我用CLion直接打开micro文件夹，导入后会自动加载CMakeLists文件，然而肯定是编不过的，需要对各目录下的CMakeLists稍作修改，可以直接根据错误提示来。由于不同模型转换得到的C++代码可能会有一些差异，但大致应该是差不多的，比如我这个模型转换后就只需要修改ops&#x2F;CMakeLists.txt，注释掉其中不存在的源文件（因为你的模型可能不需要这些代码，所以刚才的convert脚本给你删掉了，但CMakeLists里又没做调整，应该是脚本没考虑周全吧）。示例：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(MICRO_OPS_SRCS</span><br><span class="line"><span class="comment">#  shape.cc</span></span><br><span class="line"><span class="comment">#  reduce.cc</span></span><br><span class="line">  reshape.cc</span><br><span class="line">  matmul.cc</span><br><span class="line"><span class="comment">#  nhwc/depthwise_conv_2d_ref.cc</span></span><br><span class="line"><span class="comment">#  nhwc/conv_2d_c4_s4.cc</span></span><br><span class="line"><span class="comment">#  nhwc/depthwise_conv_2d_kb3_s4.cc</span></span><br><span class="line"><span class="comment">#  nhwc/pooling_ref.cc</span></span><br><span class="line"><span class="comment">#  nhwc/conv_2d_c3_s4.cc</span></span><br><span class="line"><span class="comment">#  nhwc/conv_2d_ref.cc</span></span><br><span class="line">  nhwc/depthwise_conv_2d_kb4_s4.cc</span><br><span class="line">  nhwc/depthwise_conv_2d_kb1_s4.cc</span><br><span class="line">  nhwc/base/depthwise_conv_2d_base.cc</span><br><span class="line">  nhwc/base/conv_2d_base.cc</span><br><span class="line">  nhwc/base/filter_op_base.cc</span><br><span class="line">  nhwc/base/pooling_base.cc</span><br><span class="line"><span class="comment">#  nhwc/depthwise_conv_2d_kb2_s4.cc</span></span><br><span class="line"><span class="comment">#  nhwc/conv_2d_c2_s4.cc</span></span><br><span class="line"><span class="comment">#  nhwc/batch_norm.cc</span></span><br><span class="line">  nhwc/pooling_s4.cc</span><br><span class="line">  bias_add.cc</span><br><span class="line">  softmax.cc</span><br><span class="line"><span class="comment">#  eltwise.cc</span></span><br><span class="line">  utils/gemm.cc</span><br><span class="line">  utils/crumb_utils.cc</span><br><span class="line">  utils/gemv.cc</span><br><span class="line">  utils/activation.cc</span><br><span class="line"><span class="comment">#  expand_dims.cc</span></span><br><span class="line"><span class="comment">#  squeeze.cc</span></span><br><span class="line">  activation.cc</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_library</span>(micro_ops</span><br><span class="line">  <span class="variable">$&#123;MICRO_OPS_SRCS&#125;</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(micro_ops</span><br><span class="line">  micro_base</span><br><span class="line">  micro_framework</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_library</span>(micro_ops_for_test</span><br><span class="line">  <span class="variable">$&#123;MICRO_OPS_SRCS&#125;</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(micro_ops_for_test</span><br><span class="line">  micro_base</span><br><span class="line">  micro_framework_for_optest</span><br><span class="line">)</span><br><span class="line"><span class="keyword">target_compile_options</span>(micro_ops_for_test PUBLIC -fPIC)</span><br></pre></td></tr></table></figure>
+
+<p>编译错误提示找不到的，直接注释掉即可。接下来就可以自己编写测试代码来验证模型输出了，具体可以参考官方文档basic_usage最后一节。比如我这里在micro目录下添加了一个主入口测试文件main_test.cc和一个依赖文件my_test_utils.cc（包括.h头文件），只需要修改一下同目录下的CMakeLists（这个文件也是micro的顶层编译配置）即可：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 追加配置即可</span></span><br><span class="line"><span class="comment"># main_test_srcs、micro_test_run_lib、micro_test_run都是自定义的名字</span></span><br><span class="line"><span class="keyword">file</span>(GLOB main_test_srcs my_test_utils.cc)</span><br><span class="line"><span class="keyword">add_library</span>(micro_test_run_lib</span><br><span class="line">  <span class="variable">$&#123;main_test_srcs&#125;</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">add_executable</span>(micro_test_run main_test.cc)</span><br><span class="line"><span class="comment"># 这里必须链接micro_engine_c，这样才能调用mace的API</span></span><br><span class="line"><span class="keyword">target_link_libraries</span>(micro_test_run</span><br><span class="line">  micro_test_run_lib</span><br><span class="line">  micro_engine_c</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top">YSY</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top/2020/10/25/Mace-micro%E5%BC%95%E6%93%8E%E7%BC%96%E8%AF%91%E4%B8%8E%E6%B5%8B%E8%AF%95/">https://blog.ysy950803.top/2020/10/25/Mace-micro%E5%BC%95%E6%93%8E%E7%BC%96%E8%AF%91%E4%B8%8E%E6%B5%8B%E8%AF%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.ysy950803.top" target="_blank">Pig Cat</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Android/">Android</a><a class="post-meta__tags" href="/tags/%E9%BC%93%E6%8D%A3%E6%8A%98%E8%85%BE/">鼓捣折腾</a><a class="post-meta__tags" href="/tags/AI/">AI</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar-ysy.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://qr.alipay.com/fkx12362diu95oh2aweaac5" target="_blank"><img class="post-qr-code-img" src="/img/love-support.png" alt="支付宝（移动端点击二维码亦可）"/></a><div class="post-qr-code-desc">支付宝（移动端点击二维码亦可）</div></li></ul></div></div><div class="ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=fluid data-ad-layout=in-article data-ad-slot=2789809398 style=display:block;text-align:center></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/11/18/%E6%BA%90%E7%A0%81%E8%8C%B6%E8%88%8D%E4%B9%8B%E6%B2%A1%E6%9C%89epoll%E5%B0%B1%E6%B2%A1%E6%9C%89Handler/" title="源码茶舍之没有epoll就没有Handler"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">源码茶舍之没有epoll就没有Handler</div></div></a></div><div class="next-post pull-right"><a href="/2020/07/09/%E5%80%9F%E5%8A%A9acme.sh%E5%85%8D%E8%B4%B9%E5%BC%80%E5%90%AF%E7%BD%91%E7%AB%99%E7%9A%84HTTPS%EF%BC%88Apache2%E7%8E%AF%E5%A2%83%EF%BC%89/" title="借助acme.sh免费开启网站的HTTPS（Apache2环境）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">借助acme.sh免费开启网站的HTTPS（Apache2环境）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2019/08/16/Ubuntu%E5%AE%89%E8%A3%85Source%20Insight%E5%AF%BC%E5%85%A5Android%E6%BA%90%E7%A0%81%E5%B9%B6%E8%AE%BE%E7%BD%AE%E4%BB%BFIDEA%E4%B8%BB%E9%A2%98Darcula/" title="Ubuntu安装Source Insight导入Android源码并设置仿IDEA主题Darcula"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-08-16</div><div class="title">Ubuntu安装Source Insight导入Android源码并设置仿IDEA主题Darcula</div></div></a></div><div><a href="/2020/01/14/Android%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%EF%BC%88Neural%20Networks%20API%EF%BC%89%E5%88%9D%E6%8E%A2/" title="Android神经网络（Neural Networks API）初探"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-01-14</div><div class="title">Android神经网络（Neural Networks API）初探</div></div></a></div><div><a href="/2020/05/17/Win10%E7%94%A8WSL%E4%B8%8B%E8%BD%BDAOSP/" title="Win10用WSL下载AOSP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-05-17</div><div class="title">Win10用WSL下载AOSP</div></div></a></div><div><a href="/2020/06/06/%E8%A6%86%E7%9B%96%E5%AE%89%E8%A3%85Play%20Store%E7%89%88%E6%9C%AC%E7%9A%84%E5%9B%BD%E4%BA%A7App/" title="覆盖安装Play Store版本的国产App"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-06</div><div class="title">覆盖安装Play Store版本的国产App</div></div></a></div><div><a href="/2020/07/04/Magisk%E4%B8%8EEdXposed%E6%A1%86%E6%9E%B6%E5%AE%89%E8%A3%85%E5%AE%9E%E8%B7%B5%EF%BC%88Android%20P%E5%8F%8A%E4%BB%A5%E4%B8%8A%EF%BC%89%20/" title="Magisk与EdXposed框架安装实践（Android P及以上）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-04</div><div class="title">Magisk与EdXposed框架安装实践（Android P及以上）</div></div></a></div><div><a href="/2021/01/26/%E5%BE%AE%E4%BF%A1Android%E7%AB%AF%E5%A6%82%E4%BD%95%E5%AE%89%E5%85%A8%E9%99%8D%E7%BA%A7/" title="微信Android端如何安全降级"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-26</div><div class="title">微信Android端如何安全降级</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar-ysy.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">YSY</div><div class="author-info__description">Full-Stack, Android, AI</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ysy950803"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget donate" id="donate"><div class="item-headline"><i class="fas fa-heartbeat"></i><span>随缘支持</span></div><div class="item-content"><p style="text-align:center;padding:0;margin:0;"><a target="_blank" rel="noopener" href="https://qr.alipay.com/fkx12362diu95oh2aweaac5"><img src="https://blog.ysy950803.top/img/love-support.png" width="200" height="200"/></a></p> <p style="text-align:center;padding:0;margin:0;">移动端点击二维码亦可</p> <p style="text-align:center;padding:0;margin:0;"><u><a target="_blank" rel="noopener" href="https://paypal.me/yaoshengyu">Paypal.me if you like</a></u></p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">官方简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Micro-Controllers"><span class="toc-number">2.</span> <span class="toc-text">Micro Controllers</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91"><span class="toc-number">3.</span> <span class="toc-text">编译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95"><span class="toc-number">4.</span> <span class="toc-text">测试</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/28/%E8%AE%A9WCDB%E5%85%BC%E5%AE%B9%E6%9C%80%E6%96%B0%E7%89%88Room/" title="让WCDB兼容最新版Room">让WCDB兼容最新版Room</a><time datetime="2024-03-28T02:17:23.000Z" title="发表于 2024-03-28 10:17:23">2024-03-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/26/%E5%8F%8C%E8%BF%9B%E7%A8%8B%E4%BA%A4%E4%BA%92%E5%AE%9E%E7%8E%B0App%E8%87%AA%E5%8A%A8%E9%87%8D%E5%90%AF/" title="双进程交互实现App自动重启">双进程交互实现App自动重启</a><time datetime="2024-03-26T07:40:19.000Z" title="发表于 2024-03-26 15:40:19">2024-03-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/25/%E5%9C%A8assembleRelease%E4%B9%8B%E5%89%8D%E6%89%A7%E8%A1%8C%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BB%BB%E5%8A%A1/" title="在assembleRelease之前执行自定义任务">在assembleRelease之前执行自定义任务</a><time datetime="2024-03-25T06:19:04.000Z" title="发表于 2024-03-25 14:19:04">2024-03-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/11/%E8%A7%A3%E5%86%B3macOS%E6%89%A7%E8%A1%8Cfastboot%E6%89%BE%E4%B8%8D%E5%88%B0%E8%AE%BE%E5%A4%87%E7%9A%84%E9%97%AE%E9%A2%98/" title="解决macOS执行fastboot找不到设备的问题">解决macOS执行fastboot找不到设备的问题</a><time datetime="2023-08-11T07:49:01.000Z" title="发表于 2023-08-11 15:49:01">2023-08-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/31/%E7%BB%99%E4%B8%8D%E8%92%9C%E5%AD%90%EF%BC%88busuanzi%EF%BC%89%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%8A%A0%E5%88%9D%E5%A7%8B%E5%80%BC/" title="给不蒜子（busuanzi）统计数据增加初始值">给不蒜子（busuanzi）统计数据增加初始值</a><time datetime="2023-07-31T08:54:00.000Z" title="发表于 2023-07-31 16:54:00">2023-07-31</time></div></div></div></div><div class="card-widget ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=auto data-ad-slot=7049722255 data-full-width-responsive=true style=display:block></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('/img/home-bg.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2024 By YSY</div><div class="footer_custom_text">Welcome To My Blog!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'a2660cd0497b67ee33e5',
+      clientSecret: '3f970ce5c5ee2b57bed7c20e44809ba6bda487ac',
+      repo: 'ysy950803.github.io',
+      owner: 'ysy950803',
+      admin: ['ysy950803'],
+      id: '597595ae950235613c33560badf051d5',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.textContent= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><div class="aplayer no-destroy" data-id="2829816518" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false" data-lrctype="0"> </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: true,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', 'UA-149830607-1', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

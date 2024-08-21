@@ -1,0 +1,353 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Rust为Android应用编译so库 | Pig Cat</title><meta name="author" content="YSY"><meta name="copyright" content="YSY"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言Rust是个好东西，Google也开始把它用于AOSP了。我们开发应用同样也可以使用Rust来编写原本为C++的Native代码。网上搜罗一圈，入门的文档不多不少，这里稍微归纳整理一下吧，毕竟Hello World是人类的一大步。 安装RustRust的文档真的非常棒，目前的翻译版本也几乎满足所有学习需求。安装很简单，参考官网（Rust-lang.org）即可，一行命令： 1curl --pr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust为Android应用编译so库">
+<meta property="og:url" content="https://blog.ysy950803.top/2022/02/11/Rust%E4%B8%BAAndroid%E5%BA%94%E7%94%A8%E7%BC%96%E8%AF%91so%E5%BA%93/index.html">
+<meta property="og:site_name" content="Pig Cat">
+<meta property="og:description" content="前言Rust是个好东西，Google也开始把它用于AOSP了。我们开发应用同样也可以使用Rust来编写原本为C++的Native代码。网上搜罗一圈，入门的文档不多不少，这里稍微归纳整理一下吧，毕竟Hello World是人类的一大步。 安装RustRust的文档真的非常棒，目前的翻译版本也几乎满足所有学习需求。安装很简单，参考官网（Rust-lang.org）即可，一行命令： 1curl --pr">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.ysy950803.top/img/avatar-ysy.png">
+<meta property="article:published_time" content="2022-02-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-08-21T06:11:31.978Z">
+<meta property="article:author" content="YSY">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="Rust">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ysy950803.top/img/avatar-ysy.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.ysy950803.top/2022/02/11/Rust%E4%B8%BAAndroid%E5%BA%94%E7%94%A8%E7%BC%96%E8%AF%91so%E5%BA%93/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="MK2u6SdXmNALFQhaVElzr03W62cBQbIjtHK-7rvSIjw"/><meta name="baidu-site-verification" content="codeva-o8m8oS84V9"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8999136091629669',
+  enable_page_level_ads: 'true'
+});</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-149830607-1"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-149830607-1');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":10,"languages":{"author":"作者: YSY","link":"链接: ","source":"来源: Pig Cat","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#A58A5D","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Rust为Android应用编译so库',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-08-21 14:11:31'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><script>document.oncontextmenu=function(){return!1}</script><script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("busuanzi_value_site_uv"),t=document.getElementById("busuanzi_value_site_pv"),n=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){n.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+1e5;break}}),i=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){i.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+3e5;break}}),r={childList:!0};n.observe(e,r),i.observe(t,r)});</script><meta name="referrer" content="no-referrer" /><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar-ysy.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/home-bg.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Pig Cat"><span class="site-name">Pig Cat</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Rust为Android应用编译so库</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-02-10T16:00:00.000Z" title="发表于 2022-02-11 00:00:00">2022-02-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-21T06:11:31.978Z" title="更新于 2024-08-21 14:11:31">2024-08-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Rust为Android应用编译so库"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>Rust是个好东西，Google也开始把它用于AOSP了。我们开发应用同样也可以使用Rust来编写原本为C++的Native代码。网上搜罗一圈，入门的文档不多不少，这里稍微归纳整理一下吧，毕竟Hello World是人类的一大步。</p>
+<h3 id="安装Rust"><a href="#安装Rust" class="headerlink" title="安装Rust"></a>安装Rust</h3><p>Rust的文档真的非常棒，目前的翻译版本也几乎满足所有学习需求。安装很简单，参考官网（<a target="_blank" rel="noopener" href="https://www.rust-lang.org/zh-CN/learn/get-started">Rust-lang.org</a>）即可，一行命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --proto <span class="string">&#x27;=https&#x27;</span> --tlsv1.2 -sSf https://sh.rustup.rs | sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置NDK"><a href="#配置NDK" class="headerlink" title="配置NDK"></a>配置NDK</h3><p>1、先确保你在Android Studio的SDK Manager中下载安装好了NDK相关的工具包，基操就不赘述了。</p>
+<p>2、默认目录一般都在 <code>/Users/你的用户名/Library/Android/sdk/ndk-bundle</code> 这个位置，用户目录可以用 <code>$&#123;HOME&#125;</code> 代替。当然，如果你的SDK在其他位置，按你的来即可。</p>
+<p>在任意处创建一个名为NDK的目录（名字随意，也可不叫NDK），然后运行NDK工具包中的py脚本以编译NDK开发环境：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line"><span class="built_in">mkdir</span> NDK</span><br><span class="line"><span class="comment"># 不同架构参数不同，按需配置即可，比如我就只需要arm64</span></span><br><span class="line"><span class="comment"># api参数最好按你的应用targetSDK的版本号来，比如我这里是30</span></span><br><span class="line"><span class="comment"># Python版本我这里是3.8，如果你是Python 2.x的话，不确定能否运行成功</span></span><br><span class="line">python <span class="variable">$&#123;HOME&#125;</span>/Library/Android/sdk/ndk-bundle/build/tools/make_standalone_toolchain.py --api 30 --<span class="built_in">arch</span> arm64 --install-dir NDK/arm64</span><br><span class="line">python <span class="variable">$&#123;HOME&#125;</span>/Library/Android/sdk/ndk-bundle/build/tools/make_standalone_toolchain.py --api 30 --<span class="built_in">arch</span> arm --install-dir NDK/arm</span><br><span class="line">python <span class="variable">$&#123;HOME&#125;</span>/Library/Android/sdk/ndk-bundle/build/tools/make_standalone_toolchain.py --api 30 --<span class="built_in">arch</span> x86 --install-dir NDK/x86</span><br></pre></td></tr></table></figure>
+
+<p>3、编辑Rust环境的配置文件即 <code>~/.cargo/config</code> ，若无，新建即可，并添加内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 同样是按需配置，如果你不需要编译其他架构，就不添加</span></span><br><span class="line"><span class="comment"># 相关路径最好写绝对路径，此处若用$&#123;HOME&#125;不生效</span></span><br><span class="line">[target.aarch64-linux-android]</span><br><span class="line">ar = <span class="string">&quot;/Users/你的用户名/NDK/arm64/bin/aarch64-linux-android-ar&quot;</span></span><br><span class="line">linker = <span class="string">&quot;/Users/你的用户名/NDK/arm64/bin/aarch64-linux-android-clang&quot;</span></span><br><span class="line"></span><br><span class="line">[target.armv7-linux-androideabi]</span><br><span class="line">ar = <span class="string">&quot;/Users/你的用户名/NDK/arm/bin/arm-linux-androideabi-ar&quot;</span></span><br><span class="line">linker = <span class="string">&quot;/Users/你的用户名/NDK/arm/bin/arm-linux-androideabi-clang&quot;</span></span><br><span class="line"></span><br><span class="line">[target.i686-linux-android]</span><br><span class="line">ar = <span class="string">&quot;/Users/你的用户名/NDK/x86/bin/i686-linux-android-ar&quot;</span></span><br><span class="line">linker = <span class="string">&quot;/Users/你的用户名/NDK/x86/bin/i686-linux-android-clang&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>4、添加编译工具链，和第3步中配置的对应：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android</span><br></pre></td></tr></table></figure>
+
+<h3 id="编写Demo"><a href="#编写Demo" class="headerlink" title="编写Demo"></a>编写Demo</h3><p>配置好各种环境后，就可以开始Coding了，先生成一个Rust的lib空项目，<code>rust-android-libs</code> 是我的自定义命名：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cargo new rust-android-libs --lib</span><br></pre></td></tr></table></figure>
+
+<p>进入目录，编辑Cargo.toml配置文件，直接修改如下：</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;rust-android-libs&quot;</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">jni</span> = &#123; version = <span class="string">&quot;0.19.0&quot;</span>, default-features = <span class="literal">false</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="section">[lib]</span></span><br><span class="line"><span class="attr">crate_type</span> = [<span class="string">&quot;cdylib&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>这里Rust的JNI版本，可以参考官方文档：<a target="_blank" rel="noopener" href="https://docs.rs/releases/search?query=jni">Docs.rs</a>，目前最新为0.19.0，下面的crate_type配置也是按文档来的。</p>
+<p>3、编写Rust代码，在src&#x2F;lib.rs文件中：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#![cfg(target_os = <span class="string">&quot;android&quot;</span>)]</span></span><br><span class="line"><span class="meta">#![allow(non_snake_case)]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> jni::JNIEnv;</span><br><span class="line"><span class="keyword">use</span> jni::objects::&#123;JClass, JString&#125;;</span><br><span class="line"><span class="keyword">use</span> jni::sys::jstring;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[no_mangle]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="keyword">fn</span> <span class="title function_">Java_com_xxx_xxx_Yyy_getTestStr</span>(</span><br><span class="line">    env: JNIEnv, _: JClass,</span><br><span class="line">) <span class="punctuation">-&gt;</span> jstring &#123;</span><br><span class="line">    env.<span class="title function_ invoke__">new_string</span>(<span class="string">&quot;Hello World!&quot;</span>)</span><br><span class="line">        .<span class="title function_ invoke__">expect</span>(<span class="string">&quot;Couldn&#x27;t create java string!&quot;</span>)</span><br><span class="line">        .<span class="title function_ invoke__">into_inner</span>()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[no_mangle]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="keyword">fn</span> <span class="title function_">Java_com_xxx_xxx_Yyy_getTestStrWithInput</span>(</span><br><span class="line">    env: JNIEnv, _: JClass, input: JString,</span><br><span class="line">) <span class="punctuation">-&gt;</span> jstring &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">input</span>: <span class="type">String</span> = env.<span class="title function_ invoke__">get_string</span>(input)</span><br><span class="line">        .<span class="title function_ invoke__">expect</span>(<span class="string">&quot;Couldn&#x27;t get java string!&quot;</span>)</span><br><span class="line">        .<span class="title function_ invoke__">into</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">output</span> = env.<span class="title function_ invoke__">new_string</span>(<span class="built_in">format!</span>(<span class="string">&quot;Hello, &#123;&#125;!&quot;</span>, input))</span><br><span class="line">        .<span class="title function_ invoke__">expect</span>(<span class="string">&quot;Couldn&#x27;t create java string!&quot;</span>);</span><br><span class="line">    output.<span class="title function_ invoke__">into_inner</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上所示，我们编写了两个方法，一个是直接返回一个String，另一个是带参数返回拼接后的String。方法的命名规则和写C++的JNI代码一样，以此处为例，说明我们需要在Java&#x2F;Kotlin代码中对应创建一个包名为 <code>com.xxx.xxx</code>，名为 <code>Yyy</code> 的类，其中有两个方法：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xxx.xxx</span><br><span class="line"></span><br><span class="line"><span class="keyword">object</span> Yyy &#123;</span><br><span class="line">    <span class="keyword">init</span> &#123;</span><br><span class="line">        <span class="comment">// 因为等会儿编译的so产物为librust_android_libs.so，所以此处加载命名如下</span></span><br><span class="line">        System.loadLibrary(<span class="string">&quot;rust_android_libs&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">external</span> <span class="function"><span class="keyword">fun</span> <span class="title">getTestStr</span><span class="params">()</span></span>: String</span><br><span class="line">    <span class="keyword">external</span> <span class="function"><span class="keyword">fun</span> <span class="title">getTestStrWithInput</span><span class="params">(input: <span class="type">String</span>)</span></span>: String</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4、编译Rust项目，按需要的架构编译即可，如果不用模拟器的话，一般都不用考虑x86：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cargo build --target aarch64-linux-android --release</span><br><span class="line">cargo build --target armv7-linux-androideabi --release</span><br><span class="line">cargo build --target i686-linux-android --release</span><br></pre></td></tr></table></figure>
+
+<p>编译成功后在项目的 <code>/target/aarch64-linux-android/release/librust_android_libs.so</code> 路径下可以找到想要的so文件，把它复制到Android项目中。</p>
+<p>一般来说都在 <code>.../app/src/main/jniLibs/arm64-v8a/</code> 这样的目录下，按你需要的架构来即可。同时记得配置build.gradle：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">android &#123;</span><br><span class="line">    compileSdkVersion <span class="number">30</span></span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">        ndk &#123;</span><br><span class="line">            abiFilters <span class="string">&#x27;arm64-v8a&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果你的AGP插件版本不小于7.0，可能需要添加</span></span><br><span class="line">    packagingOptions &#123;</span><br><span class="line">        jniLibs &#123;</span><br><span class="line">            useLegacyPackaging = <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>整个流程下来，还是有点小繁琐的，同时也整理几个问题吧：</p>
+<p>1、同样的代码逻辑，Rust编译出来的so库比C++编译的要大很多，以我上面的代码为例，64位架构大约在<strong>4MB</strong>左右，32位在3MB多一点，而C++编译的产物分别为<strong>1MB</strong>多和900多KB，这对包体积大小敏感的项目来说，差距还是不小的。不知道有没有优化的方法，由于我也是刚接触Rust，还不太了解。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 我们可以用strings命令来对比两种环境编译出来的so结构</span></span><br><span class="line">strings librust_android_libs.so</span><br></pre></td></tr></table></figure>
+
+<p>2、复杂的业务逻辑肯定需要调试，以方便定位问题，但以我们上面的例子来看，Rust项目和Android是分开的，如何像C++代码那样直接在Android项目中整合编译并断点调试，还需要进一步探索。</p>
+<p>3、Google和Rust官方对于适配到Android应用项目的相关文档还不是很丰富，我们在Studio中New Project的时候，就可以看见有Native C++的模板可以选择，这给了初学者很好的示范，希望以后也有Native Rust之类的模板。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top">YSY</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top/2022/02/11/Rust%E4%B8%BAAndroid%E5%BA%94%E7%94%A8%E7%BC%96%E8%AF%91so%E5%BA%93/">https://blog.ysy950803.top/2022/02/11/Rust%E4%B8%BAAndroid%E5%BA%94%E7%94%A8%E7%BC%96%E8%AF%91so%E5%BA%93/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.ysy950803.top" target="_blank">Pig Cat</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Android/">Android</a><a class="post-meta__tags" href="/tags/Rust/">Rust</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar-ysy.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://qr.alipay.com/fkx12362diu95oh2aweaac5" target="_blank"><img class="post-qr-code-img" src="/img/love-support.png" alt="支付宝（移动端点击二维码亦可）"/></a><div class="post-qr-code-desc">支付宝（移动端点击二维码亦可）</div></li></ul></div></div><div class="ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=fluid data-ad-layout=in-article data-ad-slot=2789809398 style=display:block;text-align:center></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/02/18/%E6%97%A0%E9%9C%80%E7%94%B5%E8%84%91%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8Cadb%20shell%E5%91%BD%E4%BB%A4/" title="无需电脑如何执行adb shell命令"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">无需电脑如何执行adb shell命令</div></div></a></div><div class="next-post pull-right"><a href="/2022/01/28/Android%E6%89%8B%E6%9C%BA%E5%A6%82%E4%BD%95%E4%BF%AE%E6%94%B9DPI%E8%A7%A6%E5%8F%91%E5%B9%B3%E6%9D%BF%E6%A8%A1%E5%BC%8F/" title="Android手机如何修改DPI触发平板模式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Android手机如何修改DPI触发平板模式</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2018/03/03/USB%E8%B0%83%E8%AF%95Android%E8%AE%BE%E5%A4%87%E6%97%B6%E9%81%87%E5%88%B0no%20permissions%20(verify%20udev%20rules)%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" title="USB调试Android设备时遇到no permissions (verify udev rules)的解决办法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-03-03</div><div class="title">USB调试Android设备时遇到no permissions (verify udev rules)的解决办法</div></div></a></div><div><a href="/2018/08/03/%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E5%BC%80%E5%8F%91%E8%80%85%E9%80%89%E9%A1%B9%E5%85%B3%E9%97%AD%E5%8A%A8%E7%94%BB%E5%90%8E%E4%BD%BF%E5%85%B6%E5%A4%B1%E6%95%88/" title="如何防止开发者选项关闭动画后使其失效"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-08-03</div><div class="title">如何防止开发者选项关闭动画后使其失效</div></div></a></div><div><a href="/2018/10/20/goAsync%E5%B8%AE%E4%BD%A0%E5%9C%A8onReceive%E4%B8%AD%E7%AE%80%E4%BE%BF%E5%9C%B0%E8%BF%9B%E8%A1%8C%E5%BC%82%E6%AD%A5%E6%93%8D%E4%BD%9C/" title="goAsync帮你在onReceive中简便地进行异步操作"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-10-20</div><div class="title">goAsync帮你在onReceive中简便地进行异步操作</div></div></a></div><div><a href="/2018/10/20/%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%B3%95%E9%81%BF%E5%85%8DAndroid%E7%B3%BB%E7%BB%9F%E6%9B%B4%E6%94%B9%E5%AD%97%E4%BD%93%E5%A4%A7%E5%B0%8F/" title="两种方法避免Android系统更改字体大小"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-10-20</div><div class="title">两种方法避免Android系统更改字体大小</div></div></a></div><div><a href="/2018/10/20/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%A7%86%E5%8C%96%E7%9A%84ChkBugreport%E5%88%86%E6%9E%90log%E6%96%87%E4%BB%B6/" title="使用可视化的ChkBugreport分析log文件"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-10-20</div><div class="title">使用可视化的ChkBugreport分析log文件</div></div></a></div><div><a href="/2018/12/09/RxJava2%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AE%B0%EF%BC%9A%E7%94%A8CompositeDisposable%E6%9D%A5%E2%80%9C%E5%AE%89%E6%8E%92%E2%80%9DRetrofit%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/" title="RxJava2开发小记：用CompositeDisposable来“安排”Retrofit网络请求"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-12-09</div><div class="title">RxJava2开发小记：用CompositeDisposable来“安排”Retrofit网络请求</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar-ysy.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">YSY</div><div class="author-info__description">Full-Stack, Android, AI</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ysy950803"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget donate" id="donate"><div class="item-headline"><i class="fas fa-heartbeat"></i><span>随缘支持</span></div><div class="item-content"><p style="text-align:center;padding:0;margin:0;"><a target="_blank" rel="noopener" href="https://qr.alipay.com/fkx12362diu95oh2aweaac5"><img src="https://blog.ysy950803.top/img/love-support.png" width="200" height="200"/></a></p> <p style="text-align:center;padding:0;margin:0;">移动端点击二维码亦可</p> <p style="text-align:center;padding:0;margin:0;"><u><a target="_blank" rel="noopener" href="https://paypal.me/yaoshengyu">Paypal.me if you like</a></u></p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Rust"><span class="toc-number">2.</span> <span class="toc-text">安装Rust</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AENDK"><span class="toc-number">3.</span> <span class="toc-text">配置NDK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99Demo"><span class="toc-number">4.</span> <span class="toc-text">编写Demo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E8%AF%9D"><span class="toc-number">5.</span> <span class="toc-text">后话</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/28/%E8%AE%A9WCDB%E5%85%BC%E5%AE%B9%E6%9C%80%E6%96%B0%E7%89%88Room/" title="让WCDB兼容最新版Room">让WCDB兼容最新版Room</a><time datetime="2024-03-28T02:17:23.000Z" title="发表于 2024-03-28 10:17:23">2024-03-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/26/%E5%8F%8C%E8%BF%9B%E7%A8%8B%E4%BA%A4%E4%BA%92%E5%AE%9E%E7%8E%B0App%E8%87%AA%E5%8A%A8%E9%87%8D%E5%90%AF/" title="双进程交互实现App自动重启">双进程交互实现App自动重启</a><time datetime="2024-03-26T07:40:19.000Z" title="发表于 2024-03-26 15:40:19">2024-03-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/25/%E5%9C%A8assembleRelease%E4%B9%8B%E5%89%8D%E6%89%A7%E8%A1%8C%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BB%BB%E5%8A%A1/" title="在assembleRelease之前执行自定义任务">在assembleRelease之前执行自定义任务</a><time datetime="2024-03-25T06:19:04.000Z" title="发表于 2024-03-25 14:19:04">2024-03-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/11/%E8%A7%A3%E5%86%B3macOS%E6%89%A7%E8%A1%8Cfastboot%E6%89%BE%E4%B8%8D%E5%88%B0%E8%AE%BE%E5%A4%87%E7%9A%84%E9%97%AE%E9%A2%98/" title="解决macOS执行fastboot找不到设备的问题">解决macOS执行fastboot找不到设备的问题</a><time datetime="2023-08-11T07:49:01.000Z" title="发表于 2023-08-11 15:49:01">2023-08-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/31/%E7%BB%99%E4%B8%8D%E8%92%9C%E5%AD%90%EF%BC%88busuanzi%EF%BC%89%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%8A%A0%E5%88%9D%E5%A7%8B%E5%80%BC/" title="给不蒜子（busuanzi）统计数据增加初始值">给不蒜子（busuanzi）统计数据增加初始值</a><time datetime="2023-07-31T08:54:00.000Z" title="发表于 2023-07-31 16:54:00">2023-07-31</time></div></div></div></div><div class="card-widget ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=auto data-ad-slot=7049722255 data-full-width-responsive=true style=display:block></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('/img/home-bg.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2024 By YSY</div><div class="footer_custom_text">Welcome To My Blog!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'a2660cd0497b67ee33e5',
+      clientSecret: '3f970ce5c5ee2b57bed7c20e44809ba6bda487ac',
+      repo: 'ysy950803.github.io',
+      owner: 'ysy950803',
+      admin: ['ysy950803'],
+      id: 'de0a02fd79dbbfc4d8de2af99a3ea274',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.textContent= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><div class="aplayer no-destroy" data-id="2829816518" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false" data-lrctype="0"> </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: true,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', 'UA-149830607-1', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>NDK开发中为什么除以0程序不崩溃？ | Pig Cat</title><meta name="author" content="YSY"><meta name="copyright" content="YSY"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="我们都知道不管是在Java还是在C++程序中，下面这段代码都会导致程序错误： 123int x &#x3D; 10;int y &#x3D; x &#x2F; 0;...  但是我今天发现了一个比较神奇的事情，把这段代码写成native方法后在Java层调用，竟然没有导致App崩溃，代码是这样子的： 12345678910111213141516#include &lt;jni.h&gt;#include &quot;logg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NDK开发中为什么除以0程序不崩溃？">
+<meta property="og:url" content="https://blog.ysy950803.top/2019/04/15/NDK%E5%BC%80%E5%8F%91%E4%B8%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E9%99%A4%E4%BB%A50%E7%A8%8B%E5%BA%8F%E4%B8%8D%E5%B4%A9%E6%BA%83%EF%BC%9F/index.html">
+<meta property="og:site_name" content="Pig Cat">
+<meta property="og:description" content="我们都知道不管是在Java还是在C++程序中，下面这段代码都会导致程序错误： 123int x &#x3D; 10;int y &#x3D; x &#x2F; 0;...  但是我今天发现了一个比较神奇的事情，把这段代码写成native方法后在Java层调用，竟然没有导致App崩溃，代码是这样子的： 12345678910111213141516#include &lt;jni.h&gt;#include &quot;logg">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.ysy950803.top/img/avatar-ysy.png">
+<meta property="article:published_time" content="2019-04-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-08-21T06:11:31.889Z">
+<meta property="article:author" content="YSY">
+<meta property="article:tag" content="问题不大">
+<meta property="article:tag" content="Android">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ysy950803.top/img/avatar-ysy.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.ysy950803.top/2019/04/15/NDK%E5%BC%80%E5%8F%91%E4%B8%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E9%99%A4%E4%BB%A50%E7%A8%8B%E5%BA%8F%E4%B8%8D%E5%B4%A9%E6%BA%83%EF%BC%9F/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="MK2u6SdXmNALFQhaVElzr03W62cBQbIjtHK-7rvSIjw"/><meta name="baidu-site-verification" content="codeva-o8m8oS84V9"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8999136091629669',
+  enable_page_level_ads: 'true'
+});</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-149830607-1"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-149830607-1');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":10,"languages":{"author":"作者: YSY","link":"链接: ","source":"来源: Pig Cat","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#A58A5D","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'NDK开发中为什么除以0程序不崩溃？',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2024-08-21 14:11:31'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><script>document.oncontextmenu=function(){return!1}</script><script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("busuanzi_value_site_uv"),t=document.getElementById("busuanzi_value_site_pv"),n=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){n.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+1e5;break}}),i=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){i.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+3e5;break}}),r={childList:!0};n.observe(e,r),i.observe(t,r)});</script><meta name="referrer" content="no-referrer" /><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar-ysy.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/home-bg.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Pig Cat"><span class="site-name">Pig Cat</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">NDK开发中为什么除以0程序不崩溃？</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2019-04-14T16:00:00.000Z" title="发表于 2019-04-15 00:00:00">2019-04-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-21T06:11:31.889Z" title="更新于 2024-08-21 14:11:31">2024-08-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="NDK开发中为什么除以0程序不崩溃？"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>我们都知道不管是在Java还是在C++程序中，下面这段代码都会导致程序错误：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">y</span> <span class="operator">=</span> x / <span class="number">0</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>但是我今天发现了一个比较神奇的事情，把这段代码写成native方法后在Java层调用，竟然没有导致App崩溃，代码是这样子的：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;jni.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;logger.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">JNIEXPORT <span class="type">void</span> JNICALL <span class="title">test_crash</span><span class="params">(JNIEnv *env, jobject <span class="comment">/* this */</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> x = <span class="number">10</span>;</span><br><span class="line">    <span class="type">int</span> y = x / <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">LOGD</span>(<span class="string">&quot;crash %d&quot;</span>, y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>Java层很简单，我保证没有try-catch，而且Log打印出来y的值竟然是0，这完全颠覆我三观。<br>怀疑人生的我把这两行关键代码放到原生的C++编译器中编译并运行，妥妥地报错：<br><img src="https://imgconvert.csdnimg.cn/20190412232026342.png" alt="在这里插入图片描述"><br>为什么在Android手机上就不会导致crash呢？于是我验证了一下是不是异常机制有什么问题，直接这样写native代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">JNIEXPORT <span class="type">void</span> JNICALL <span class="title">test_crash</span><span class="params">(JNIEnv *env, jobject <span class="comment">/* this */</span>)</span> </span>&#123;</span><br><span class="line"><span class="comment">//    int x = 10;</span></span><br><span class="line"><span class="comment">//    int y = x / 0;</span></span><br><span class="line"><span class="comment">//    LOGD(&quot;crash %d&quot;, y);</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="string">&quot;Crash!!!&quot;</span>; <span class="comment">// 手动抛异常</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>还好没有毁三观，App顺利地crash了，所以异常机制是正常的。<br>那么就说明除0操作在我的手机上没有导致异常抛出，唯一能想到的就是<strong>汇编指令不同了</strong>，毕竟电脑CPU是x86-64架构的，手机是arm的，二者指令集不同。<br><strong>验证方法当然就是利用NDK工具和so文件生成汇编代码，看看是不是arm架构下根本就不用除法指令。</strong><br>1、先build一下Android工程，然后找到so文件：<br><img src="https://imgconvert.csdnimg.cn/20190412233052125.png" alt="在这里插入图片描述"><br>可以把它们暂时拷贝出来待用。<br>2、进入NDK工具链目录（前提是在SDK Manager中下载了NDK相关的工具），下面是Linux终端命令操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> Android/Sdk/ndk-bundle/toolchains/</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">ls</span></span></span><br><span class="line">aarch64-linux-android-4.9  arm-linux-androideabi-4.9  llvm  renderscript  x86-4.9  x86_64-4.9</span><br></pre></td></tr></table></figure>
+
+<p>可以发现toolchains下面有4种架构的工具包，对于build出来的4个so文件，这里我们只测试x86-64和arm的。<br>3、以前者为例，于是进入相关目录，找到xxx-linux-android-objdump工具，然后生成汇编指令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> x86_64-4.9/prebuilt/linux-x86_64/bin</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">./x86_64-linux-android-objdump -dx libnative-lib.so &gt; test.txt</span></span><br></pre></td></tr></table></figure>
+
+<p>这里我已经把刚才的so文件拷贝到工具同目录了，所以命令才能直接这么写。<br>4、其它架构的操作和上述几步一致，但一定要对应解析正确的so文件，不然objdump会提示错误。<br>5、打开刚才生成的汇编txt文本，搜索我们最开始写的那个test_crash方法，发现在x86-64架构中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0000000000013960</span> &lt;test_crash&gt;:</span><br><span class="line">   <span class="number">13960</span>:	<span class="number">55</span>                   	push   %rbp</span><br><span class="line">   <span class="number">13961</span>:	<span class="number">48</span> <span class="number">89</span> e5             	mov    %rsp,%rbp</span><br><span class="line">   <span class="number">13964</span>:	<span class="number">31</span> c0                	xor    %eax,%eax</span><br><span class="line">   <span class="number">13966</span>:	c7 <span class="number">45</span> fc <span class="number">0</span>a <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> 	movl   $<span class="number">0xa</span>,<span class="number">-0x4</span>(%rbp)</span><br><span class="line">   <span class="number">1396</span>d:	<span class="number">8b</span> <span class="number">4</span>d fc             	mov    <span class="number">-0x4</span>(%rbp),%ecx</span><br><span class="line">   <span class="number">13970</span>:	<span class="number">89</span> <span class="number">45</span> f4             	mov    %eax,<span class="number">-0xc</span>(%rbp)</span><br><span class="line">   <span class="number">13973</span>:	<span class="number">89</span> c8                	mov    %ecx,%eax</span><br><span class="line">   <span class="number">13975</span>:	<span class="number">99</span>                   	cltd   </span><br><span class="line">   <span class="number">13976</span>:	<span class="number">8b</span> <span class="number">4</span>d f4             	mov    <span class="number">-0xc</span>(%rbp),%ecx</span><br><span class="line">   <span class="number">13979</span>:	f7 f9                	idiv   %ecx <span class="comment">// idiv表示有符号数除法</span></span><br><span class="line">   <span class="number">1397b</span>:	<span class="number">89</span> <span class="number">45</span> f8             	mov    %eax,<span class="number">-0x8</span>(%rbp)</span><br><span class="line">   <span class="number">1397</span>e:	<span class="number">5</span>d                   	pop    %rbp</span><br><span class="line">   <span class="number">1397f</span>:	c3                   	retq  </span><br></pre></td></tr></table></figure>
+
+<p>然鹅，在arm的汇编指令中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0000</span>cb1c &lt;test_crash&gt;:</span><br><span class="line">    cb1c:	b082      	sub	sp, #<span class="number">8</span></span><br><span class="line">    cb1e:	<span class="number">200</span>a      	movs	r0, #<span class="number">10</span></span><br><span class="line">    cb20:	<span class="number">9001</span>      	str	r0, [sp, #<span class="number">4</span>]</span><br><span class="line">    cb22:	b002      	add	sp, #<span class="number">8</span></span><br><span class="line">    cb24:	<span class="number">4770</span>      	bx	lr</span><br><span class="line">	...</span><br></pre></td></tr></table></figure>
+
+<p>发现没有div相关的指令，看来果然是不一样啊。<br>如果真是如此，那么x86-64架构的Android手机，肯定就会出现除0错误，于是我打开了一个x86-64的谷歌亲儿子模拟器，运行程序，还真崩掉了，但在arm架构的机器上，就不会崩。我手机是高通的CPU，正好也就是arm架构的。<br>这么说来，还真是印证了复杂指令集和精简指令集啊哈哈，你看看上面同样的代码实现，指令数却完全不同。</p>
+<p>后来，去Goggle一查，才发现arm体系结构本身就不包含除法运算硬件，是靠函数实现的，看来是我孤陋寡闻了：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_33851429/article/details/91954260">GCC ARM cortex-m0 除0问题</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/xhhjin/article/details/6338766">ARM的除法运算优化策略</a><br><a target="_blank" rel="noopener" href="https://www.eefocus.com/embedded/m/323206">高效的C编程之：除法运算</a></p>
+<p>还没完，上面解释的只是arm架构，还有arm64呢（目前主流的骁龙845&#x2F;855等等都是）？先看看汇编指令：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">00000000000131b</span>8 &lt;test_crash&gt;:</span><br><span class="line">   <span class="number">131b</span>8:	d10043ff 	sub	sp, sp, #<span class="number">0x10</span></span><br><span class="line">   <span class="number">131b</span>c:	<span class="number">52800148</span> 	mov	w8, #<span class="number">0xa</span>                   	<span class="comment">// #10</span></span><br><span class="line">   <span class="number">131</span>c0:	<span class="number">52800009</span> 	mov	w9, #<span class="number">0x0</span>                   	<span class="comment">// #0</span></span><br><span class="line">   <span class="number">131</span>c4:	b9000fe8 	str	w8, [sp,#<span class="number">12</span>]</span><br><span class="line">   <span class="number">131</span>c8:	b9400fe8 	ldr	w8, [sp,#<span class="number">12</span>]</span><br><span class="line">   <span class="number">131</span>cc:	<span class="number">1</span>ac90d08 	sdiv	w8, w8, w9 <span class="comment">// sdiv表示有符号数除法</span></span><br><span class="line">   <span class="number">131</span>d0:	b9000be8 	str	w8, [sp,#<span class="number">8</span>]</span><br><span class="line">   <span class="number">131</span>d4:	<span class="number">910043f</span>f 	add	sp, sp, #<span class="number">0x10</span></span><br><span class="line">   <span class="number">131</span>d8:	d65f03c0 	ret</span><br></pre></td></tr></table></figure>
+
+<p>咦？怎么arm64架构又有除法指令（<a target="_blank" rel="noopener" href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0802a/SDIV.html">sdiv指令文档</a>）了？那怎么除以0也不造成崩溃呢？<br>看了看arm官方的文档之后：<br><img src="https://imgconvert.csdnimg.cn/201904151552175.png" alt="在这里插入图片描述"><br>可以发现，指令有一个标志位DZ，叫<strong>Divide by Zero fault enable bit</strong>，默认为0，即当除以0时不带出异常，而是返回0（这就解释了我们最开始为什么打log值是0），如果设为1，才会抛异常。</p>
+<p>此外，在<a target="_blank" rel="noopener" href="http://infocenter.arm.com/help/topic/com.arm.doc.ihi0043d/IHI0043D_rtabi.pdf">ARM 架构的运行时 ABI</a>文档中，也看到了类似的解释，说明除0抛不抛异常，取决于函数的不同实现：<br><img src="https://imgconvert.csdnimg.cn/20190419160717355.png" alt="在这里插入图片描述"></p>
+<hr>
+<p>哦对，要查看自己手机的CPU信息，可以用adb命令哦：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell cat /proc/cpuinfo</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top">YSY</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top/2019/04/15/NDK%E5%BC%80%E5%8F%91%E4%B8%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E9%99%A4%E4%BB%A50%E7%A8%8B%E5%BA%8F%E4%B8%8D%E5%B4%A9%E6%BA%83%EF%BC%9F/">https://blog.ysy950803.top/2019/04/15/NDK%E5%BC%80%E5%8F%91%E4%B8%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E9%99%A4%E4%BB%A50%E7%A8%8B%E5%BA%8F%E4%B8%8D%E5%B4%A9%E6%BA%83%EF%BC%9F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.ysy950803.top" target="_blank">Pig Cat</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%97%AE%E9%A2%98%E4%B8%8D%E5%A4%A7/">问题不大</a><a class="post-meta__tags" href="/tags/Android/">Android</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar-ysy.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://qr.alipay.com/fkx12362diu95oh2aweaac5" target="_blank"><img class="post-qr-code-img" src="/img/love-support.png" alt="支付宝（移动端点击二维码亦可）"/></a><div class="post-qr-code-desc">支付宝（移动端点击二维码亦可）</div></li></ul></div></div><div class="ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=fluid data-ad-layout=in-article data-ad-slot=2789809398 style=display:block;text-align:center></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2019/04/27/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BB%BB%E5%8A%A1%E6%A0%88%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" title="微信小程序任务栈实现原理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">微信小程序任务栈实现原理</div></div></a></div><div class="next-post pull-right"><a href="/2019/04/10/%E6%BA%90%E7%A0%81%E8%8C%B6%E8%88%8D%E4%B9%8Bandroid-externalService%E6%98%AF%E4%BB%80%E4%B9%88%E5%B1%9E%E6%80%A7%EF%BC%9F%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%EF%BC%9F/" title="源码茶舍之android:externalService是什么属性？实现原理？"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">源码茶舍之android:externalService是什么属性？实现原理？</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2018/03/03/USB%E8%B0%83%E8%AF%95Android%E8%AE%BE%E5%A4%87%E6%97%B6%E9%81%87%E5%88%B0no%20permissions%20(verify%20udev%20rules)%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" title="USB调试Android设备时遇到no permissions (verify udev rules)的解决办法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-03-03</div><div class="title">USB调试Android设备时遇到no permissions (verify udev rules)的解决办法</div></div></a></div><div><a href="/2019/10/12/Gradle%E5%91%BD%E4%BB%A4%E7%BC%96%E8%AF%91%E5%A4%B1%E8%B4%A5NoClassDefFoundError%E5%92%8CVerifyError/" title="Gradle命令编译失败NoClassDefFoundError和VerifyError"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-10-12</div><div class="title">Gradle命令编译失败NoClassDefFoundError和VerifyError</div></div></a></div><div><a href="/2021/12/21/%E8%A7%A3%E5%86%B3Android%20Studio%E5%8D%87%E7%BA%A7%E5%88%B0Arctic%20Fox%E5%90%8E%E7%BC%96%E8%AF%91%E5%A4%B1%E8%B4%A5%E7%9A%84%E9%97%AE%E9%A2%98/" title="解决Android Studio升级到Arctic Fox后编译失败的问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-21</div><div class="title">解决Android Studio升级到Arctic Fox后编译失败的问题</div></div></a></div><div><a href="/2023/08/11/%E8%A7%A3%E5%86%B3macOS%E6%89%A7%E8%A1%8Cfastboot%E6%89%BE%E4%B8%8D%E5%88%B0%E8%AE%BE%E5%A4%87%E7%9A%84%E9%97%AE%E9%A2%98/" title="解决macOS执行fastboot找不到设备的问题"><img class="cover" src="/2023/08/11/%E8%A7%A3%E5%86%B3macOS%E6%89%A7%E8%A1%8Cfastboot%E6%89%BE%E4%B8%8D%E5%88%B0%E8%AE%BE%E5%A4%87%E7%9A%84%E9%97%AE%E9%A2%98/image-20230811154542258.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-11</div><div class="title">解决macOS执行fastboot找不到设备的问题</div></div></a></div><div><a href="/2019/03/09/%E6%8E%88%E6%9D%83%E5%90%8E%E8%BF%9E%E6%8E%A5MySQL%E4%BE%9D%E7%84%B6%E8%A2%AB%E6%8B%92%E7%BB%9D%E8%AE%BF%E9%97%AE%EF%BC%88Access%20denied%20for%20user%20'root'@'localhost'%EF%BC%89/" title="授权后连接MySQL依然被拒绝访问（Access denied for user &#39;root&#39;@&#39;localhost&#39;）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-03-09</div><div class="title">授权后连接MySQL依然被拒绝访问（Access denied for user &#39;root&#39;@&#39;localhost&#39;）</div></div></a></div><div><a href="/2019/03/15/MyBatis%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8LocalDateTime%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B%E4%BB%A5%E5%8F%8AMySQL%E6%97%B6%E5%8C%BA%E9%97%AE%E9%A2%98%E6%8E%92%E9%94%99/" title="MyBatis直接使用LocalDateTime时间类型以及MySQL时区问题排错"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-03-15</div><div class="title">MyBatis直接使用LocalDateTime时间类型以及MySQL时区问题排错</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar-ysy.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">YSY</div><div class="author-info__description">Full-Stack, Android, AI</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ysy950803"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget donate" id="donate"><div class="item-headline"><i class="fas fa-heartbeat"></i><span>随缘支持</span></div><div class="item-content"><p style="text-align:center;padding:0;margin:0;"><a target="_blank" rel="noopener" href="https://qr.alipay.com/fkx12362diu95oh2aweaac5"><img src="https://blog.ysy950803.top/img/love-support.png" width="200" height="200"/></a></p> <p style="text-align:center;padding:0;margin:0;">移动端点击二维码亦可</p> <p style="text-align:center;padding:0;margin:0;"><u><a target="_blank" rel="noopener" href="https://paypal.me/yaoshengyu">Paypal.me if you like</a></u></p></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/28/%E8%AE%A9WCDB%E5%85%BC%E5%AE%B9%E6%9C%80%E6%96%B0%E7%89%88Room/" title="让WCDB兼容最新版Room">让WCDB兼容最新版Room</a><time datetime="2024-03-28T02:17:23.000Z" title="发表于 2024-03-28 10:17:23">2024-03-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/26/%E5%8F%8C%E8%BF%9B%E7%A8%8B%E4%BA%A4%E4%BA%92%E5%AE%9E%E7%8E%B0App%E8%87%AA%E5%8A%A8%E9%87%8D%E5%90%AF/" title="双进程交互实现App自动重启">双进程交互实现App自动重启</a><time datetime="2024-03-26T07:40:19.000Z" title="发表于 2024-03-26 15:40:19">2024-03-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/25/%E5%9C%A8assembleRelease%E4%B9%8B%E5%89%8D%E6%89%A7%E8%A1%8C%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BB%BB%E5%8A%A1/" title="在assembleRelease之前执行自定义任务">在assembleRelease之前执行自定义任务</a><time datetime="2024-03-25T06:19:04.000Z" title="发表于 2024-03-25 14:19:04">2024-03-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/11/%E8%A7%A3%E5%86%B3macOS%E6%89%A7%E8%A1%8Cfastboot%E6%89%BE%E4%B8%8D%E5%88%B0%E8%AE%BE%E5%A4%87%E7%9A%84%E9%97%AE%E9%A2%98/" title="解决macOS执行fastboot找不到设备的问题">解决macOS执行fastboot找不到设备的问题</a><time datetime="2023-08-11T07:49:01.000Z" title="发表于 2023-08-11 15:49:01">2023-08-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/31/%E7%BB%99%E4%B8%8D%E8%92%9C%E5%AD%90%EF%BC%88busuanzi%EF%BC%89%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%8A%A0%E5%88%9D%E5%A7%8B%E5%80%BC/" title="给不蒜子（busuanzi）统计数据增加初始值">给不蒜子（busuanzi）统计数据增加初始值</a><time datetime="2023-07-31T08:54:00.000Z" title="发表于 2023-07-31 16:54:00">2023-07-31</time></div></div></div></div><div class="card-widget ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=auto data-ad-slot=7049722255 data-full-width-responsive=true style=display:block></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('/img/home-bg.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2024 By YSY</div><div class="footer_custom_text">Welcome To My Blog!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'a2660cd0497b67ee33e5',
+      clientSecret: '3f970ce5c5ee2b57bed7c20e44809ba6bda487ac',
+      repo: 'ysy950803.github.io',
+      owner: 'ysy950803',
+      admin: ['ysy950803'],
+      id: 'e50028308990fb50fa730efc055634ac',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.textContent= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><div class="aplayer no-destroy" data-id="2829816518" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false" data-lrctype="0"> </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: true,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', 'UA-149830607-1', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
