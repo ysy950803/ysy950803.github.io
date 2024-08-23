@@ -166,12 +166,12 @@ post_copyright:
 reward:
   enable: true
   QR_code:
-  # - img: /img/wechat.jpg
-  #   link:
-  #   text: wechat
-  - img: /img/love-support.png
-    link: https://qr.alipay.com/fkx12362diu95oh2aweaac5
-    text: 支付宝（移动端点击二维码亦可）
+    - img: /img/love-support.png
+      link: https://qr.alipay.com/fkx12362diu95oh2aweaac5
+      text: 支付宝（移动端可点击二维码）
+    - img: /img/love-support-wechat.png
+      link: https://blog.ysy950803.top/img/love-support-wechat.png
+      text: 微信（仅支持扫码）
 
 # Post edit
 # Easily browse and edit blog source code online.
