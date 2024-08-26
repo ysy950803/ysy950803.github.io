@@ -30,6 +30,11 @@ type: "about"
 - [GitHub](https://github.com/ysy950803)
 - [SSPai](https://sspai.com/u/ysy950803)
 
+#### 应用创作
+
+- [Google Play - ysy950803](https://play.google.com/store/apps/dev?id=7220530116384657977)
+- [Google Play - Lovely Duck](https://play.google.com/store/apps/dev?id=6971652731113190709)
+
 ---
 
 > Listening, feeling, and thinking
@@ -55,3 +60,8 @@ If my articles are helpful to you, you can turn off the ad blocking plug-in (or 
 - [Juejin](https://juejin.im/user/587348ff8d6d8100589967ab/posts)
 - [GitHub](https://github.com/ysy950803)
 - [SSPai](https://sspai.com/u/ysy950803)
+
+#### Apps
+
+- [Google Play - ysy950803](https://play.google.com/store/apps/dev?id=7220530116384657977)
+- [Google Play - Lovely Duck](https://play.google.com/store/apps/dev?id=6971652731113190709)
