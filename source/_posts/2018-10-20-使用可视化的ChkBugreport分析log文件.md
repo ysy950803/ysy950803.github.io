@@ -37,6 +37,6 @@ tags:
   ```
 
 - 可视化效果
-  ![在这里插入图片描述](https://imgconvert.csdnimg.cn/f9da2e08158f41b490b2393506673a8f.png)
-  ![在这里插入图片描述](https://imgconvert.csdnimg.cn/159ddabc0a0541b88dfa3734e68f8d3c.png)
+  ![](https://blog.ysy950803.top/img/posts/4ffaafdc948cfdc3c8c73bf2399cf891.webp)
+  ![](https://blog.ysy950803.top/img/posts/c01182f844408eb658bfeed88ec8e5bc.webp)
   虽然是比较老的工具了，但还是相当实用的，对分析FC、ANR和一些事件流程很有帮助。

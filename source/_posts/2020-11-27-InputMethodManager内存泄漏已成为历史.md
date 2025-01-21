@@ -17,7 +17,7 @@ tags:
 
 说到系统服务，在处理文本输入的时候，我们以前经常会看到这样的泄漏：
 
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20201127125205854.png)
+![](https://blog.ysy950803.top/img/posts/0a590ac8c791d30c22b6d7e80781c406.webp)
 
 这里大家也可自行搜索了解，大致上就是因为**InputMethodManager（下简称IMM）实例内部会持有View**，而View又持有Activity的引用，最终在Activity退出后没有正确处理View导致了Memory Leak。我们明白，系统服务生命周期一般是长于Activity的。
 
@@ -96,25 +96,25 @@ public final class InputMethodManager {
 
 这个修复在2018年下半年就提交了，最终在Android 10才合入，下面的代码基于分支android-10.0.0_r30：
 
-![](https://imgconvert.csdnimg.cn/20201127125312174.png)
+![](https://blog.ysy950803.top/img/posts/f92c674b6170fa38ce4cea4f543cf2c3.webp)
 
 也就是说，在Android 9及以前，IMM的内存泄漏问题都没有得到官方的及时修复，最后还是国内厂商的工程师实在忍不住给修了（之前我还在MIUI的时候也给系统组提过这个bug）。
 
 出于好奇，我查看了一下[这个patch的提交信息](https://cs.android.com/android/_/android/platform/frameworks/base/+/dff365ef4dc61239fac70953b631e92972a9f41f)：
 
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20201127125344306.png)
+![](https://blog.ysy950803.top/img/posts/2448e9f8f462f6618c4d6b36a4350f0c.webp)
 
 看看描述，没差了，就是为了修复数年未解的IMM内存泄漏问题。不知道全球开发者为了这个玩意头疼了多久（毕竟Memory Leak也是一个项目质量指标的对吧，说白了影响你绩效 /狗头）。
 
 这个问题也有对应的官方bug issue，大家有兴趣可以看看：[InputMethodManager#sInstance#mCurRootView cause memory leak](https://issuetracker.google.com/issues?q=116078227) ，最后也是得到了AOSP官方团队验证的：
 
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20201127125406506.png)
+![](https://blog.ysy950803.top/img/posts/1cc2b2cf0ca5f582cb49ee07297b7a4c.webp)
 
 ## 进一步优化
 
 虽然MIUI的大佬已经对此进行了修复，但IMM依然存在一些代码结构上的问题，可能导致了一些其他bug，官方团队在Android 11中对IMM源码做了[进一步优化](https://cs.android.com/android/_/android/platform/frameworks/base/+/970d9d2e0c979cf9a0ff0a79ef49044ed1363d4f) ，这次的改动还不小：
 
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20201127125443171.png)
+![](https://blog.ysy950803.top/img/posts/47309fddd857e9a623f5c39f43dc589f.webp)
 
 这里我简单做一下介绍，大家感兴趣可以查看最新的源码。我们可以发现，在最新的IMM中，后面2个View已经从中去除了：
 

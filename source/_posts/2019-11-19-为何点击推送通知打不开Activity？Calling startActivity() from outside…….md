@@ -27,7 +27,7 @@ public void onNotificationMessageClicked(Context context, MiPushMessage message)
 > FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
 
 解读一下就是，说我要是从外面启动本应用的Activity需要传 `FLAG_ACTIVITY_NEW_TASK` 标识，还特别嘲讽地反问我一句：Is this really what you want? 这真是你想要的？
-![img1](https://imgconvert.csdnimg.cn/20190702011449586.png)
+![](https://blog.ysy950803.top/img/posts/fc53b8385c8f23906e485f8b770507fb.webp)
 我不想要我调你方法干嘛。
 ## 解决
 解决就不说了，报错提示摆明了，要我传NEW_TASK，是的，就这么简单。

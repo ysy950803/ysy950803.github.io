@@ -53,7 +53,7 @@ private CharSequence getTextForAccessibility() {
 
 但是，某些自定义控件是长这样的：
 
-![MIUI EditText](https://imgconvert.csdnimg.cn/2020051423404290.png)
+![MIUI EditText](https://blog.ysy950803.top/img/posts/4ca3d1c4b8b99ad11ded44496abde63c.webp)
 
 label是自定义View画上去的，没做特殊处理的情况下Talkback识别不到，最好的体验是把左边的label也跟着读出来（比如读成：“列车车次，例：G1”），这可咋办？
 

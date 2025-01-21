@@ -23,7 +23,7 @@ OkHttpClient okHttpClient = new OkHttpClient.Builder()
 
 然后我们会发现，先正常请求网络数据，然后断开网络连接，重新请求，并没有返回缓存。
 而是出现一些诸如“Unknown host…”解析不了域名这种异常，查看之前设置的缓存文件目录，也确实有文件，可怎么就不加载呢？
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20190705234709502.png)
+![](https://blog.ysy950803.top/img/posts/6af45f9aac235fe8e741cf08e144ba65.webp)
 哦，结果还要配置一下缓存策略，回到我们的主题：拦截器。
 我们可以在拦截器中实现网络连接判断并强制开起缓存：
 

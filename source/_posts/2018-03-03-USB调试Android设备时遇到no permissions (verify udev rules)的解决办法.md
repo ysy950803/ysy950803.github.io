@@ -15,7 +15,7 @@ tags:
 具体就是在执行adb devices查看连接的设备时，设备后显示 **no permissions (verify udev rules)** 字样。
 根据官网的提示，去查文档：https://developer.android.com/studio/run/device.html#setting-up
 可以看到下面的解决办法：
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTgwMzAzMTMzNjAxNTk4?x-oss-process=image/format,png)
+![](https://blog.ysy950803.top/img/posts/f112a892c1ffa0f733682ffb8e4a571f.webp)
 
 ------
 

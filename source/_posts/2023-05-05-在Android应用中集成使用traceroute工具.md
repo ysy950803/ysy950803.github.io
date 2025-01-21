@@ -6,7 +6,7 @@ date:       2023-05-05
 author:     YSY
 header-style: text
 catalog: true
-cover: https://imgconvert.csdnimg.cn/b04cf6079ba04e7eb960c293d45fe951.png
+cover: https://blog.ysy950803.top/img/posts/2255e20062029c4572c795cefba72acb.png
 tags:
     - Android
     - Linux
@@ -58,7 +58,7 @@ Linux实现版本的源码在此：[Traceroute for Linux](https://sourceforge.ne
 
 #### 为什么同一跳会出现不同的IP地址
 
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/b04cf6079ba04e7eb960c293d45fe951.png)
+![](https://blog.ysy950803.top/img/posts/2255e20062029c4572c795cefba72acb.webp)
 
 在如图这个例子中，第4跳出现了一个不同的IP，很多人会比较疑惑。这是因为**网络环境是不断变化的，发包过程中会选择更好的路由**，可以参考[这个链接](https://www.baeldung.com/linux/traceroute-three-stars)中的解释：
 

@@ -42,7 +42,7 @@ cd ..
 repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-10.0.0_r25 --worktree
 ```
 这里的 `--worktree` 参数非常重要，不加的话会出现 **error.GitError: Cannot initialize work tree for manifests** 错误。这个功能也是谷歌在这个月底才更新的。
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200222214938843.png)
+![](https://blog.ysy950803.top/img/posts/d6bef51b522c9c566a6c796bb7e32a13.webp)
 最终我也试了下repo sync，repo upload等命令均无问题。
 
 ---
@@ -76,7 +76,7 @@ C:\Python27\Scripts\
 C:\Users\你的用户名\bin
 ```
 路径和你安装时的选择相关，切勿直接照抄。还是给大家整个图吧。
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200205214724901.png)
+![](https://blog.ysy950803.top/img/posts/a236d7206b2d0aa2100e02e4ab051487.webp)
 #### 四、安装repo
 repo原本是谷歌搞的一个方便下载AOSP的工具，基于git，但由于种种原因，不能直接在Windows上使用。但**好心的基佬Hub网友开发了一套改良版的repo**，适用于Windows，解决各种Error问题。
 
@@ -100,11 +100,11 @@ repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-10.0
  - 上述命令关键就在 `--repo-url=https://github.com/esrlabs/git-repo.git` ，替换掉原生的repo工具链，就能成功初始化了。
  - 这里用的是清华镜像源AOSP作示例，一般做ROM开发的公司会有自己的仓库地址，请自行修改init链接。
  - 不要忘了生成ssh的public key，在Windows下也一样：在Git Bash中执行 `ssh-keygen` 然后复制 `~/.ssh/id_rsa.pub` 文件中的内容添加到Gerrit等源码平台上即可。
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200205222055923.png)
+![](https://blog.ysy950803.top/img/posts/ed7306014a854739302a65c411c13caf.webp)
  - 如果发现上面下载速度太慢，可以把 [https://github.com/esrlabs/git-repo](https://github.com/esrlabs/git-repo) 项目直接下载下来并解压，复制解压后文件夹中的所有文件到源码目录的的 `.repo/repo` 子目录下面，然后再重新执行repo init命令，当然这次就不要带 **repo-url** 参数了。
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200205221541817.png)
+![](https://blog.ysy950803.top/img/posts/0874be9a11047284b78eb2d2065366cc.webp)
 大功告成！
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/20200205222000447.png)
+![](https://blog.ysy950803.top/img/posts/250ce37966d44fdc1e1e6678dff8c083.webp)
 ### 参考
  - [git-repo](https://github.com/esrlabs/git-repo)
  - [Microsoft Windows Details](https://gerrit.googlesource.com/git-repo/+/HEAD/docs/windows.md)

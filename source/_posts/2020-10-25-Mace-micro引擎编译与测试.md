@@ -12,7 +12,7 @@ tags:
     - Android
 ---
 
-![](https://github.com/XiaoMi/mace/raw/master/docs/mace-logo.png)
+![](https://github.com/XiaoMi/mace/raw/master/docs/mace-logo.webp)
 
 ## 官方简介
 
