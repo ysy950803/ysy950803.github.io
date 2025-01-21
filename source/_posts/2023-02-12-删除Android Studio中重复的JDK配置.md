@@ -6,7 +6,7 @@ date:       2023-02-12
 author:     YSY
 header-img: img/home-bg.jpg
 catalog: true
-cover: https://blog.ysy950803.top/img/posts/0792ce0e85c8aadf8a136b1e0eb19253.png
+cover: https://blog.ysy950803.top/img/posts/0792ce0e85c8aadf8a136b1e0eb19253.webp
 tags:
     - Android
     - Java

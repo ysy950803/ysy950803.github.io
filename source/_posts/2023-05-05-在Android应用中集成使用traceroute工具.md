@@ -6,7 +6,7 @@ date:       2023-05-05
 author:     YSY
 header-style: text
 catalog: true
-cover: https://blog.ysy950803.top/img/posts/2255e20062029c4572c795cefba72acb.png
+cover: https://blog.ysy950803.top/img/posts/2255e20062029c4572c795cefba72acb.webp
 tags:
     - Android
     - Linux
