@@ -1,0 +1,329 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Studio查找aar源码的错误 | Pig Cat</title><meta name="author" content="YSY"><meta name="copyright" content="YSY"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="我又来给大模型贡献素材了！ 问题在更新了Android Studio Narwhal Feature Drop | 2025.1.2 Patch 1版本之后，遇到了一个问题，很烦人！  AS每次更新都能搞出点新毛病，真的服了。  使用离线依赖aar包引入某个库之后，在编辑器中按住Command查看此库的代码，会立即弹出一个Build错误提示，内容如下： 123456789101112Initial">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Studio查找aar源码的错误">
+<meta property="og:url" content="https://blog.ysy950803.top/2025/09/03/Studio%E6%9F%A5%E6%89%BEaar%E6%BA%90%E7%A0%81%E7%9A%84%E9%94%99%E8%AF%AF/index.html">
+<meta property="og:site_name" content="Pig Cat">
+<meta property="og:description" content="我又来给大模型贡献素材了！ 问题在更新了Android Studio Narwhal Feature Drop | 2025.1.2 Patch 1版本之后，遇到了一个问题，很烦人！  AS每次更新都能搞出点新毛病，真的服了。  使用离线依赖aar包引入某个库之后，在编辑器中按住Command查看此库的代码，会立即弹出一个Build错误提示，内容如下： 123456789101112Initial">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.ysy950803.top/img/avatar-ysy.png">
+<meta property="article:published_time" content="2025-09-03T05:18:32.000Z">
+<meta property="article:modified_time" content="2025-09-03T05:20:24.168Z">
+<meta property="article:author" content="YSY">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Gradle">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ysy950803.top/img/avatar-ysy.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.ysy950803.top/2025/09/03/Studio%E6%9F%A5%E6%89%BEaar%E6%BA%90%E7%A0%81%E7%9A%84%E9%94%99%E8%AF%AF/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="MK2u6SdXmNALFQhaVElzr03W62cBQbIjtHK-7rvSIjw"/><meta name="baidu-site-verification" content="codeva-o8m8oS84V9"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8999136091629669',
+  enable_page_level_ads: 'true'
+});</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-149830607-1"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-149830607-1');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":10,"languages":{"author":"作者: YSY","link":"链接: ","source":"来源: Pig Cat","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#A58A5D","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Studio查找aar源码的错误',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-09-03 13:20:24'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><script>document.oncontextmenu=function(){return!1}</script><script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("busuanzi_value_site_uv"),t=document.getElementById("busuanzi_value_site_pv"),n=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){n.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+1e5;break}}),i=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){i.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+3e5;break}}),r={childList:!0};n.observe(e,r),i.observe(t,r)});</script><meta name="referrer" content="no-referrer" /><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar-ysy.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">95</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/home-bg.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Pig Cat"><span class="site-name">Pig Cat</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Studio查找aar源码的错误</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-03T05:18:32.000Z" title="发表于 2025-09-03 13:18:32">2025-09-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-09-03T05:20:24.168Z" title="更新于 2025-09-03 13:20:24">2025-09-03</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Studio查找aar源码的错误"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>我又来给大模型贡献素材了！</p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>在更新了Android Studio Narwhal Feature Drop | 2025.1.2 Patch 1版本之后，遇到了一个问题，很烦人！</p>
+<blockquote>
+<p>AS每次更新都能搞出点新毛病，真的服了。</p>
+</blockquote>
+<p>使用离线依赖aar包引入某个库之后，在编辑器中按住Command查看此库的代码，会立即弹出一个Build错误提示，内容如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Initialization script &#x27;/private/var/folders/mw/7l7t1k7x6277h8_0jbg89z9r0000gn/T/ijArtifactDownloader1.gradle&#x27; line: 41</span><br><span class="line"></span><br><span class="line">Execution failed for task &#x27;:app:ijDownloadArtifact8fa437a9-6cc&#x27;.</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">Could not resolve all files <span class="keyword">for</span> configuration <span class="string">&#x27;:app:downloadArtifact_96341a82-71d7-42e4-9f26-18fd8f441dc9&#x27;</span>.</span></span><br><span class="line"><span class="meta prompt_">   &gt; </span><span class="language-bash">Could not find ./app/libs/BRV-1.6.1.aar:sources:.</span></span><br><span class="line">     Required by:</span><br><span class="line">         project :app</span><br><span class="line"></span><br><span class="line">Possible solution:</span><br><span class="line"> - Declare repository providing the artifact, see the documentation at https://docs.gradle.org/current/userguide/declaring_repositories.html</span><br><span class="line"></span><br><span class="line">Ask Gemini</span><br></pre></td></tr></table></figure>
+
+<p>意思就是找不到这个库的源码，因为是直接放在libs下面的aar包，大概率是没有源代码的，只能看到class反编译后的Java代码，和在线依赖会自动下载source.jar（如果有）是不一样的。</p>
+<p>其实并不是所有aar都必须带着源码发布啊，IDE自动反编译的代码已经够看逻辑了，为什么非要傻不拉几的去查找source呢？而且每点一次查看，就会弹一次错误，虽然不影响项目编译，但影响心情。</p>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><p>先尝试Google，没什么结果，然后问了一下GPT，让我找到Settings中的这个路径：<code>Build, Execution, Deployment</code> → <code>Build Tools</code> → <code>Gradle</code>，把“Download external annotations”关掉。我发现这个默认本来就是关的，所以应该不是这里的问题。</p>
+<p>再尝试Invalidate Caches清IDE缓存，也没什么用。</p>
+<p>最终只能靠自己探索了，还是打开Settings，找到<code>Advanced Settings</code>，其中有一个“Automatically download sources for a file upon open”，把它关掉，即可解决。就是它，默认会在你打开三方库aar代码文件时，自动尝试查找和下载源码，如果失败就会弹出错误。</p>
+<blockquote>
+<p>再次吐槽一下，真不知道开发IDE的人怎么想的，默认搞这个设置，不考虑开发者实际的体验。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top">YSY</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top/2025/09/03/Studio%E6%9F%A5%E6%89%BEaar%E6%BA%90%E7%A0%81%E7%9A%84%E9%94%99%E8%AF%AF/">https://blog.ysy950803.top/2025/09/03/Studio%E6%9F%A5%E6%89%BEaar%E6%BA%90%E7%A0%81%E7%9A%84%E9%94%99%E8%AF%AF/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.ysy950803.top" target="_blank">Pig Cat</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Android/">Android</a><a class="post-meta__tags" href="/tags/Java/">Java</a><a class="post-meta__tags" href="/tags/Gradle/">Gradle</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar-ysy.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://qr.alipay.com/fkx12362diu95oh2aweaac5" target="_blank"><img class="post-qr-code-img" src="/img/love-support.png" alt="支付宝（移动端可点击二维码）"/></a><div class="post-qr-code-desc">支付宝（移动端可点击二维码）</div></li><li class="reward-item"><a href="https://blog.ysy950803.top/img/love-support-wechat.png" target="_blank"><img class="post-qr-code-img" src="/img/love-support-wechat.png" alt="微信（仅支持扫码）"/></a><div class="post-qr-code-desc">微信（仅支持扫码）</div></li></ul></div></div><div class="ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=fluid data-ad-layout=in-article data-ad-slot=2789809398 style=display:block;text-align:center></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2025/01/23/%E5%A6%82%E4%BD%95%E5%9C%A8Ubuntu%E4%B8%8A%E8%87%AA%E5%BB%BAS3%E6%9C%8D%E5%8A%A1/" title="如何在Ubuntu上自建S3服务"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">如何在Ubuntu上自建S3服务</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2019/10/12/Gradle%E5%91%BD%E4%BB%A4%E7%BC%96%E8%AF%91%E5%A4%B1%E8%B4%A5NoClassDefFoundError%E5%92%8CVerifyError/" title="Gradle命令编译失败NoClassDefFoundError和VerifyError"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-10-12</div><div class="title">Gradle命令编译失败NoClassDefFoundError和VerifyError</div></div></a></div><div><a href="/2023/02/12/%E5%88%A0%E9%99%A4Android%20Studio%E4%B8%AD%E9%87%8D%E5%A4%8D%E7%9A%84JDK%E9%85%8D%E7%BD%AE/" title="删除Android Studio中重复的JDK配置"><img class="cover" src="https://blog.ysy950803.top/img/posts/0792ce0e85c8aadf8a136b1e0eb19253.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-12</div><div class="title">删除Android Studio中重复的JDK配置</div></div></a></div><div><a href="/2018/12/09/RxJava2%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AE%B0%EF%BC%9A%E7%94%A8CompositeDisposable%E6%9D%A5%E2%80%9C%E5%AE%89%E6%8E%92%E2%80%9DRetrofit%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/" title="RxJava2开发小记：用CompositeDisposable来“安排”Retrofit网络请求"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-12-09</div><div class="title">RxJava2开发小记：用CompositeDisposable来“安排”Retrofit网络请求</div></div></a></div><div><a href="/2018/12/10/RxJava2%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AE%B0%EF%BC%9A%E5%85%88%E5%8A%A0%E8%BD%BD%E7%BC%93%E5%AD%98%E5%86%8D%E8%AF%B7%E6%B1%82%E7%BD%91%E7%BB%9C%E4%B9%8B%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/" title="RxJava2开发小记：先加载缓存再请求网络之简单实现"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-12-10</div><div class="title">RxJava2开发小记：先加载缓存再请求网络之简单实现</div></div></a></div><div><a href="/2020/03/24/%E5%BF%AB%E9%80%9F%E4%BF%AE%E6%94%B9%E5%AD%97%E8%8A%82%E7%A0%81%E5%B9%B6%E9%87%8D%E6%89%93jar%E5%8C%85/" title="快速修改字节码并重打jar包"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-03-24</div><div class="title">快速修改字节码并重打jar包</div></div></a></div><div><a href="/2020/05/14/%E8%87%AA%E5%AE%9A%E4%B9%89EditText%E7%9A%84%E6%97%A0%E9%9A%9C%E7%A2%8D%E6%8F%8F%E8%BF%B0%EF%BC%88%E4%B8%8D%E8%AF%BBhint%EF%BC%89/" title="自定义EditText的无障碍描述（不读hint）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-05-14</div><div class="title">自定义EditText的无障碍描述（不读hint）</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar-ysy.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">YSY</div><div class="author-info__description">Full-Stack, Android, AI</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">95</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ysy950803"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget donate" id="donate"><div class="item-headline"><i class="fas fa-heartbeat"></i><span>随缘支持</span></div><div class="item-content"><p style="text-align:center;padding:0;margin:0;"><a target="_blank" rel="noopener" href="https://qr.alipay.com/fkx12362diu95oh2aweaac5"><img src="https://blog.ysy950803.top/img/love-support.png" width="200" height="200"/></a></p> <p style="text-align:center;padding:0;margin:0;">移动端点击二维码亦可</p> <p style="text-align:center;padding:0;margin:0;"><u><a target="_blank" rel="noopener" href="https://paypal.me/yaoshengyu">Paypal.me if you like</a></u></p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3"><span class="toc-number">2.</span> <span class="toc-text">解决</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/03/Studio%E6%9F%A5%E6%89%BEaar%E6%BA%90%E7%A0%81%E7%9A%84%E9%94%99%E8%AF%AF/" title="Studio查找aar源码的错误">Studio查找aar源码的错误</a><time datetime="2025-09-03T05:18:32.000Z" title="发表于 2025-09-03 13:18:32">2025-09-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/23/%E5%A6%82%E4%BD%95%E5%9C%A8Ubuntu%E4%B8%8A%E8%87%AA%E5%BB%BAS3%E6%9C%8D%E5%8A%A1/" title="如何在Ubuntu上自建S3服务">如何在Ubuntu上自建S3服务</a><time datetime="2025-01-23T06:49:50.000Z" title="发表于 2025-01-23 14:49:50">2025-01-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/20/%E5%A6%82%E4%BD%95%E7%94%A8crontab%E5%92%8Cmail%E5%AE%9A%E6%97%B6%E5%8F%91%E9%82%AE%E4%BB%B6/" title="如何用crontab和mail定时发邮件">如何用crontab和mail定时发邮件</a><time datetime="2024-12-20T07:51:19.000Z" title="发表于 2024-12-20 15:51:19">2024-12-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/25/%E5%A6%82%E4%BD%95%E7%A6%81%E7%94%A8%E7%BD%91%E7%AB%99%E7%9B%AE%E5%BD%95%E8%AE%BF%E9%97%AE%EF%BC%88Apache%EF%BC%89/" title="如何禁用网站目录访问（Apache）">如何禁用网站目录访问（Apache）</a><time datetime="2024-09-25T05:07:20.000Z" title="发表于 2024-09-25 13:07:20">2024-09-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/26/Levenshtein%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%E5%88%9D%E4%BD%93%E9%AA%8C/" title="Levenshtein编辑距离算法初体验">Levenshtein编辑距离算法初体验</a><time datetime="2024-08-26T03:37:45.000Z" title="发表于 2024-08-26 11:37:45">2024-08-26</time></div></div></div></div><div class="card-widget ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=auto data-ad-slot=7049722255 data-full-width-responsive=true style=display:block></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('/img/home-bg.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2025 By YSY</div><div class="footer_custom_text">Welcome To My Blog!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'a2660cd0497b67ee33e5',
+      clientSecret: '3f970ce5c5ee2b57bed7c20e44809ba6bda487ac',
+      repo: 'ysy950803.github.io',
+      owner: 'ysy950803',
+      admin: ['ysy950803'],
+      id: '91272bac4ed974cd7c1a06e5e86a900c',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.textContent= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><div class="aplayer no-destroy" data-id="2829816518" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false" data-lrctype="0"> </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: true,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', 'UA-149830607-1', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
