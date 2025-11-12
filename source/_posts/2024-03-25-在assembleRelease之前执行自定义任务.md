@@ -2,9 +2,9 @@
 title: 在assembleRelease之前执行自定义任务
 date: 2024-03-25 14:19:04
 tags:
-  - Gradle
-  - Kotlin
-  - Android
+    - Gradle
+    - Kotlin
+    - Android
 ---
 
 ### 背景

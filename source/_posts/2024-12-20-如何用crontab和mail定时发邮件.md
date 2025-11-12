@@ -2,9 +2,9 @@
 title: 如何用crontab和mail定时发邮件
 date: 2024-12-20 15:51:19
 tags:
-  - 鼓捣折腾
-  - Linux
-  - 后端
+    - 鼓捣折腾
+    - Linux
+    - 后端
 ---
 
 ### 背景

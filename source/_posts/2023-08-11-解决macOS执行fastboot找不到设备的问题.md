@@ -3,10 +3,10 @@ title: 解决macOS执行fastboot找不到设备的问题
 date: 2023-08-11 15:49:01
 cover: image-20230811154542258.webp
 tags:
-  - Android
-  - AOSP
-  - 鼓捣折腾
-  - 问题不大
+    - Android
+    - AOSP
+    - 鼓捣折腾
+    - 问题不大
 ---
 
 ### 背景
