@@ -3,7 +3,7 @@ layout:     post
 title:      macOS下载AOSP的小坑
 subtitle:   坑也太多了吧。
 date:       2020-06-07
-author:     YSY
+author:     Sylvester
 header-img: img/archive-bg.jpg
 catalog: true
 tags:

@@ -3,7 +3,7 @@ layout:     post
 title:      避免Android定制ROM中的EditText出现pop弹窗
 subtitle:   知其所以然。
 date:       2019-12-07
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

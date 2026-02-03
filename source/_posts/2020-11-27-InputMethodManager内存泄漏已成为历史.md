@@ -3,7 +3,7 @@ layout:     post
 title:      InputMethodManager内存泄漏已成为历史
 subtitle:   大人，时代变了。
 date:       2020-11-27
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

@@ -3,7 +3,7 @@ layout:     post
 title:      源码茶舍之android:externalService是什么属性？实现原理？
 subtitle:   品味AOSP。
 date:       2019-04-10
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

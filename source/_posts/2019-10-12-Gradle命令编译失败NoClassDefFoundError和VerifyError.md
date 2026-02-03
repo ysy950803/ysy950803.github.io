@@ -3,7 +3,7 @@ layout:     post
 title:      Gradle命令编译失败NoClassDefFoundError和VerifyError
 subtitle:   多加思索。
 date:       2019-10-12
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

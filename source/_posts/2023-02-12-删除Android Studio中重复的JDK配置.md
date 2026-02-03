@@ -3,7 +3,7 @@ layout:     post
 title:      删除Android Studio中重复的JDK配置
 subtitle:   又闲下来了。
 date:       2023-02-12
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 cover: https://blog.ysy950803.top/img/posts/0792ce0e85c8aadf8a136b1e0eb19253.webp

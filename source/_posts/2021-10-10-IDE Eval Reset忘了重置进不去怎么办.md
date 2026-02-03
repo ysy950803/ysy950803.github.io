@@ -3,7 +3,7 @@ layout:     post
 title:      IDE Eval Reset忘了重置进不去怎么办
 subtitle:   偶尔探索一下，就能解决全网问题。
 date:       2021-10-10
-author:     YSY
+author:     Sylvester
 header-img: img/404-bg.jpg
 catalog: true
 tags:

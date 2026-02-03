@@ -3,7 +3,7 @@ layout:     post
 title:      Ubuntu安装Source Insight导入Android源码并设置仿IDEA主题Darcula
 subtitle:   同样适用于Deepin哦！
 date:       2019-08-16
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

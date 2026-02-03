@@ -3,7 +3,7 @@ layout:     post
 title:      授权后连接MySQL依然被拒绝访问（Access denied for user 'root'@'localhost'）
 subtitle:   那是真的牛逼。
 date:       2019-03-09
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

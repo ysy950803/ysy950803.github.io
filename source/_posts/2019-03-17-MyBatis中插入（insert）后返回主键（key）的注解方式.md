@@ -3,7 +3,7 @@ layout:     post
 title:      MyBatis中插入（insert）后返回主键（key）的注解方式
 subtitle:   那是真的牛逼。
 date:       2019-03-17
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

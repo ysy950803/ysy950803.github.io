@@ -3,7 +3,7 @@ layout:     post
 title:      MyBatis直接使用LocalDateTime时间类型以及MySQL时区问题排错
 subtitle:   那是真的牛逼。
 date:       2019-03-15
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

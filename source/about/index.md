@@ -8,9 +8,9 @@ type: "about"
 
 #### 站名由来
 
-养了一只猪里猪气的小猫，建站之初没想到什么好的博客名字，于是乎就叫猪猫（Pig Cat）吧。
+想把编程和小猫这两个元素结合起来，带点极客硬核和可爱萌系的矛盾萌感，于是“MeowBit”这个名字就诞生了！
 
-![Pig Cat](https://blog.ysy950803.top/img/avatar-ysy.png)
+![MeowBit](https://blog.ysy950803.top/img/avatar-ysy.png)
 
 [-> 快来吸猫呀！](https://blog.ysy950803.top/gallery/)
 
@@ -32,7 +32,7 @@ type: "about"
 
 #### 应用创作
 
-- [Google Play - ysy950803](https://play.google.com/store/apps/dev?id=7220530116384657977)
+- [Google Play - MeowBit](https://play.google.com/store/apps/dev?id=7220530116384657977)
 - [Google Play - Lovely Duck](https://play.google.com/store/apps/dev?id=6971652731113190709)
 
 ---
@@ -41,7 +41,7 @@ type: "about"
 
 #### The origin of my blog name
 
-Having a piggy kitten, I just don't have a good idea for the blog name, so call it 'Pig Cat' simply.
+I wanted to combine programming with kittens to create a unique contrast between hardcore geek vibes and adorable cuteness. That’s how the name 'MeowBit' was born!
 
 [-> Catch cat!](https://blog.ysy950803.top/gallery/)
 
@@ -63,5 +63,5 @@ If my articles are helpful to you, you can turn off the ad blocking plug-in (or 
 
 #### Apps
 
-- [Google Play - ysy950803](https://play.google.com/store/apps/dev?id=7220530116384657977)
+- [Google Play - MeowBit](https://play.google.com/store/apps/dev?id=7220530116384657977)
 - [Google Play - Lovely Duck](https://play.google.com/store/apps/dev?id=6971652731113190709)

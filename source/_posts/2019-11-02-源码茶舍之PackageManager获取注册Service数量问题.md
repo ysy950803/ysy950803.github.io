@@ -3,7 +3,7 @@ layout:     post
 title:      源码茶舍之PackageManager获取注册Service数量问题
 subtitle:   多查查，也不难。
 date:       2019-11-02
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

@@ -3,7 +3,7 @@ layout:     post
 title:      RxJava2开发小记：用CompositeDisposable来“安排”Retrofit网络请求
 subtitle:   知名库之间的故事。
 date:       2018-12-09
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

@@ -3,7 +3,7 @@ layout:     post
 title:      Android手机如何修改DPI触发平板模式
 subtitle:   从最根本动手。
 date:       2022-01-28
-author:     YSY
+author:     Sylvester
 header-img: img/404-bg.jpg
 catalog: true
 tags:

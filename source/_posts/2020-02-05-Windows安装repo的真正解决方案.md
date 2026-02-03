@@ -3,7 +3,7 @@ layout:     post
 title:      Windows安装repo的真正解决方案
 subtitle:   专治各种小毛病。
 date:       2020-02-05
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

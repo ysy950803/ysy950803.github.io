@@ -3,7 +3,7 @@ layout:     post
 title:      用Gradle脚本管理Manifest文件
 subtitle:   探索发现。
 date:       2020-06-01
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

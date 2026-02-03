@@ -3,7 +3,7 @@ layout:     post
 title:      RecyclerView中DiffUtil的一些注意事项
 subtitle:   见微知著。
 date:       2020-01-12
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

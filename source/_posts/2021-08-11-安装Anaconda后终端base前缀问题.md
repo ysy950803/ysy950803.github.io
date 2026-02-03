@@ -3,7 +3,7 @@ layout:     post
 title:      安装Anaconda后终端base前缀问题
 subtitle:   杂七杂八。
 date:       2021-08-11
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

@@ -3,7 +3,7 @@ layout:     post
 title:      Android神经网络（Neural Networks API）初探
 subtitle:   见微知著。
 date:       2020-01-14
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

@@ -3,7 +3,7 @@ layout:     post
 title:      快速实现Sublime Text的Kotlin高亮
 subtitle:   又闲下来了。
 date:       2021-06-18
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

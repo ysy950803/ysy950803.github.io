@@ -3,7 +3,7 @@ layout:     post
 title:      Mace-micro引擎编译与测试
 subtitle:   移动端AI计算框架。
 date:       2020-10-25
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

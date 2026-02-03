@@ -3,7 +3,7 @@ layout:     post
 title:      USB调试Android设备时遇到no permissions (verify udev rules)的解决办法
 subtitle:   开阔视野。
 date:       2018-03-03
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

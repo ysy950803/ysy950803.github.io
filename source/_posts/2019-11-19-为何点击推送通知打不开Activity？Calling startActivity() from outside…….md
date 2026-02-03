@@ -3,7 +3,7 @@ layout:     post
 title:      为何点击推送通知打不开Activity？Calling startActivity() from outside……
 subtitle:   知其所以然。
 date:       2019-11-19
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

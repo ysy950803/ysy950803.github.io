@@ -3,7 +3,7 @@ layout:     post
 title:      源码茶舍之如何由Uri找寻ContentProvider
 subtitle:   品味AOSP。
 date:       2020-01-29
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

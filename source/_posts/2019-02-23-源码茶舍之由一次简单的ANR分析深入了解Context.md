@@ -3,7 +3,7 @@ layout:     post
 title:      源码茶舍之由一次简单的ANR分析深入了解Context
 subtitle:   品味AOSP。
 date:       2019-02-23
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

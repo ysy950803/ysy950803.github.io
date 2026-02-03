@@ -3,7 +3,7 @@ layout:     post
 title:      使用可视化的ChkBugreport分析log文件
 subtitle:   开阔视野。
 date:       2018-10-20
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

@@ -3,7 +3,7 @@ layout:     post
 title:      Rust为Android应用编译so库
 subtitle:   新东西来啦！
 date:       2022-02-11
-author:     YSY
+author:     Sylvester
 header-style: text
 catalog: true
 tags:

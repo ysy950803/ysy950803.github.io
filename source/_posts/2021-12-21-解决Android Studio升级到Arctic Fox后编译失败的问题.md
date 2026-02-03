@@ -3,7 +3,7 @@ layout:     post
 title:      解决Android Studio升级到Arctic Fox后编译失败的问题
 subtitle:   我都不知道为什么我能解决。
 date:       2021-12-21
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

@@ -3,7 +3,7 @@ layout:     post
 title:      Apache和PHP环境打开php页面File Not Found问题
 subtitle:   一些无聊的小问题。
 date:       2021-10-22
-author:     YSY
+author:     Sylvester
 header-img: img/404-bg.jpg
 catalog: true
 tags:

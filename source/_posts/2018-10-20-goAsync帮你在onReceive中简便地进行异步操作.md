@@ -3,7 +3,7 @@ layout:     post
 title:      goAsync帮你在onReceive中简便地进行异步操作
 subtitle:   开阔视野。
 date:       2018-10-20
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

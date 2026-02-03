@@ -3,7 +3,7 @@ layout:     post
 title:      覆盖安装Play Store版本的国产App
 subtitle:   探索发现。
 date:       2020-06-06
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

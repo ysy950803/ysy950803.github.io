@@ -3,7 +3,7 @@ layout:     post
 title:      Android Shortcut启动导致其他Activity销毁问题
 subtitle:   小问题而已。
 date:       2021-09-27
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

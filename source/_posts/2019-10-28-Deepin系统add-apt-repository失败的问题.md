@@ -3,7 +3,7 @@ layout:     post
 title:      Deepin系统add-apt-repository失败的问题
 subtitle:   专治各种小毛病。
 date:       2019-10-28
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:

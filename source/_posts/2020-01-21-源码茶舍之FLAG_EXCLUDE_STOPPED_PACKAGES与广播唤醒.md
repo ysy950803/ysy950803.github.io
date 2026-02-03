@@ -3,7 +3,7 @@ layout:     post
 title:      源码茶舍之FLAG_EXCLUDE_STOPPED_PACKAGES与广播唤醒
 subtitle:   品味AOSP。
 date:       2020-01-21
-author:     YSY
+author:     Sylvester
 header-img: img/home-bg.jpg
 catalog: true
 tags:
