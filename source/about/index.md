@@ -32,6 +32,7 @@ type: "about"
 
 #### 应用创作
 
+- [ProductHunt - MeowBit](https://www.producthunt.com/@meowbit)
 - [Google Play - MeowBit](https://play.google.com/store/apps/dev?id=7220530116384657977)
 - [Google Play - Lovely Duck](https://play.google.com/store/apps/dev?id=6971652731113190709)
 
@@ -63,5 +64,6 @@ If my articles are helpful to you, you can turn off the ad blocking plug-in (or 
 
 #### Apps
 
+- [ProductHunt - MeowBit](https://www.producthunt.com/@meowbit)
 - [Google Play - MeowBit](https://play.google.com/store/apps/dev?id=7220530116384657977)
 - [Google Play - Lovely Duck](https://play.google.com/store/apps/dev?id=6971652731113190709)
