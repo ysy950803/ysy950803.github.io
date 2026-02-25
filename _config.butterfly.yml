@@ -172,6 +172,12 @@ reward:
     - img: /img/love-support-wechat.png
       link: https://blog.ysy950803.top/img/love-support-wechat.png
       text: 微信（仅支持扫码）
+    - img: /img/love-support-paypal.png
+      link: https://paypal.me/yaoshengyu
+      text: PayPal (QR Code Clickable)
+    - img: /img/love-support-others.png
+      link: https://buy.polar.sh/polar_cl_UbmzxdVSxpQBWUwTX1DOUPK3K5xqy6iq8O4Ox1X4jau
+      text: Others (QR Code Clickable)
 
 # Post edit
 # Easily browse and edit blog source code online.
