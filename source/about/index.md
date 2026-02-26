@@ -27,7 +27,6 @@ type: "about"
 - [Personal](https://ysy950803.top)
 - [CSDN](https://blog.csdn.net/ysy950803)
 - [Juejin](https://juejin.im/user/587348ff8d6d8100589967ab/posts)
-- [GitHub](https://github.com/ysy950803)
 - [SSPai](https://sspai.com/u/ysy950803)
 
 #### 应用创作
@@ -59,7 +58,6 @@ If my articles are helpful to you, you can turn off the ad blocking plug-in (or 
 - [Personal](https://ysy950803.top)
 - [CSDN](https://blog.csdn.net/ysy950803)
 - [Juejin](https://juejin.im/user/587348ff8d6d8100589967ab/posts)
-- [GitHub](https://github.com/ysy950803)
 - [SSPai](https://sspai.com/u/ysy950803)
 
 #### Apps
