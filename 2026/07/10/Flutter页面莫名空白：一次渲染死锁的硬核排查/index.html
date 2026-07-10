@@ -1,0 +1,378 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Flutter页面莫名空白：一次渲染死锁的硬核排查 | MeowBit</title><meta name="author" content="Sylvester"><meta name="copyright" content="Sylvester"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="背景事情是这样的，最近在开发一个 Flutter 应用（AI 悬浮剪贴板 ClipDash），发现一个非常诡异的问题：  debug 版运行后，打开编辑页面，从标题到正文这一整块区域全是空白的，只有 AppBar 图标、底部的标签栏和按钮正常显示； 盲点一下标题区域，所有 UI 又都出来了，像什么都没发生过； release 版完全没有这个问题。  「debug 坏、release 好」这个组合就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flutter页面莫名空白：一次渲染死锁的硬核排查">
+<meta property="og:url" content="https://blog.ysy950803.top/2026/07/10/Flutter%E9%A1%B5%E9%9D%A2%E8%8E%AB%E5%90%8D%E7%A9%BA%E7%99%BD%EF%BC%9A%E4%B8%80%E6%AC%A1%E6%B8%B2%E6%9F%93%E6%AD%BB%E9%94%81%E7%9A%84%E7%A1%AC%E6%A0%B8%E6%8E%92%E6%9F%A5/index.html">
+<meta property="og:site_name" content="MeowBit">
+<meta property="og:description" content="背景事情是这样的，最近在开发一个 Flutter 应用（AI 悬浮剪贴板 ClipDash），发现一个非常诡异的问题：  debug 版运行后，打开编辑页面，从标题到正文这一整块区域全是空白的，只有 AppBar 图标、底部的标签栏和按钮正常显示； 盲点一下标题区域，所有 UI 又都出来了，像什么都没发生过； release 版完全没有这个问题。  「debug 坏、release 好」这个组合就">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.ysy950803.top/img/avatar-ysy.png">
+<meta property="article:published_time" content="2026-07-10T14:30:00.000Z">
+<meta property="article:modified_time" content="2026-07-10T13:40:41.620Z">
+<meta property="article:author" content="Sylvester">
+<meta property="article:tag" content="问题不大">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="Flutter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ysy950803.top/img/avatar-ysy.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.ysy950803.top/2026/07/10/Flutter%E9%A1%B5%E9%9D%A2%E8%8E%AB%E5%90%8D%E7%A9%BA%E7%99%BD%EF%BC%9A%E4%B8%80%E6%AC%A1%E6%B8%B2%E6%9F%93%E6%AD%BB%E9%94%81%E7%9A%84%E7%A1%AC%E6%A0%B8%E6%8E%92%E6%9F%A5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="MK2u6SdXmNALFQhaVElzr03W62cBQbIjtHK-7rvSIjw"/><meta name="baidu-site-verification" content="codeva-o8m8oS84V9"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8999136091629669',
+  enable_page_level_ads: 'true'
+});</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-149830607-1"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-149830607-1');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#A58A5D","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Flutter页面莫名空白：一次渲染死锁的硬核排查',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-07-10 21:40:41'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><script>document.oncontextmenu=function(){return!1}</script><script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("busuanzi_value_site_uv"),t=document.getElementById("busuanzi_value_site_pv"),n=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){n.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+1e5;break}}),i=new MutationObserver(e=>{for(let t of e)if("childList"===t.type){i.disconnect(),t.target.innerHTML=parseInt(t.target.innerHTML)+3e5;break}}),r={childList:!0};n.observe(e,r),i.observe(t,r)});</script><meta name="referrer" content="no-referrer" /><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar-ysy.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">100</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/home-bg.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="MeowBit"><span class="site-name">MeowBit</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> Gallery</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Flutter页面莫名空白：一次渲染死锁的硬核排查</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-10T14:30:00.000Z" title="发表于 2026-07-10 22:30:00">2026-07-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-10T13:40:41.620Z" title="更新于 2026-07-10 21:40:41">2026-07-10</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Flutter页面莫名空白：一次渲染死锁的硬核排查"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>事情是这样的，最近在开发一个 Flutter 应用（AI 悬浮剪贴板 ClipDash），发现一个非常诡异的问题：</p>
+<ol>
+<li><strong>debug 版</strong>运行后，打开编辑页面，从标题到正文这一整块区域全是空白的，只有 AppBar 图标、底部的标签栏和按钮正常显示；</li>
+<li>盲点一下标题区域，所有 UI 又都出来了，像什么都没发生过；</li>
+<li><strong>release 版完全没有这个问题</strong>。</li>
+</ol>
+<p>「debug 坏、release 好」这个组合就很烦，因为它反直觉——通常 debug 有 assert 兜底应该更容易暴露问题才对。一开始我以为是哪个 assert 抛了异常把子树打断了（debug 有 assert、release 没有，症状对得上），结果 logcat 里干干净净，一条 Flutter 异常都没有。</p>
+<p>那就只能上硬手段了。这篇文章记录整个排查过程，中间反转不少，最后定位到的是一个 Flutter 框架层的绘制死锁，根因和你想象的大概率不一样。</p>
+<p>先说结论，省得有人划到一半划走：</p>
+<blockquote>
+<p><strong>不要在 sliver 内容里使用 LayoutBuilder。</strong> 它在布局阶段执行 build，在特定时序下（路由转场 + debug JIT 掉帧）会让 sliver 子树在「布局完成后、绘制开始前」被重新标脏，从而触发框架的静默跳绘死锁——滚动区域永远不再绘制，页面空白。</p>
+</blockquote>
+<h3 id="复现与第一份证据：VM-service"><a href="#复现与第一份证据：VM-service" class="headerlink" title="复现与第一份证据：VM service"></a>复现与第一份证据：VM service</h3><p>debug 包直装（不经 <code>flutter run</code>）也带 Dart VM service，logcat 里能找到端口：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">adb logcat -d | grep &quot;Dart VM service&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">The Dart VM service is listening on http://127.0.0.1:36067/o0HjThCdw-w=/</span></span><br><span class="line">adb forward tcp:36067 tcp:36067</span><br></pre></td></tr></table></figure>
+
+<p>很多人不知道的是，VM service 除了 WebSocket 还支持 <strong>HTTP GET 直接调 RPC</strong>，连 DevTools 都不用开：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">拿 isolate <span class="built_in">id</span></span></span><br><span class="line">curl &quot;http://127.0.0.1:36067/TOKEN/getVM&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">dump 渲染树</span></span><br><span class="line">curl &quot;http://127.0.0.1:36067/TOKEN/ext.flutter.debugDumpRenderTree?isolateId=isolates/xxx&quot;</span><br></pre></td></tr></table></figure>
+
+<p>在空白状态下 dump 渲染树，一眼看到不对劲的地方——布局数据全部正常（尺寸、偏移都对），但从 sliver 往下整棵子树都挂着 <code>NEEDS-PAINT</code>：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">└─child: RenderViewport#2409b</span><br><span class="line">  │ ...</span><br><span class="line">  ├─center child: RenderSliverToBoxAdapter#26ecb relayoutBoundary=up1 NEEDS-PAINT</span><br><span class="line">  └─child 1: RenderSliverFillRemaining#55eef relayoutBoundary=up1 NEEDS-PAINT</span><br></pre></td></tr></table></figure>
+
+<p>注意：<strong>viewport 自己是干净的</strong>（没有 NEEDS-PAINT），只有它的孩子们全是脏的。再 dump layer 树（<code>ext.flutter.debugDumpLayerTree</code>），实锤了：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">├─child 2: OffsetLayer#8fbbe</span><br><span class="line">│   creator: Viewport ← IgnorePointer ← ... ← CustomPaint ← ImageFiltered ← ⋯</span><br><span class="line">│   offset: Offset(0.0, 80.0)</span><br><span class="line">│   （没有任何子 layer！）</span><br></pre></td></tr></table></figure>
+
+<p>viewport 这个 repaint boundary 的 OffsetLayer 位置正确（AppBar 下方 80 逻辑像素），但<strong>里面是空的</strong>。也就是说：某一帧 viewport「绘制」了一次，但一个孩子都没画进去，然后它把自己的脏标记清掉了。</p>
+<h3 id="为什么点一下就能恢复：markNeedsPaint-的早退陷阱"><a href="#为什么点一下就能恢复：markNeedsPaint-的早退陷阱" class="headerlink" title="为什么点一下就能恢复：markNeedsPaint 的早退陷阱"></a>为什么点一下就能恢复：markNeedsPaint 的早退陷阱</h3><p>看一下框架源码 <code>RenderObject.markNeedsPaint</code> 的开头：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> markNeedsPaint() &#123;</span><br><span class="line">  <span class="keyword">if</span> (_needsPaint) <span class="keyword">return</span>;   <span class="comment">// ← 已经脏了就直接返回，不会再往上传播</span></span><br><span class="line">  _needsPaint = <span class="keyword">true</span>;</span><br><span class="line">  <span class="keyword">if</span> (isRepaintBoundary &amp;&amp; _wasRepaintBoundary) &#123;</span><br><span class="line">    owner!._nodesNeedingPaint.add(<span class="keyword">this</span>);   <span class="comment">// 只有 boundary 会进脏列表</span></span><br><span class="line">    ...</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (parent <span class="keyword">is</span> RenderObject) &#123;</span><br><span class="line">    parent.markNeedsPaint();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里有个隐蔽的坑：一个节点如果处于「<code>_needsPaint == true</code> 但<strong>不在脏列表里</strong>」的状态，那么之后所有对它（以及它下面任何节点）的 <code>markNeedsPaint</code> 调用都会被第一行早退吞掉——它自认为已经安排上了，实际上永远没人来画它。</p>
+<p>我们的场景正是如此：sliver 子树全员脏但不在列表里，viewport 干净所以也不会被重绘。光标闪烁、setState、随便什么重绘请求，全都石沉大海。</p>
+<p>而「点一下标题恢复」的原理是：点击把标题从 <code>Text</code> 换成了 <code>TextField</code>，这是<strong>结构性重建</strong>——新 RenderObject 挂载时走的是 <code>adoptChild → markNeedsLayout</code> 这条<strong>布局</strong>通道（布局标记恰好是干净的，能正常传播），布局请求一路传到 relayout boundary（正好是 viewport），viewport 重新布局后末尾会调一次 <code>markNeedsPaint()</code>——此时它自己是干净的，成功进入脏列表 → 重绘 → 把整棵脏子树全画出来。破局的钥匙从来不是「重绘」，而是「重布局」。</p>
+<h3 id="中间的弯路（也很有价值）"><a href="#中间的弯路（也很有价值）" class="headerlink" title="中间的弯路（也很有价值）"></a>中间的弯路（也很有价值）</h3><p>定位到卡死状态只是开始，「谁制造了这个状态」才是重头戏。这中间我走了不少弯路，捡几个值得记的：</p>
+<p><strong>弯路一：怀疑 Impeller。</strong> 模拟器上跑的是 Impeller OpenGLES 后端，而且排查中一度出现「强制全树重绘也没反应、退后台回前台都不恢复」的更深卡死（疑似帧管线也停摆了，surface 重建后才消失，没有深究）。于是给 debug 包单独关掉 Impeller 换 Skia 验证：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- android/app/src/debug/AndroidManifest.xml --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta-data</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:name</span>=<span class="string">&quot;io.flutter.embedding.android.EnableImpeller&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:value</span>=<span class="string">&quot;false&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>照样空白。</strong> 排除渲染后端，这是框架层的问题。</p>
+<p><strong>弯路二：怀疑 OpenContainer。</strong> 编辑页是用 <code>animations</code> 包的 <code>OpenContainer</code>（容器变换动画）打开的，它的转场机制确实很可疑：前 1&#x2F;5 时间开页内容 opacity 恒为 0（opacity 为 0 时整棵子树<strong>跳过绘制</strong>），动画结束帧再通过 GlobalKey 把整个页面子树重挂载到最终位置。「从未绘制过的子树被重挂载」看起来简直是完美嫌疑人。我把 OpenContainer 换成普通的 <code>MaterialPageRoute</code>——<strong>照样空白</strong>。排除。</p>
+<p><strong>弯路三：延迟挂载主体。</strong> 尝试让滚动区域等路由转场结束后再挂载（避开转场期间的绘制跳过），甚至再多延一帧——<strong>照样空白</strong>，新挂载的 viewport 呈现出一模一样的卡死签名。毒源在页面自己身上。</p>
+<p>顺带记两个好用的排查工具。一个是给本地 Flutter SDK 直接加日志桩（改 <code>packages/flutter/lib/src/rendering/layer.dart</code> 再重编 APK 即可生效，排查完 <code>git checkout</code> 还原），我用它证明了 root layer 从未被 detach；另一个是线程原生堆栈：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb root</span><br><span class="line">adb shell debuggerd -b &lt;pid&gt;   # raster/UI 线程都在 epoll_pwait 空转，没有死锁</span><br></pre></td></tr></table></figure>
+
+<h3 id="定音之锤：per-RenderObject-绘制时序"><a href="#定音之锤：per-RenderObject-绘制时序" class="headerlink" title="定音之锤：per-RenderObject 绘制时序"></a>定音之锤：per-RenderObject 绘制时序</h3><p>VM service 还有两个少有人用的扩展：<code>ext.flutter.profileRenderObjectPaints</code> 和 <code>ext.flutter.profileRenderObjectLayouts</code>，开启后每个 RenderObject 的布局&#x2F;绘制都会打进 timeline。配合 <code>getVMTimeline</code> 把打开页面全过程录下来，看到了决定性的一幕：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">408081  B  RenderViewport            ← 布局阶段：viewport 开始布局</span><br><span class="line">408112  B  RenderSliverToBoxAdapter</span><br><span class="line">409503  E  RenderSliverToBoxAdapter</span><br><span class="line">409517  B  RenderSliverFillRemaining  ← 两个 sliver 都完整布局了（21ms，JIT 很慢）</span><br><span class="line">431035  E  RenderSliverFillRemaining</span><br><span class="line">431037  E  RenderViewport</span><br><span class="line">...</span><br><span class="line">431435  B  PAINT (root)              ← 同一帧的绘制阶段</span><br><span class="line">432453  B  RenderViewport            ← viewport 绘制，但是——</span><br><span class="line">438501  E  RenderViewport            ← 中间没有任何 sliver 的绘制事件！</span><br></pre></td></tr></table></figure>
+
+<p>viewport 明明刚布局完两个 sliver，绘制时却一个孩子都没画。答案在 <code>RenderObject._paintWithContext</code> 的开头：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// If we still need layout, then that means that we were skipped in the</span></span><br><span class="line"><span class="comment">// layout phase and therefore don&#x27;t need painting. ...</span></span><br><span class="line"><span class="keyword">if</span> (_needsLayout) &#123;</span><br><span class="line">  <span class="keyword">return</span>;   <span class="comment">// ← 静默跳过，连 profiling 事件都不发</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说：<strong>在同一帧内，sliver 布局完成之后、绘制开始之前，有什么东西把它们重新标记了 needs-layout。</strong> 绘制阶段 viewport 尽职地遍历孩子，孩子却因为「欠布局」被静默跳过；而 viewport 自己的脏标记在 <code>_repaintCompositedChild</code> 里已经被清掉、layer 也被 <code>removeAllChildren()</code> 清空——「干净的空 boundary + 全脏的子树」这个死锁状态就这样铸成了。框架注释里那句 “the parent will schedule another paint” 的乐观假设，在这个时序下并不成立。</p>
+<h3 id="真凶：LayoutBuilder"><a href="#真凶：LayoutBuilder" class="headerlink" title="真凶：LayoutBuilder"></a>真凶：LayoutBuilder</h3><p>什么东西会在布局阶段中途搞事情？——<strong>LayoutBuilder</strong>，它的 builder 就是在布局阶段执行的。我的编辑页正文阅读态里有一个：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Widget _buildReadContent() &#123;</span><br><span class="line">  <span class="keyword">return</span> LayoutBuilder(</span><br><span class="line">    builder: (context, constraints) &#123;</span><br><span class="line">      <span class="keyword">final</span> maxWidth = constraints.maxWidth;  <span class="comment">// 只是为了拿文本换行宽度</span></span><br><span class="line">      <span class="keyword">return</span> GestureDetector(</span><br><span class="line">        onTapUp: (details) &#123;</span><br><span class="line">          <span class="comment">// 用 maxWidth 把点击坐标换算成光标位置（点哪儿光标落哪儿）</span></span><br><span class="line">          <span class="keyword">final</span> offset = _offsetForTap(details.localPosition, maxWidth);</span><br><span class="line">          _enterEditMode(contentOffset: offset);</span><br><span class="line">        &#125;,</span><br><span class="line">        child: Linkify(...),</span><br><span class="line">      );</span><br><span class="line">    &#125;,</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>把它临时干掉再跑——<strong>冷启动首开，页面完美渲染</strong>。反复验证若干轮（冷启动、热复开、FAB 新建、OpenContainer 转场恢复原样），全部正常。</p>
+<p>修复也很简单：这个 LayoutBuilder 本来只是为了拿换行宽度给点击换算光标用，而点击发生时布局早就完成了，直接从 RenderBox 现取就行：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Widget _buildReadContent() &#123;</span><br><span class="line">  <span class="keyword">return</span> Builder(</span><br><span class="line">    builder: (context) &#123;</span><br><span class="line">      <span class="keyword">return</span> GestureDetector(</span><br><span class="line">        behavior: HitTestBehavior.opaque,</span><br><span class="line">        onTapUp: (details) &#123;</span><br><span class="line">          <span class="keyword">final</span> box = context.findRenderObject() <span class="keyword">as</span> RenderBox?;</span><br><span class="line">          <span class="keyword">final</span> maxWidth = box?.size.width ?? <span class="built_in">double</span>.infinity;</span><br><span class="line">          <span class="keyword">final</span> offset = _offsetForTap(details.localPosition, maxWidth);</span><br><span class="line">          _enterEditMode(contentOffset: offset);</span><br><span class="line">        &#125;,</span><br><span class="line">        child: Linkify(...),</span><br><span class="line">      );</span><br><span class="line">    &#125;,</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>功能完全等价（两者布局位置相同、宽度一致），绘制路径干净。</p>
+<p>至于为什么 release 没事：这个竞态需要「路由转场 + 掉大帧」的时序窗口，debug 的 JIT 首开一帧要编译大量代码（上面 timeline 里一个 sliver 布局就花了 21ms），窗口被撑得很大，几乎必现；release 是 AOT，帧时序紧凑，基本碰不上——但理论上极端卡顿时也可能中招，所以这不是一个「debug 专属」的假问题。</p>
+<p>环境：Flutter 3.44.2 stable。搜遍了 flutter&#x2F;flutter 的 issue（<code>_skippedPaintingOnLayer</code>、<code>NEEDS-PAINT stuck</code>、blank until tap 等关键词）和 3.44.x 的 hotfix 记录，没有找到已知报告，应该是个还没被上报的框架 bug，后面打算整理个最小复现提给官方。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ol>
+<li>「debug 空白、点击恢复、release 正常」这类症状，先查 <strong>sliver 里的 LayoutBuilder</strong>，别急着怀疑 Impeller 或者转场动画库；</li>
+<li><code>markNeedsPaint</code> 的早退 + <code>_paintWithContext</code> 对欠布局节点的静默跳过，组合起来能造出「永不重绘」的死锁，且 logcat 一片祥和——<strong>没有异常不代表没有问题</strong>；</li>
+<li>渲染树里「boundary 干净但子树全 NEEDS-PAINT + layer 树里对应 OffsetLayer 为空」是这个死锁的标准签名，遇到可以直接对号入座；</li>
+<li>直装的 debug APK 也能用 VM service 做深度排查：HTTP GET 就能调 <code>ext.flutter.*</code> 扩展（dump 渲染树&#x2F;layer 树、强制重绘、per-RenderObject profiling），不依赖 <code>flutter run</code>；</li>
+<li>排查渲染问题的证据链条：logcat → 渲染树&#x2F;layer 树 dump → timeline 帧事件 → per-RenderObject 布局&#x2F;绘制时序 → 框架源码，一层比一层贵，但一层比一层接近真相。</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top">Sylvester</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.ysy950803.top/2026/07/10/Flutter%E9%A1%B5%E9%9D%A2%E8%8E%AB%E5%90%8D%E7%A9%BA%E7%99%BD%EF%BC%9A%E4%B8%80%E6%AC%A1%E6%B8%B2%E6%9F%93%E6%AD%BB%E9%94%81%E7%9A%84%E7%A1%AC%E6%A0%B8%E6%8E%92%E6%9F%A5/">https://blog.ysy950803.top/2026/07/10/Flutter%E9%A1%B5%E9%9D%A2%E8%8E%AB%E5%90%8D%E7%A9%BA%E7%99%BD%EF%BC%9A%E4%B8%80%E6%AC%A1%E6%B8%B2%E6%9F%93%E6%AD%BB%E9%94%81%E7%9A%84%E7%A1%AC%E6%A0%B8%E6%8E%92%E6%9F%A5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.ysy950803.top" target="_blank">MeowBit</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%97%AE%E9%A2%98%E4%B8%8D%E5%A4%A7/">问题不大</a><a class="post-meta__tags" href="/tags/Android/">Android</a><a class="post-meta__tags" href="/tags/Flutter/">Flutter</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar-ysy.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://qr.alipay.com/fkx12362diu95oh2aweaac5" target="_blank"><img class="post-qr-code-img" src="/img/love-support.png" alt="支付宝（移动端可点击二维码）"/></a><div class="post-qr-code-desc">支付宝（移动端可点击二维码）</div></li><li class="reward-item"><a href="https://blog.ysy950803.top/img/love-support-wechat.png" target="_blank"><img class="post-qr-code-img" src="/img/love-support-wechat.png" alt="微信（仅支持扫码）"/></a><div class="post-qr-code-desc">微信（仅支持扫码）</div></li><li class="reward-item"><a href="https://paypal.me/yaoshengyu" target="_blank"><img class="post-qr-code-img" src="/img/love-support-paypal.png" alt="PayPal (QR Code Clickable)"/></a><div class="post-qr-code-desc">PayPal (QR Code Clickable)</div></li><li class="reward-item"><a href="https://buy.polar.sh/polar_cl_UbmzxdVSxpQBWUwTX1DOUPK3K5xqy6iq8O4Ox1X4jau" target="_blank"><img class="post-qr-code-img" src="/img/love-support-others.png" alt="Others (QR Code Clickable)"/></a><div class="post-qr-code-desc">Others (QR Code Clickable)</div></li></ul></div></div><div class="ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=fluid data-ad-layout=in-article data-ad-slot=2789809398 style=display:block;text-align:center></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/06/24/%E8%BF%81%E7%A7%BB%E5%88%B0PowerShell%207/" title="迁移到PowerShell 7"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">迁移到PowerShell 7</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2018/03/03/USB%E8%B0%83%E8%AF%95Android%E8%AE%BE%E5%A4%87%E6%97%B6%E9%81%87%E5%88%B0no%20permissions%20(verify%20udev%20rules)%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" title="USB调试Android设备时遇到no permissions (verify udev rules)的解决办法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-03-03</div><div class="title">USB调试Android设备时遇到no permissions (verify udev rules)的解决办法</div></div></a></div><div><a href="/2019/04/15/NDK%E5%BC%80%E5%8F%91%E4%B8%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E9%99%A4%E4%BB%A50%E7%A8%8B%E5%BA%8F%E4%B8%8D%E5%B4%A9%E6%BA%83%EF%BC%9F/" title="NDK开发中为什么除以0程序不崩溃？"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-04-15</div><div class="title">NDK开发中为什么除以0程序不崩溃？</div></div></a></div><div><a href="/2019/10/12/Gradle%E5%91%BD%E4%BB%A4%E7%BC%96%E8%AF%91%E5%A4%B1%E8%B4%A5NoClassDefFoundError%E5%92%8CVerifyError/" title="Gradle命令编译失败NoClassDefFoundError和VerifyError"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-10-12</div><div class="title">Gradle命令编译失败NoClassDefFoundError和VerifyError</div></div></a></div><div><a href="/2021/12/21/%E8%A7%A3%E5%86%B3Android%20Studio%E5%8D%87%E7%BA%A7%E5%88%B0Arctic%20Fox%E5%90%8E%E7%BC%96%E8%AF%91%E5%A4%B1%E8%B4%A5%E7%9A%84%E9%97%AE%E9%A2%98/" title="解决Android Studio升级到Arctic Fox后编译失败的问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-21</div><div class="title">解决Android Studio升级到Arctic Fox后编译失败的问题</div></div></a></div><div><a href="/2023/08/11/%E8%A7%A3%E5%86%B3macOS%E6%89%A7%E8%A1%8Cfastboot%E6%89%BE%E4%B8%8D%E5%88%B0%E8%AE%BE%E5%A4%87%E7%9A%84%E9%97%AE%E9%A2%98/" title="解决macOS执行fastboot找不到设备的问题"><img class="cover" src="/2023/08/11/%E8%A7%A3%E5%86%B3macOS%E6%89%A7%E8%A1%8Cfastboot%E6%89%BE%E4%B8%8D%E5%88%B0%E8%AE%BE%E5%A4%87%E7%9A%84%E9%97%AE%E9%A2%98/image-20230811154542258.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-11</div><div class="title">解决macOS执行fastboot找不到设备的问题</div></div></a></div><div><a href="/2026/06/03/Google%20Play%E5%8A%A0%E5%9B%BA%E4%BF%9D%E6%8A%A4%E5%AF%BC%E8%87%B4%E7%9A%84%E5%B4%A9%E6%BA%83/" title="Google Play加固保护导致的崩溃"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-03</div><div class="title">Google Play加固保护导致的崩溃</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar-ysy.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Sylvester</div><div class="author-info__description">Full-Stack, Android, AI</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">100</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ysy950803"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget donate" id="donate"><div class="item-headline"><i class="fas fa-heartbeat"></i><span>随缘支持</span></div><div class="item-content"><p style="text-align:center;padding:0;margin:0;"><a target="_blank" rel="noopener" href="https://qr.alipay.com/fkx12362diu95oh2aweaac5"><img src="https://blog.ysy950803.top/img/love-support.png" width="200" height="200"/></a></p> <p style="text-align:center;padding:0;margin:0;">移动端点击二维码亦可</p> <p style="text-align:center;padding:0;margin:0;"><u><a target="_blank" rel="noopener" href="https://buy.polar.sh/polar_cl_UbmzxdVSxpQBWUwTX1DOUPK3K5xqy6iq8O4Ox1X4jau">Buy Me a Coffee</a></u> or <u><a target="_blank" rel="noopener" href="https://paypal.me/yaoshengyu">PayPal</a></u></p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E7%8E%B0%E4%B8%8E%E7%AC%AC%E4%B8%80%E4%BB%BD%E8%AF%81%E6%8D%AE%EF%BC%9AVM-service"><span class="toc-number">2.</span> <span class="toc-text">复现与第一份证据：VM service</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%82%B9%E4%B8%80%E4%B8%8B%E5%B0%B1%E8%83%BD%E6%81%A2%E5%A4%8D%EF%BC%9AmarkNeedsPaint-%E7%9A%84%E6%97%A9%E9%80%80%E9%99%B7%E9%98%B1"><span class="toc-number">3.</span> <span class="toc-text">为什么点一下就能恢复：markNeedsPaint 的早退陷阱</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E7%9A%84%E5%BC%AF%E8%B7%AF%EF%BC%88%E4%B9%9F%E5%BE%88%E6%9C%89%E4%BB%B7%E5%80%BC%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">中间的弯路（也很有价值）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E9%9F%B3%E4%B9%8B%E9%94%A4%EF%BC%9Aper-RenderObject-%E7%BB%98%E5%88%B6%E6%97%B6%E5%BA%8F"><span class="toc-number">5.</span> <span class="toc-text">定音之锤：per-RenderObject 绘制时序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9C%9F%E5%87%B6%EF%BC%9ALayoutBuilder"><span class="toc-number">6.</span> <span class="toc-text">真凶：LayoutBuilder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/10/Flutter%E9%A1%B5%E9%9D%A2%E8%8E%AB%E5%90%8D%E7%A9%BA%E7%99%BD%EF%BC%9A%E4%B8%80%E6%AC%A1%E6%B8%B2%E6%9F%93%E6%AD%BB%E9%94%81%E7%9A%84%E7%A1%AC%E6%A0%B8%E6%8E%92%E6%9F%A5/" title="Flutter页面莫名空白：一次渲染死锁的硬核排查">Flutter页面莫名空白：一次渲染死锁的硬核排查</a><time datetime="2026-07-10T14:30:00.000Z" title="发表于 2026-07-10 22:30:00">2026-07-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/06/24/%E8%BF%81%E7%A7%BB%E5%88%B0PowerShell%207/" title="迁移到PowerShell 7">迁移到PowerShell 7</a><time datetime="2026-06-24T08:06:52.000Z" title="发表于 2026-06-24 16:06:52">2026-06-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/06/18/Windows%E5%BC%80%E5%8F%91%E8%80%85%E4%BC%98%E5%8C%96%E9%85%8D%E7%BD%AE/" title="Windows开发者优化配置">Windows开发者优化配置</a><time datetime="2026-06-18T12:45:23.000Z" title="发表于 2026-06-18 20:45:23">2026-06-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/06/03/Google%20Play%E5%8A%A0%E5%9B%BA%E4%BF%9D%E6%8A%A4%E5%AF%BC%E8%87%B4%E7%9A%84%E5%B4%A9%E6%BA%83/" title="Google Play加固保护导致的崩溃">Google Play加固保护导致的崩溃</a><time datetime="2026-06-03T14:21:49.000Z" title="发表于 2026-06-03 22:21:49">2026-06-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/12/%E5%85%8B%E9%9A%86Win%E7%B3%BB%E7%BB%9F%E7%9B%98%E5%90%8E%E4%BF%AE%E5%A4%8D%E5%90%AF%E5%8A%A8%E5%BC%95%E5%AF%BC/" title="克隆Win系统盘后修复启动引导">克隆Win系统盘后修复启动引导</a><time datetime="2025-11-12T03:52:29.000Z" title="发表于 2025-11-12 11:52:29">2025-11-12</time></div></div></div></div><div class="card-widget ads-wrap"><script async crossorigin=anonymous src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999136091629669"></script><ins class=adsbygoogle data-ad-client=ca-pub-8999136091629669 data-ad-format=auto data-ad-slot=7049722255 data-full-width-responsive=true style=display:block></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('/img/home-bg.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2026 By Sylvester</div><div class="footer_custom_text">Welcome To My Blog!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'a2660cd0497b67ee33e5',
+      clientSecret: '3f970ce5c5ee2b57bed7c20e44809ba6bda487ac',
+      repo: 'ysy950803.github.io',
+      owner: 'ysy950803',
+      admin: ['ysy950803'],
+      id: '8a9580d6dd847df2f89f81226bbc06b8',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.textContent= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><div class="aplayer no-destroy" data-id="2829816518" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false" data-lrctype="0"> </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: true,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', 'UA-149830607-1', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
